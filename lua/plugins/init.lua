@@ -14,20 +14,15 @@ return {
   },
 
   {
-  	"nvim-treesitter/nvim-treesitter",
-  	opts = {
-  		ensure_installed = {
-  			"vim", "lua", "vimdoc",
-       "html", "css"
-  		},
-  	},
-  },
-
-  -- In order to modify the `lspconfig` configuration:
-  {
-    "neovim/nvim-lspconfig",
-     config = function()
-        require "configs.lspconfig"
-     end,
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+      },
+    },
   },
 }

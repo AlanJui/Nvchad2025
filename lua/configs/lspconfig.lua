@@ -4,7 +4,7 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 
 -- EXAMPLE
-local servers = { "html", "cssls", "lua_ls" }
+local servers = { "html", "cssls", "vuels", "tailwindcss" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -23,36 +23,116 @@ lspconfig.ts_ls.setup {
   capabilities = nvlsp.capabilities,
 }
 
+-- configure lua server (with special settings)
 lspconfig.lua_ls.setup {
-  on_init = function(client)
-    if client.workspace_folders then
-      local path = client.workspace_folders[1].name
-      if path ~= vim.fn.stdpath('config') and (vim.loop.fs_stat(path..'/.luarc.json') or vim.loop.fs_stat(path..'/.luarc.jsonc')) then
-        return
-      end
-    end
-
-    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-      runtime = {
-        -- Tell the language server which version of Lua you're using
-        -- (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT'
-      },
-      -- Make the server aware of Neovim runtime files
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    Lua = {
       workspace = {
         checkThirdParty = false,
-        library = {
-          vim.env.VIMRUNTIME
-          -- Depending on the usage, you might want to add additional paths here.
-          -- "${3rd}/luv/library"
-          -- "${3rd}/busted/library",
-        }
-        -- or pull in all of 'runtimepath'. NOTE: this is a lot slower and will cause issues when working on your own configuration (see https://github.com/neovim/nvim-lspconfig/issues/3189)
-        -- library = vim.api.nvim_get_runtime_file("", true)
-      }
-    })
-  end,
+      },
+      completion = {
+        callSnippet = "Replace",
+      },
+      diagnostics = {
+        globals = { "vim", "hs", "use", "log" },
+      },
+    },
+  },
+}
+
+lspconfig.pylsp.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
   settings = {
-    Lua = {}
-  }
+    pylsp = {
+      pycodestyle = {
+        ignore = { "W391" },
+        maxLineLength = 100,
+      },
+    },
+  },
+}
+
+-- configure emmet language server
+lspconfig["emmet_ls"].setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = {
+    "html",
+    "htmldjango",
+    "typescriptreact",
+    "javascriptreact",
+    "vue",
+    "css",
+    "sass",
+    "scss",
+    "less",
+    "svelte",
+  },
+}
+
+-- configure html server
+lspconfig["html"].setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = {
+    "html",
+    "htmldjango",
+  },
+}
+
+-- configure json server
+lspconfig["jsonls"].setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = {
+    "json",
+    "jsonc",
+  },
+}
+
+-- configure xml server
+lspconfig["lemminx"].setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = { "xml", "xsd", "xsl", "xslt", "svg" },
+}
+
+-- configure yaml server
+lspconfig["yamlls"].setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = {
+    "yaml",
+    "yaml.docker-compose",
+  },
+  settings = {
+    yaml = {
+      schemas = {
+        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+        -- ["../path/relative/to/file.yml"] = "/.github/workflows/*",
+        -- ["/path/from/root/of/project"] = "/.github/workflows/*",
+      },
+    },
+  },
+}
+
+-- configure markdown server
+lspconfig["marksman"].setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  filetypes = {
+    "markdown",
+    "markdown.mdx",
+  },
 }

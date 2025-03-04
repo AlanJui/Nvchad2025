@@ -1,0 +1,589 @@
+{
+  "myClass": {
+    "prefix": "myClass",
+    "body": [
+      "class ${1:ClassName}(${2:Parameter}):",
+      "\t\t$3",
+      "\tpass"
+    ],
+    "scope": "source.python",
+    "description": "宣告類別"
+  },
+  "#!": {
+    "prefix": "#!",
+    "body": "#!/usr/bin/env python\n$0",
+    "description": "#!/usr/bin/env python"
+  },
+  "ifmain": {
+    "prefix": "ifmain",
+    "body": "if __name__ == `!p snip.rv = get_quoting_style(snip)`__main__`!p snip.rv = get_quoting_style(snip)`:\n\t${1:${VISUAL:main()}}",
+    "description": "ifmain"
+  },
+  "with": {
+    "prefix": "with",
+    "body": "with ${1:expr}`!p snip.rv = \" as \" if t[2] else \"\"`${2:var}:\n\t${3:${VISUAL:pass}}\n$0",
+    "description": "with"
+  },
+  "for": {
+    "prefix": "for",
+    "body": "for ${1:item} in ${2:iterable}:\n\t${3:${VISUAL:pass}}",
+    "description": "for loop"
+  },
+  "class": {
+    "prefix": "class",
+    "body": "class ${1:MyClass}(${2:object}):\n\n\t`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`\n\n\tdef __init__(self$4):\n\t\t`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined.}`!p\nsnip.rv = \"\"\nsnip >> 2\nargs = get_args(t[4])\nwrite_docstring_args(args, snip)\nif args:\n\tsnip.rv += '\\n' + snip.mkline('', indent='')\n\tsnip += '{0}'.format(triple_quotes(snip))\nwrite_init_body(args, t[2], snip)\n`\n\t\t$0",
+    "description": "class with docstrings"
+  },
+  "slotclass": {
+    "prefix": "slotclass",
+    "body": "class ${1:MyClass}(${2:object}):\n\n\t`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`\n`!p\nsnip >> 1\nargs = get_args(t[4])\nwrite_slots_args(args, snip)\n`\n\n\tdef __init__(self$4):\n\t\t`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined.}`!p\nsnip.rv = \"\"\nsnip >> 2\nargs = get_args(t[4])\nwrite_docstring_args(args, snip)\nif args:\n\tsnip.rv += '\\n' + snip.mkline('', indent='')\n\tsnip += triple_quotes(snip)\nwrite_init_body(args, t[2], snip)\n`\n\t\t$0",
+    "description": "class with slots and docstrings"
+  },
+  "contain": {
+    "prefix": "contain",
+    "body": "def __len__(self):\n\t${1:pass}\n\ndef __getitem__(self, key):\n\t${2:pass}\n\ndef __setitem__(self, key, value):\n\t${3:pass}\n\ndef __delitem__(self, key):\n\t${4:pass}\n\ndef __iter__(self):\n\t${5:pass}\n\ndef __reversed__(self):\n\t${6:pass}\n\ndef __contains__(self, item):\n\t${7:pass}",
+    "description": "methods for emulating a container type"
+  },
+  "context": {
+    "prefix": "context",
+    "body": "def get_context_data(self, **kwargs):\n\tkwargs['extra_context'] = ${1:'New Value'}\n\treturn super(${2:CLASS_NAME}, self).get_context_data(**kwargs)",
+    "description": "get_context_data view method"
+  },
+  "attr": {
+    "prefix": "attr",
+    "body": "def __getattr__(self, name):\n\t${1:pass}\n\ndef __setattr__(self, name, value):\n\t${2:pass}\n\ndef __delattr__(self, name):\n\t${3:pass}",
+    "description": "methods for customizing attribute access"
+  },
+  "desc": {
+    "prefix": "desc",
+    "body": "def __get__(self, instance, owner):\n\t${1:pass}\n\ndef __set__(self, instance, value):\n\t${2:pass}\n\ndef __delete__(self, instance):\n\t${3:pass}",
+    "description": "methods implementing descriptors"
+  },
+  "cmp": {
+    "prefix": "cmp",
+    "body": "def __eq__(self, other):\n\t${1:pass}\n\ndef __ne__(self, other):\n\t${2:pass}\n\ndef __lt__(self, other):\n\t${3:pass}\n\ndef __le__(self, other):\n\t${4:pass}\n\ndef __gt__(self, other):\n\t${5:pass}\n\ndef __ge__(self, other):\n\t${6:pass}\n\ndef __cmp__(self, other):\n\t${7:pass}",
+    "description": "methods implementing rich comparison"
+  },
+  "repr": {
+    "prefix": "repr",
+    "body": "def __repr__(self):\n\t${1:pass}\n\ndef __str__(self):\n\t${2:pass}\n\ndef __unicode__(self):\n\t${3:pass}",
+    "description": "methods implementing string representation"
+  },
+  "numeric": {
+    "prefix": "numeric",
+    "body": "def __add__(self, other):\n\t${1:pass}\n\ndef __sub__(self, other):\n\t${2:pass}\n\ndef __mul__(self, other):\n\t${3:pass}\n\ndef __div__(self, other):\n\t${4:pass}\n\ndef __truediv__(self, other):\n\t${5:pass}\n\ndef __floordiv__(self, other):\n\t${6:pass}\n\n\ndef __mod__(self, other):\n\t${7:pass}\n\ndef __divmod__(self, other):\n\t${8:pass}\n\ndef __pow__(self, other):\n\t${9:pass}\n\n\ndef __lshift__(self, other):\n\t${10:pass}\n\ndef __rshift__(self, other):\n\t${11:pass}\n\ndef __and__(self, other):\n\t${12:pass}\n\ndef __xor__(self, other):\n\t${13:pass}\n\ndef __or__(self, other):\n\t${14:pass}\n\n\ndef __neg__(self):\n\t${15:pass}\n\ndef __pos__(self):\n\t${16:pass}\n\ndef __abs__(self):\n\t${17:pass}\n\ndef __invert__(self):\n\t${18:pass}\n\n\ndef __complex__(self):\n\t${19:pass}\n\ndef __int__(self):\n\t${20:pass}\n\ndef __long__(self):\n\t${21:pass}\n\ndef __float__(self):\n\t${22:pass}\n\n\ndef __oct__(self):\n\t${22:pass}\n\ndef __hex__(self):\n\t${23:pass}\n\n\ndef __index__(self):\n\t${24:pass}\n\ndef __coerce__(self, other):\n\t${25:pass}",
+    "description": "methods for emulating a numeric type"
+  },
+  "deff": {
+    "prefix": "deff",
+    "body": "def ${1:fname}(`!p snip.rv = \"self, \" if snip.indent else \"\"`$2):\n\t$0",
+    "description": "function or class method"
+  },
+  "def": {
+    "prefix": "def",
+    "body": "def ${1:function}(`!p\nif snip.indent:\n\tsnip.rv = 'self' + (\", \" if len(t[2]) else \"\")`${2:arg1}):\n\t`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p\nwrite_function_docstring(t, snip) `\n\t${5:${VISUAL:pass}}",
+    "description": "function with docstrings"
+  },
+  "defc": {
+    "prefix": "defc",
+    "body": "@classmethod\ndef ${1:function}(`!p\nif snip.indent:\n\tsnip.rv = 'cls' + (\", \" if len(t[2]) else \"\")`${2:arg1}):\n\t`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p\nwrite_function_docstring(t, snip) `\n\t${5:${VISUAL:pass}}",
+    "description": "class method with docstrings"
+  },
+  "defs": {
+    "prefix": "defs",
+    "body": "@staticmethod\ndef ${1:function}(${2:arg1}):\n\t`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p\nwrite_function_docstring(t, snip) `\n\t${5:${VISUAL:pass}}",
+    "description": "static method with docstrings"
+  },
+  "from": {
+    "prefix": "from",
+    "body": "from ${1:module} import ${2:Stuff}",
+    "description": "from module import name"
+  },
+  "roprop": {
+    "prefix": "roprop",
+    "body": "@property\ndef ${1:name}(self):\n\t${2:return self._$1}$0",
+    "description": "Read Only Property"
+  },
+  "rwprop": {
+    "prefix": "rwprop",
+    "body": "def ${1:name}():\n\t`!p snip.rv = triple_quotes(snip) if t[2] else ''\n`${2:TODO: Docstring for $1.}`!p\nif t[2]:\n\tsnip >> 1\n\tstyle = get_style(snip)\n\tsnip.rv += '\\n' + snip.mkline('', indent='')\n\tsnip += format_return(style)\n\tsnip.rv += '\\n' + snip.mkline('', indent='')\n\tsnip += triple_quotes(snip)\nelse:\n\tsnip.rv = \"\"`\n\tdef fget(self):\n\t\treturn self._$1$0\n\n\tdef fset(self, value):\n\t\tself._$1 = value\n\treturn locals()\n\n$1 = property(**$1(), doc=$1.__doc__)",
+    "description": "Read write property"
+  },
+  "if": {
+    "prefix": "if",
+    "body": "if ${1:condition}:\n\t${2:${VISUAL:pass}}",
+    "description": "If"
+  },
+  "ife": {
+    "prefix": "ife",
+    "body": "if ${1:condition}:\n\t${2:${VISUAL:pass}}\nelse:\n\t${3:pass}",
+    "description": "If / Else"
+  },
+  "ifee": {
+    "prefix": "ifee",
+    "body": "if ${1:condition}:\n\t${2:${VISUAL:pass}}\nelif ${3:condition}:\n\t${4:pass}\nelse:\n\t${5:pass}",
+    "description": "If / Elif / Else"
+  },
+  "try": {
+    "prefix": "try",
+    "body": "try:\n\t${1:${VISUAL:pass}}\nexcept ${2:Exception} as ${3:e}:\n\t${4:raise $3}",
+    "description": "Try / Except"
+  },
+  "trye": {
+    "prefix": "trye",
+    "body": "try:\n\t${1:${VISUAL:pass}}\nexcept ${2:Exception} as ${3:e}:\n\t${4:raise $3}\nelse:\n\t${5:pass}",
+    "description": "Try / Except / Else"
+  },
+  "tryf": {
+    "prefix": "tryf",
+    "body": "try:\n\t${1:${VISUAL:pass}}\nexcept ${2:Exception} as ${3:e}:\n\t${4:raise $3}\nfinally:\n\t${5:pass}",
+    "description": "Try / Except / Finally"
+  },
+  "tryef": {
+    "prefix": "tryef",
+    "body": "try:\n\t${1:${VISUAL:pass}}\nexcept${2: ${3:Exception} as ${4:e}}:\n\t${5:raise}\nelse:\n\t${6:pass}\nfinally:\n\t${7:pass}",
+    "description": "Try / Except / Else / Finally"
+  },
+  "ae": {
+    "prefix": "ae",
+    "body": "self.assertEqual(${1:${VISUAL:first}}, ${2:second})",
+    "description": "Assert equal"
+  },
+  "at": {
+    "prefix": "at",
+    "body": "self.assertTrue(${1:${VISUAL:expression}})",
+    "description": "Assert True"
+  },
+  "af": {
+    "prefix": "af",
+    "body": "self.assertFalse(${1:${VISUAL:expression}})",
+    "description": "Assert False"
+  },
+  "aae": {
+    "prefix": "aae",
+    "body": "self.assertAlmostEqual(${1:${VISUAL:first}}, ${2:second})",
+    "description": "Assert almost equal"
+  },
+  "ar": {
+    "prefix": "ar",
+    "body": "self.assertRaises(${1:exception}, ${2:${VISUAL:func}}${3/.+/, /}${3:arguments})",
+    "description": "Assert raises"
+  },
+  "an": {
+    "prefix": "an",
+    "body": "self.assertIsNone(${1:${VISUAL:expression}})",
+    "description": "Assert is None"
+  },
+  "ann": {
+    "prefix": "ann",
+    "body": "self.assertIsNotNone(${1:${VISUAL:expression}})",
+    "description": "Assert is not None"
+  },
+  "testcase": {
+    "prefix": "testcase",
+    "body": "class Test${1:Class}(${2:unittest.TestCase}):\n\n\t`!p snip.rv = triple_quotes(snip)`${3:Test case docstring.}`!p snip.rv = triple_quotes(snip)`\n\n\tdef setUp(self):\n\t\t${4:pass}\n\n\tdef tearDown(self):\n\t\t${5:pass}\n\n\tdef test_${6:name}(self):\n\t\t${7:${VISUAL:pass}}",
+    "description": "pyunit testcase"
+  },
+  "\"": {
+    "prefix": "\"",
+    "body": "\"\"\"\n${1:${VISUAL:doc}}\n`!p triple_quotes_handle_trailing(snip, '\"')`",
+    "description": "triple quoted string (double quotes)"
+  },
+  "'": {
+    "prefix": "'",
+    "body": "'''\n${1:${VISUAL:doc}}\n`!p triple_quotes_handle_trailing(snip, \"'\")`",
+    "description": "triple quoted string (single quotes)"
+  },
+  "doc": {
+    "prefix": "doc",
+    "body": "`!p snip.rv = triple_quotes(snip)`\n${1:${VISUAL:doc}}\n`!p snip.rv = triple_quotes(snip)`",
+    "description": "doc block (triple quotes)"
+  },
+  "pmdoc": {
+    "prefix": "pmdoc",
+    "body": "# -*- coding: utf-8 -*-\n\"\"\"\n\t`!p snip.rv = get_dir_and_file_name(snip)`\n\t`!p snip.rv = '~' * len(get_dir_and_file_name(snip))`\n\n\t${1:DESCRIPTION}\n\n\t:copyright: (c) `date +%Y` by ${2:YOUR_NAME}.\n\t:license: ${3:LICENSE_NAME}, see LICENSE for more details.\n\"\"\"\n$0",
+    "description": "pocoo style module doc string"
+  },
+  "form": {
+    "prefix": "form",
+    "body": "class ${1:FORMNAME}(forms.Form):\n\n\t${2:# TODO: Define form fields here}",
+    "description": "Form"
+  },
+  "modelform": {
+    "prefix": "modelform",
+    "body": "class ${1:MODELNAME}Form(forms.ModelForm):\n\n\tclass Meta:\n\t\tmodel = $1",
+    "description": "ModelForm"
+  },
+  "fbool": {
+    "prefix": "fbool",
+    "body": "${1:FIELDNAME} = forms.BooleanField($2)",
+    "description": "BooleanField"
+  },
+  "fchar": {
+    "prefix": "fchar",
+    "body": "${1:FIELDNAME} = forms.CharField($2)",
+    "description": "CharField"
+  },
+  "fchoice": {
+    "prefix": "fchoice",
+    "body": "${1:FIELDNAME} = forms.ChoiceField($2)",
+    "description": "ChoiceField"
+  },
+  "fcombo": {
+    "prefix": "fcombo",
+    "body": "${1:FIELDNAME} = forms.ComboField($2)",
+    "description": "ComboField"
+  },
+  "fdate": {
+    "prefix": "fdate",
+    "body": "${1:FIELDNAME} = forms.DateField($2)",
+    "description": "DateField"
+  },
+  "fdatetime": {
+    "prefix": "fdatetime",
+    "body": "${1:FIELDNAME} = forms.DateTimeField($2)",
+    "description": "DateTimeField"
+  },
+  "fdecimal": {
+    "prefix": "fdecimal",
+    "body": "${1:FIELDNAME} = forms.DecimalField($2)",
+    "description": "DecimalField"
+  },
+  "fmail": {
+    "prefix": "fmail",
+    "body": "${1:FIELDNAME} = forms.EmailField($2)",
+    "description": "EmailField"
+  },
+  "ffile": {
+    "prefix": "ffile",
+    "body": "${1:FIELDNAME} = forms.FileField($2)",
+    "description": "FileField"
+  },
+  "ffilepath": {
+    "prefix": "ffilepath",
+    "body": "${1:FIELDNAME} = forms.FilePathField($2)",
+    "description": "FilePathField"
+  },
+  "ffloat": {
+    "prefix": "ffloat",
+    "body": "${1:FIELDNAME} = forms.FloatField($2)",
+    "description": "FloatField"
+  },
+  "fip": {
+    "prefix": "fip",
+    "body": "${1:FIELDNAME} = forms.IPAddressField($2)",
+    "description": "IPAddressField"
+  },
+  "fimg": {
+    "prefix": "fimg",
+    "body": "${1:FIELDNAME} = forms.ImageField($2)",
+    "description": "ImageField"
+  },
+  "fint": {
+    "prefix": "fint",
+    "body": "${1:FIELDNAME} = forms.IntegerField($2)",
+    "description": "IntegerField"
+  },
+  "fmochoice": {
+    "prefix": "fmochoice",
+    "body": "${1:FIELDNAME} = forms.ModelChoiceField($2)",
+    "description": "ModelChoiceField"
+  },
+  "fmomuchoice": {
+    "prefix": "fmomuchoice",
+    "body": "${1:FIELDNAME} = forms.ModelMultipleChoiceField($2)",
+    "description": "ModelMultipleChoiceField"
+  },
+  "fmuval": {
+    "prefix": "fmuval",
+    "body": "${1:FIELDNAME} = forms.MultiValueField($2)",
+    "description": "MultiValueField"
+  },
+  "fmuchoice": {
+    "prefix": "fmuchoice",
+    "body": "${1:FIELDNAME} = forms.MultipleChoiceField($2)",
+    "description": "MultipleChoiceField"
+  },
+  "fnullbool": {
+    "prefix": "fnullbool",
+    "body": "${1:FIELDNAME} = forms.NullBooleanField($2)",
+    "description": "NullBooleanField"
+  },
+  "freg": {
+    "prefix": "freg",
+    "body": "${1:FIELDNAME} = forms.RegexField($2)",
+    "description": "RegexField"
+  },
+  "fslug": {
+    "prefix": "fslug",
+    "body": "${1:FIELDNAME} = forms.SlugField($2)",
+    "description": "SlugField"
+  },
+  "fsdatetime": {
+    "prefix": "fsdatetime",
+    "body": "${1:FIELDNAME} = forms.SplitDateTimeField($2)",
+    "description": "SplitDateTimeField"
+  },
+  "ftime": {
+    "prefix": "ftime",
+    "body": "${1:FIELDNAME} = forms.TimeField($2)",
+    "description": "TimeField"
+  },
+  "ftchoice": {
+    "prefix": "ftchoice",
+    "body": "${1:FIELDNAME} = forms.TypedChoiceField($2)",
+    "description": "TypedChoiceField"
+  },
+  "ftmuchoice": {
+    "prefix": "ftmuchoice",
+    "body": "${1:FIELDNAME} = forms.TypedMultipleChoiceField($2)",
+    "description": "TypedMultipleChoiceField"
+  },
+  "furl": {
+    "prefix": "furl",
+    "body": "${1:FIELDNAME} = forms.URLField($2)",
+    "description": "URLField"
+  },
+  "model": {
+    "prefix": "model",
+    "body": "class ${1:MODELNAME}(models.Model):\n\t$0\n\tclass Meta:\n\t\tverbose_name = \"$1\"\n\t\tverbose_name_plural = \"$1s\"\n\n\tdef __str__(self):\n\t\treturn super($1, self).__str__()\n",
+    "scope": "source.python",
+    "description": "Model"
+  },
+  "modelfull": {
+    "prefix": "modelfull",
+    "body": "class ${1:MODELNAME}(models.Model):\n\t${2:# TODO: Define fields here}\n\n\tclass Meta:\n\t\tverbose_name = \"$1\"\n\t\tverbose_name_plural = \"$1s\"\n\n\tdef __str__(self):\n\t\treturn super($1, self).__str__()\n\n\tdef save(self):\n\t\treturn super($1, self).save()\n\n\tdef get_absolute_url(self):\n\t\treturn ('')\n\n\t${3:# TODO: Define custom methods here}\n",
+    "scope": "source.python",
+    "description": "Model"
+  },
+  "mauto": {
+    "prefix": "mauto",
+    "body": "${1:FIELDNAME} = models.AutoField($2)",
+    "scope": "source.python",
+    "description": "AutoField"
+  },
+  "mbigint": {
+    "prefix": "mbigint",
+    "body": "${1:FIELDNAME} = models.BigIntegerField($2)",
+    "scope": "source.python",
+    "description": "BigIntegerField"
+  },
+  "mbool": {
+    "prefix": "mbool",
+    "body": "${1:FIELDNAME} = models.BooleanField($2)",
+    "scope": "source.python",
+    "description": "BooleanField"
+  },
+  "mchar": {
+    "prefix": "mchar",
+    "body": "${1:FIELDNAME} = models.CharField(max_length=${2:50})",
+    "scope": "source.python",
+    "description": "CharField"
+  },
+  "mcoseint": {
+    "prefix": "mcoseint",
+    "body": "${1:FIELDNAME} = models.CommaSeparatedIntegerField($2)",
+    "scope": "source.python",
+    "description": "CommaSeparatedIntegerField"
+  },
+  "mdate": {
+    "prefix": "mdate",
+    "body": "${1:FIELDNAME} = models.DateField($2)",
+    "scope": "source.python",
+    "description": "DateField"
+  },
+  "mdatetime": {
+    "prefix": "mdatetime",
+    "body": "${1:FIELDNAME} = models.DateTimeField($2)",
+    "scope": "source.python",
+    "description": "DateTimeField"
+  },
+  "mdecimal": {
+    "prefix": "mdecimal",
+    "body": "${1:FIELDNAME} = models.DecimalField(max_digits=${2:10}, decimal_places=${3:2})",
+    "scope": "source.python",
+    "description": "DecimalField"
+  },
+  "memail": {
+    "prefix": "memail",
+    "body": "${1:FIELDNAME} = models.EmailField($2)",
+    "scope": "source.python",
+    "description": "EmailField"
+  },
+  "mfile": {
+    "prefix": "mfile",
+    "body": "${1:FIELDNAME} = models.FileField($2)",
+    "scope": "source.python",
+    "description": "FileField"
+  },
+  "mfilepath": {
+    "prefix": "mfilepath",
+    "body": "${1:FIELDNAME} = models.FilePathField($2)",
+    "scope": "source.python",
+    "description": "FilePathField"
+  },
+  "mfloat": {
+    "prefix": "mfloat",
+    "body": "${1:FIELDNAME} = models.FloatField($2)",
+    "scope": "source.python",
+    "description": "FloatField"
+  },
+  "fk": {
+    "prefix": "fk",
+    "body": "${1:FIELDNAME} = models.ForeignKey($2)",
+    "scope": "source.python",
+    "description": "ForeignKey"
+  },
+  "mip": {
+    "prefix": "mip",
+    "body": "${1:FIELDNAME} = models.IPAddressField($2)",
+    "scope": "source.python",
+    "description": "IPAddressField"
+  },
+  "mimg": {
+    "prefix": "mimg",
+    "body": "${1:FIELDNAME} = models.ImageField($2)",
+    "scope": "source.python",
+    "description": "ImageField"
+  },
+  "mint": {
+    "prefix": "mint",
+    "body": "${1:FIELDNAME} = models.IntegerField($2)",
+    "scope": "source.python",
+    "description": "IntegerField"
+  },
+  "m2m": {
+    "prefix": "m2m",
+    "body": "${1:FIELDNAME} = models.ManyToManyField($2)",
+    "scope": "source.python",
+    "description": "ManyToManyField"
+  },
+  "mnullbool": {
+    "prefix": "mnullbool",
+    "body": "${1:FIELDNAME} = models.NullBooleanField($2)",
+    "scope": "source.python",
+    "description": "NullBooleanField"
+  },
+  "o2o": {
+    "prefix": "o2o",
+    "body": "${1:FIELDNAME} = models.OneToOneField($2)",
+    "scope": "source.python",
+    "description": "OneToOneField"
+  },
+  "mphone": {
+    "prefix": "mphone",
+    "body": "${1:FIELDNAME} = models.PhoneNumberField($2)",
+    "scope": "source.python",
+    "description": "PhoneNumberField"
+  },
+  "mposint": {
+    "prefix": "mposint",
+    "body": "${1:FIELDNAME} = models.PositiveIntegerField($2)",
+    "scope": "source.python",
+    "description": "PositiveIntegerField"
+  },
+  "mpossmallint": {
+    "prefix": "mpossmallint",
+    "body": "${1:FIELDNAME} = models.PositiveSmallIntegerField($2)",
+    "scope": "source.python",
+    "description": "PositiveSmallIntegerField"
+  },
+  "mslug": {
+    "prefix": "mslug",
+    "body": "${1:FIELDNAME} = models.SlugField($2)",
+    "scope": "source.python",
+    "description": "SlugField"
+  },
+  "msmallint": {
+    "prefix": "msmallint",
+    "body": "${1:FIELDNAME} = models.SmallIntegerField($2)",
+    "scope": "source.python",
+    "description": "SmallIntegerField"
+  },
+  "mtext": {
+    "prefix": "mtext",
+    "body": "${1:FIELDNAME} = models.TextField($2)",
+    "scope": "source.python",
+    "description": "TextField"
+  },
+  "mtime": {
+    "prefix": "mtime",
+    "body": "${1:FIELDNAME} = models.TimeField($2)",
+    "scope": "source.python",
+    "description": "TimeField"
+  },
+  "murl": {
+    "prefix": "murl",
+    "body": "${1:FIELDNAME} = models.URLField($2)",
+    "scope": "source.python",
+    "description": "URLField"
+  },
+  "musstate": {
+    "prefix": "musstate",
+    "body": "${1:FIELDNAME} = models.USStateField($2)",
+    "scope": "source.python",
+    "description": "USStateField"
+  },
+  "mxml": {
+    "prefix": "mxml",
+    "body": "${1:FIELDNAME} = models.XMLField($2)",
+    "scope": "source.python",
+    "description": "XMLField"
+  },
+  "adminview": {
+    "prefix": "adminview",
+    "body": "class $1Admin(admin.ModelAdmin):\n\t'''\n\t\tAdmin View for $1\n\t'''\n\tlist_display = ('$2',)\n\tlist_filter = ('$3',)\n\tinlines = [\n\t\t$4Inline,\n\t]\n\traw_id_fields = ('$5',)\n\treadonly_fields = ('$6',)\n\tsearch_fields = ['$7']\nadmin.site.register($1, $1Admin)",
+    "scope": "source.python",
+    "description": "Model Admin View"
+  },
+  "createview": {
+    "prefix": "createview",
+    "body": "class ${1:MODEL_NAME}CreateView(CreateView):\n\tmodel = $1\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"",
+    "description": "Generic Create View"
+  },
+  "deleteview": {
+    "prefix": "deleteview",
+    "body": "class ${1:MODEL_NAME}DeleteView(DeleteView):\n\tmodel = $1\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"",
+    "description": "Generic Delete View"
+  },
+  "detailview": {
+    "prefix": "detailview",
+    "body": "class ${1:MODEL_NAME}DetailView(DetailView):\n\tmodel = $1\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"",
+    "description": "Generic Detail View"
+  },
+  "listview": {
+    "prefix": "listview",
+    "body": "class ${1:MODEL_NAME}ListView(ListView):\n\tmodel = $1\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"",
+    "description": "Generic List View"
+  },
+  "dj-listview": {
+    "prefix": "dj-listview",
+    "body": "class ${1:MODEL_NAME}ListView(ListView):\n\tmodel = $1\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"\n\n\tdef get_context_data(self, **kwargs):\n\t\t\tcontext = super().get_context_data(**kwargs)\n\t\t\treturn context",
+    "description": "Django List View"
+  },
+  "stackedinline": {
+    "prefix": "stackedinline",
+    "body": "class $1Inline(admin.StackedInline):\n\t'''\n\tStacked Inline View for $1\n\t'''\n\tmodel = ${2:$1}\n\tmin_num = ${3:3}\n\tmax_num = ${4:20}\n\textra = ${5:1}\n\traw_id_fields = ($6,)",
+    "description": "Stacked Inline"
+  },
+  "tabularinline": {
+    "prefix": "tabularinline",
+    "body": "class $1Inline(admin.TabularInline):\n\t'''\n\tTabular Inline View for $1\n\t'''\n\tmodel = ${2:$1}\n\tmin_num = ${3:3}\n\tmax_num = ${4:20}\n\textra = ${5:1}\n\traw_id_fields = ($6,)",
+    "description": "Tabular Inline"
+  },
+  "templateview": {
+    "prefix": "templateview",
+    "body": "class ${1:CLASS_NAME}(TemplateView):\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"",
+    "description": "Generic Template View"
+  },
+  "updateview": {
+    "prefix": "updateview",
+    "body": "class ${1:MODEL_NAME}UpdateView(UpdateView):\n\tmodel = $1\n\ttemplate_name = \"${2:TEMPLATE_NAME}\"",
+    "description": "Generic Update View"
+  },
+  "dispatch": {
+    "prefix": "dispatch",
+    "body": "def dispatch(self, request, *args, **kwargs):\n\treturn super(${1:CLASS_NAME}, self).dispatch(request, *args, **kwargs)",
+    "description": "Dispatch View method"
+  }
+}

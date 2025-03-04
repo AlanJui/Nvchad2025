@@ -1,0 +1,43 @@
+{
+  "name": "ccc-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "markdown",
+        "path": "./markdown.json"
+      },
+      {
+        "language": "html",
+        "path": "./html.json"
+      },
+      {
+        "language": "htmldjango",
+        "path": "./htmldjango.json"
+      },
+      {
+        "language": "lua",
+        "path": "./lua.json"
+      },
+      {
+        "language": "python",
+        "path": "./python.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets.json"
+      },
+      {
+        "path": "./snippets.json",
+        "language": "typescriptreact"
+      }
+    ]
+  }
+}

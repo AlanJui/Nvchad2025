@@ -1,0 +1,89 @@
+{
+  "doctype": {
+    "prefix": "doctype",
+    "body": [
+      "<!DOCTYPE>",
+      "$1"
+    ],
+    "description": "HTML - Defines the document type",
+    "scope": "text.html"
+  },
+  "myCommentLine": {
+    "prefix": "myCommentLine",
+    "body": ["{# comment-out a line #}"],
+    "description": "comment out single line"
+  },
+  "myComment": {
+    "prefix": "myComment",
+    "body": [
+      "{% block comment \"Optional note\" %}",
+      "$1",
+      "{% endcomment %}"
+    ],
+    "description": "block comment"
+  },
+  "myExtends": {
+    "prefix": "myExtends",
+    "body": ["{% extends \"base.html\" %}"],
+    "description": "extends layout"
+  },
+  "myTitle": {
+    "prefix": "myTitle",
+    "body": ["{% block title %}{% endblock %}"],
+    "description": "block title"
+  },
+  "myLabel": {
+    "prefix": "myLabel",
+    "body": [
+      "<label for=\"\" class=\"col-md-5 control-label\" >",
+      "\t${1:LABEL}",
+      "</label>"
+    ]
+  },
+  "myFormGroup": {
+    "prefix": "myFormGroup",
+    "body": [
+      "<div class=\"form-group\">",
+      "  $1",
+      "</div>"
+    ],
+    "description": "block content"
+  },
+  "myDivID": {
+    "prefix": "myDivID",
+    "body": [
+      "<div id=\"$1\">",
+      "  $2",
+      "</div>"
+    ],
+    "description": "div with ID"
+  },
+  "myDivClass": {
+    "prefix": "myDivClass",
+    "body": [
+      "<div class=\"$1\">",
+      "  $2",
+      "</div>"
+    ],
+    "description": "div with class"
+  },
+  "myLinkHref": {
+    "prefix": "myLinkHref",
+    "body": ["<link rel=\"stylesheet\" href=\"$1\">"],
+    "description": "stylesheet link ref"
+  },
+  "myScriptSrc": {
+    "prefix": "myScriptSrc",
+    "body": ["<script src=\"$1\"></script>"],
+    "description": "script source"
+  },
+  "myform": {
+    "prefix": "myform",
+    "body": [
+      "<form method=\"$1\">",
+      "  $2",
+      "</form>"
+    ],
+    "description": "My form for myango Template"
+  }
+}

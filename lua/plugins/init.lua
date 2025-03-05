@@ -1,4 +1,8 @@
 return {
+  -- disable a default nvchad plugin
+  -- { "folke/which-key.nvim",  enabled = false },
+  { "folke/which-key.nvim",  lazy = false },
+
   {
     "stevearc/conform.nvim",
     -- event = 'BufWritePre', -- uncomment for format on save

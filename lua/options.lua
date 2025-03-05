@@ -14,6 +14,9 @@ require "nvchad.options"
 -- 判斷作業系統 (Windows vs. Unix-like)
 local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
 
+-------------------------------------------------
+-- 設定 Provider
+-------------------------------------------------
 if is_win then
   -- Windows 環境的設定
   -- 請確認檔案路徑中使用「\\」做跳脫，或使用正斜線 "/"
@@ -94,14 +97,14 @@ if is_win then
   -- ]]
   -- WSL Support on PowerShell
   vim.g.clipboard = {
-    name = 'WslClipboard',
+    name = "WslClipboard",
     copy = {
-      ['+'] = 'clip.exe',
-      ['*'] = 'clip.exe',
+      ["+"] = "clip.exe",
+      ["*"] = "clip.exe",
     },
     paste = {
-      ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-      ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
     },
     cache_enabled = 0,
   }
@@ -109,3 +112,56 @@ else
   -- Linux
   vim.o.clipboard = "unnamedplus"
 end
+
+-------------------------------------------------
+-- 自動停用拼字檢查
+-------------------------------------------------
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = { "markdown", "terminal" },
+--   callback = function()
+--     vim.opt_local.spell = false
+--   end,
+-- })
+-- 預設：拼字檢查關閉
+vim.opt.spell = false
+
+-- 若要特定檔案類型才啟用拼字檢查，可以用 autocmd
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text" },
+  callback = function()
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = { "en", "cjk" } -- 或 "en,cjk"
+  end,
+})
+
+-------------------------------------------------
+-- 自訂拼字典
+-- 開啟拼字檢查： :set spell
+-- 關閉拼字檢查： :set nospell
+-- 切換拼字檢查： :set spell!
+-- 切換拼字檢查： :set spelllang=en,cjk
+-- 切換拼字檢查： :set spelllang=en
+-- 字典檔案路徑： ~/.config/nvim/spell/en.utf-8.add
+-- 在字典加字： :spellgood filetype, isort, black, djlint
+-------------------------------------------------
+vim.opt.spelllang = { "en", "cjk" } -- 只檢查英文
+-- 透過環境變數取得家目錄
+local home_dir = os.getenv "HOME" or os.getenv "USERPROFILE"
+
+-- 自訂拼字檔最終路徑
+local custom_spellfile = ""
+
+if is_win then
+  -- Windows 的拼字檔放在 C:\Users\<使用者>\AppData\Local\nvim\spell\
+  -- 你也可以直接寫死完整路徑
+  custom_spellfile = home_dir .. "\\AppData\\Local\\nvim\\spell\\en.utf-8.add"
+else
+  -- Linux/macOS 則放 ~/.config/nvim/spell/en.utf-8.add
+  custom_spellfile = home_dir .. "/.config/nvim/spell/en.utf-8.add"
+end
+
+-- 如果路徑中使用正斜線也能在 Windows 運行，Neovim 通常能識別
+-- 但保險起見，Windows 上用 "\\"（跳脫的反斜線）較為穩定
+
+-- 設定 Neovim 讀取這個拼字檔
+vim.opt.spellfile = { vim.fn.expand(custom_spellfile) }

@@ -42,10 +42,9 @@ return {
       end, 0)
     end,
   },
-  
+
   {
     "mfussenegger/nvim-lint",
     event = { "BufReadPre", "BufNewFile" },
   },
-
 }

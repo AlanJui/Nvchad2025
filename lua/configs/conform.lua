@@ -5,17 +5,16 @@ local options = {
     lua = { "stylua" },
     css = { "prettier" },
     html = { "prettier" },
-    javascript = { { "prettierd", "prettier" } },
-    typescript = { { "prettierd", "prettier" } },
-    javascriptreact = { { "prettierd", "prettier" } },
-    typescriptreact = { { "prettierd", "prettier" } },
-    json = { { "prettierd", "prettier" } },
-    jsonc = { { "prettierd", "prettier" } },
+    javascript = { "prettier" },
+    typescript = { "prettier" },
+    javascriptreact = { "prettier" },
+    typescriptreact = { "prettier" },
+    json = { "prettier" },
+    jsonc = { "prettier" },
     yaml = { "prettier" },
     markdown = { "prettier" },
     graphql = { "prettier" },
     svelte = { "prettier" },
-    sh = { "shfmt" },
     -- python = { "isort", "black", "djlint" },
     python = function(bufnr)
       if conform.get_formatter_info("ruff_format", bufnr).available then
@@ -25,8 +24,6 @@ local options = {
       end
     end,
 
-    -- Use the "*" filetype to run formatters on all filetypes.
-    ["*"] = { "codespell" },
     -- Use the "_" filetype to run formatters on filetypes that don't
     -- have other formatters configured.
     ["_"] = { "trim_whitespace" },

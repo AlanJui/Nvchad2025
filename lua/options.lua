@@ -56,7 +56,11 @@ else
   end
 end
 -- using with vscode extensions. i.e ~/.vscode/extensions/deinsoftware.vitest-snippets-1.8.0
-vim.g.vscode_snippets_path = "C:/Users/AlanJui/AppData/Local/nvim/my_snippets"
+if is_win then
+  vim.g.vscode_snippets_path = "C:/Users/AlanJui/AppData/Local/nvim/my_snippets"
+else
+  vim.g.vscode_snippets_path = vim.fn.stdpath "config" .. "/my_snippets"
+end
 
 -------------------------------------------------
 -- 個人設定

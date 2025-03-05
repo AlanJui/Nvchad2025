@@ -89,22 +89,22 @@ opt.shiftwidth = 2
 -- 設置剪貼板
 -------------------------------------------------
 if is_win then
+  -- vim.cmd [[
+  --   set clipboard+=unnamedplus
+  -- ]]
   -- WSL Support on PowerShell
-  -- vim.g.clipboard = {
-  --   name = 'WslClipboard',
-  --   copy = {
-  --     ['+'] = 'clip.exe',
-  --     ['*'] = 'clip.exe',
-  --   },
-  --   paste = {
-  --     ['+'] = 'pwsh.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  --     ['*'] = 'pwsh.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  --   },
-  --   cache_enabled = 0,
-  -- }
-  vim.cmd [[
-    set clipboard+=unnamedplus
-  ]]
+  vim.g.clipboard = {
+    name = 'WslClipboard',
+    copy = {
+      ['+'] = 'clip.exe',
+      ['*'] = 'clip.exe',
+    },
+    paste = {
+      ['+'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      ['*'] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    },
+    cache_enabled = 0,
+  }
 else
   -- Linux
   vim.o.clipboard = "unnamedplus"

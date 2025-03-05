@@ -4,6 +4,7 @@ local servers = {
   cssls = {},
   vuels = {},
   tailwindcss = {},
+  marksman = {},
   ts_ls = {},
   lua_ls = {
     settings = {
@@ -43,12 +44,6 @@ local servers = {
           -- ["/path/from/root/of/project"] = "/.github/workflows/*",
         },
       },
-    },
-  },
-  marksman = {
-    filetypes = {
-      "markdown",
-      "markdown.mdx",
     },
   },
   html = {

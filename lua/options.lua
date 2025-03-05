@@ -52,13 +52,6 @@ else
     vim.g.node_host_prog = node_linux
   end
 end
--------------------------------------------------
--- 設置剪貼板
--------------------------------------------------
-vim.cmd [[
-  set clipboard+=unnamedplus
-]]
-
 -- using with vscode extensions. i.e ~/.vscode/extensions/deinsoftware.vitest-snippets-1.8.0
 vim.g.vscode_snippets_path = "C:/Users/AlanJui/AppData/Local/nvim/my_snippets"
 
@@ -92,8 +85,27 @@ opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2
 
--- System Clipboard support
--- vim.cmd [[
---   set clipboard+=unnamedplus
--- ]]
-vim.o.clipboard = "unnamedplus"
+-------------------------------------------------
+-- 設置剪貼板
+-------------------------------------------------
+if is_win then
+  -- WSL Support on PowerShell
+  vim.g.clipboard = {
+    name = 'WslClipboard',
+    copy = {
+      ['+'] = 'clip.exe',
+      ['*'] = 'clip.exe',
+    },
+    paste = {
+      ['+'] = 'pwsh.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+      ['*'] = 'pwsh.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    },
+    cache_enabled = 0,
+  }
+else
+  -- Linux
+  -- vim.cmd [[
+  --   set clipboard+=unnamedplus
+  -- ]]
+  vim.o.clipboard = "unnamedplus"
+end

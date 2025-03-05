@@ -203,8 +203,7 @@ return {
     },
     config = function()
       -- Setup DAP Environment
-      -- local icons = require("config.icons").icons
-      local icons = require "config.icons"
+      local icons = require "configs.icons"
       vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 
       for name, sign in pairs(icons.dap) do

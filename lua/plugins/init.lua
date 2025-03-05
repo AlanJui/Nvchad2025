@@ -1,7 +1,7 @@
 return {
   -- disable a default nvchad plugin
   -- { "folke/which-key.nvim",  enabled = false },
-  { "folke/which-key.nvim",  lazy = false },
+  { "folke/which-key.nvim", lazy = false },
 
   {
     "stevearc/conform.nvim",
@@ -28,6 +28,24 @@ return {
         "css",
       },
     },
+  },
+
+  {
+    "NvChad/nvim-colorizer.lua",
+    event = "User FilePost",
+    config = function(_, opts)
+      require("colorizer").setup(opts)
+
+      -- execute colorizer as soon as possible
+      vim.defer_fn(function()
+        require("colorizer").attach_to_buffer(0)
+      end, 0)
+    end,
+  },
+  
+  {
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
   },
 
 }

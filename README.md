@@ -7,6 +7,7 @@ NvChad 自 V2.5 起，變更了原先客製化環境的規格。原先的 lua/cu
 1. 備妥【安裝前置條件】
 2. 安裝 Neovim App
 3. 安裝 NvChad 插件
+4. 安裝 Nvchad2025 客製化範本
 
 ## 安裝前置條件
 
@@ -136,7 +137,7 @@ nvim
 
 目錄： C:\Users\<UserName>\AppData\Local\nvim-data 等同 Linux 的 ~/.local/share/nvim/ 。
 
-## 安裝 Nvchad2025
+## 安裝 Nvchad2025 客製化範本
 
 Nvchad2025 即本專案所建置的 NvChad 2.5 參考範本！
 

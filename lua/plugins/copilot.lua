@@ -1,15 +1,24 @@
 -- AI auto-completion
 return {
   {
+    "AndreM222/copilot-lualine",
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function()
+      require("copilot_cmp").setup()
+    end,
+  },
+  {
     "zbirenbaum/copilot.lua",
     -- enabled = false,
     cmd = "Copilot",
     event = "InsertEnter",
     build = ":Copilot auth",
     config = function()
-      require("copilot").setup({
+      require("copilot").setup {
         panel = {
-          enabled = true,
+          -- enabled = true,
           auto_refresh = true,
           keymap = {
             jump_prev = "[[",
@@ -19,14 +28,14 @@ return {
             open = "<M-CR>",
           },
           layout = {
-            position = "bottom", -- | top | left | right
-            ratio = 0.4,
+            position = "right", -- | top | bottom | left | right
+            ratio = 0.3,
           },
         },
         suggestion = {
-          enabled = true,
+          -- enabled = true,
+          -- debounce = 75,
           auto_trigger = true,
-          debounce = 75,
           keymap = {
             accept = "<C-]>",
             accept_word = "<C-Right>",
@@ -37,8 +46,8 @@ return {
           },
         },
         filetypes = {
-          yaml = false,
-          markdown = false,
+          -- markdown = false,
+          yaml = true,
           help = false,
           gitcommit = false,
           gitrebase = false,
@@ -47,15 +56,9 @@ return {
           cvs = false,
           ["."] = false,
         },
-        copilot_node_command = "node", -- Node.js version must be > 18.x
-        server_opts_overrides = {},
-      })
-    end,
-  },
-  {
-    "zbirenbaum/copilot-cmp",
-    config = function()
-      require("copilot_cmp").setup()
+        -- copilot_node_command = "node", -- Node.js version must be > 18.x
+        -- server_opts_overrides = {},
+      }
     end,
   },
 }

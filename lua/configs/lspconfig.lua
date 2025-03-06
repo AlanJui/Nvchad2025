@@ -1,6 +1,14 @@
 local configs = require "nvchad.configs.lspconfig"
 
 local servers = {
+  clangd = {
+    on_attach = function(client, bufnr)
+      client.server_capabilities.signatureHelpProvider = false
+      if configs.on_attach then
+        configs.on_attach(client, bufnr)
+      end
+    end,
+  },
   cssls = {},
   vuels = {},
   tailwindcss = {},
@@ -74,9 +82,10 @@ local servers = {
   },
   lemminx = {
     filetypes = { "xml", "xsd", "xsl", "xslt", "svg" },
-  }
+  },
 }
 
+-- Nvchad 建議的 LangServer 設定方法
 for name, opts in pairs(servers) do
   opts.on_init = configs.on_init
   opts.on_attach = configs.on_attach

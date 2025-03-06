@@ -4,7 +4,11 @@ return {
     "neovim/nvim-lspconfig",
   },
   cmd = {
-    "Mason", "MasonInstall", "MasonUpdate", "MasonUninstallAll", "MasonLog",
+    "Mason",
+    "MasonInstall",
+    "MasonUpdate",
+    "MasonUninstallAll",
+    "MasonLog",
   },
   config = function()
     -- enable mason and configure icons
@@ -15,6 +19,11 @@ return {
         -- "pyright", -- Python LSP Server
         -- "pylint", -- Linter
         -- "ruff-lsp", -- Python LSP Server
+        "clangd",
+        "gopls",
+        "rust-analyzer",
+        "codelldb", -- C/C++ DAP
+        "clang-format", -- Formatter
         "python-lsp-server", -- Python LSP Server
         "debugpy", -- python
         "black", -- Formatter
@@ -42,10 +51,6 @@ return {
         "marksman", -- Markdown LSP Server
         "markdownlint", -- Markdown Linter
         "dockerfile-language-server", -- Docker LSP Server
-        "rust-analyzer", -- Rust LSP Server
-        "clangd", -- C/C++ LSP Server
-        "codelldb", -- C/C++ DAP
-        "clang-format", -- Formatter
         "dockerfile-language-server", -- Dockerfile LSP Server
         "docker-compose-language-service", -- Docker Compose LSP Server
       },

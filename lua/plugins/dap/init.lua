@@ -1,28 +1,32 @@
 return {
+  -- 常用程式語言 DAP
+  { "jbyuki/one-small-step-for-vimkind" },
+  { "mfussenegger/nvim-dap-python" },
+  { "mxsdev/nvim-dap-vscode-js" },
+  -- 需請 mason 安裝的 DAP for Neovim
   {
-    "jbyuki/one-small-step-for-vimkind",
-    dependencies = "mfussenegger/nvim-dap",
-    lazy = false,
-    keys = {
-      {
-        "<leader>daL",
-        function()
-          require("osv").launch { port = 8086 }
-        end,
-        desc = "Start Lua Language Server",
-      },
-      {
-        "<leader>dal",
-        function()
-          require("osv").run_this()
-        end,
-        desc = "Start Lua Debugging",
-      },
+    "jay-babu/mason-nvim-dap.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
     },
     config = function()
-      -- DAP for Lua work in Neovim
-      require "plugins.dap.adapters.lua"
+      require("mason-nvim-dap").setup {
+        handers = {},
+        ensure_installed = {
+          "python",
+          "codelldb",
+          "js",
+          "stylua",
+        },
+      }
     end,
+  },
+  -- virtual text for the debugger
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    opts = {},
   },
   {
     "rcarriga/nvim-dap-ui",
@@ -51,7 +55,7 @@ return {
     config = function()
       local dap = require "dap"
       local dapui = require "dapui"
-      require("dapui").setup()
+      dapui.setup()
       dap.listeners.after.event_initialized["dapui_config"] = function()
         -- dapui.open { reset = true }
         dapui.open()
@@ -65,12 +69,33 @@ return {
     end,
   },
   {
-    "mfussenegger/nvim-dap",
-    dependencies = {
-      "jbyuki/one-small-step-for-vimkind",
-      "mfussenegger/nvim-dap-python",
-      "mxsdev/nvim-dap-vscode-js",
+    "jbyuki/one-small-step-for-vimkind",
+    dependencies = "mfussenegger/nvim-dap",
+    lazy = false,
+    keys = {
+      {
+        "<leader>daL",
+        function()
+          require("osv").launch { port = 8086 }
+        end,
+        desc = "Start Lua Language Server",
+      },
+      {
+        "<leader>dal",
+        function()
+          require("osv").run_this()
+        end,
+        desc = "Start Lua Debugging",
+      },
     },
+    config = function()
+      -- DAP for Lua work in Neovim
+      require "plugins.dap.adapters.lua"
+    end,
+  },
+  -- DAP
+  {
+    "mfussenegger/nvim-dap",
     keys = {
       {
         "<leader>dB",

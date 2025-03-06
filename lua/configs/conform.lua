@@ -2,6 +2,9 @@ local conform = require "conform"
 
 local options = {
   formatters_by_ft = {
+    ["c++"] = { "clang_format" },
+    c = { "clang_format" },
+    cpp = { "clang_format" },
     lua = { "stylua" },
     css = { "prettier" },
     html = { "prettier" },

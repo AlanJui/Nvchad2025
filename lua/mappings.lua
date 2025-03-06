@@ -25,7 +25,11 @@ local nomap = vim.keymap.del
 nomap("i", "<C-k>")
 nomap("n", "<C-k>")
 
-local keymap = vim.keymap.set
+--------------------------------------------------------------------
+-- DAP
+--------------------------------------------------------------------
+-- map("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>", { desc = "Add breakpoint at line" })
+-- map("n", "<leader>dr", "<cmd> DapContinue <CR>", { desc = "Start or continue the debugger" })
 
 --------------------------------------------------------------------
 -- Editing

@@ -35,3 +35,10 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+-------------------------------------------------
+-- 個人化設定
+-------------------------------------------------
+-- 確保 Mason 先執行 setup()
+local mason = require "mason"
+mason.setup()

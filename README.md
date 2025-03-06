@@ -1,8 +1,20 @@
 # NvChad 2.5 個人客製化指引
 
- NvChad 自 V2.5 起，變更了原先客製化環境的規格。原先的 lua/custom 作法已無效。
+NvChad 自 V2.5 起，變更了原先客製化環境的規格。原先的 lua/custom 作法已無效。
+
+以下之安裝指引，主要流程分以下四大程序：
+
+1. 備妥【安裝前置條件】
+2. 安裝 Neovim App
+3. 安裝 NvChad 插件
 
 ## 安裝前置條件
+
+為使 NvChad 能一次安裝搞定，建議在安裝 Nvchad 前最好能先安裝好這些：
+工具性軟體（如：程式碼編譯/連結工具）、作業系統層級之軟體套件（如：ripgrep 模糊搜尋）、
+圖標字型（Nerd Font）、... 。
+
+講坦白，這工作很漫長，又極其無聊，得耐著性子熬過。
 
 ### 編譯工具
 
@@ -22,6 +34,10 @@ setx CC "C:\mingw64\bin\gcc.exe"
 
 - 字型： MesloLGS Nerd Font Propo, LXGW WenKai Mono TC
 - 尺寸： 16
+
+【註】：在 NvChad 要避用字型名稱結尾有 Mono 之字型。以
+官網的舉例而言：可安裝 JetbrainsMono Nerd Font ；但卻萬萬不可
+安裝 JetbrainsMono Nerd Font Mono 字型。
 
 ### Python
 
@@ -46,7 +62,7 @@ setx CC "C:\mingw64\bin\gcc.exe"
 安裝操作：
 
 ```
-$ choco install ripgrep 
+$ choco install ripgrep
 ```
 
 驗證安裝：
@@ -68,7 +84,7 @@ PS C:\Users\AlanJui>
 - 版本：v2.4.4
 - 權限：使用【系統管理員】身份
 - 安裝路徑： C:\Users\AlanJui\AppData\Local\Temp\chocolatey\luarocks-2.4.4-win32
-C:\Users\AlanJui\AppData\Roaming\LuaRocks
+  C:\Users\AlanJui\AppData\Roaming\LuaRocks
 
 安裝操作：
 
@@ -92,24 +108,119 @@ PS C:\Users\AlanJui>
 
 "C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\luarocks.bat"
 
-
-## 安裝 Nvim
+## 安裝 Neovim App
 
 - 作業系統：Windows 11 Pro
-- Nvim: V0.10.4 
+- Nvim: V0.10.4
 - 發行版：nvim-win64.msi
 - 安裝路徑：C:\Program Files\Neovim
 
-## 安裝 NvChad 
+## 安裝 NvChad 插件
 
-使用【Windows終端機】【PowerShell介面】（不要使用【系統管理員】權限）
+NvChad 亦為 Neovim 插件，可透過【Windows終端機 + PowerShell介面】安裝。
+建議：不要使用【系統管理員】權限，來執行以下之安裝。
 
-``` 
+```sh
 git clone https://github.com/NvChad/starter $ENV:USERPROFILE\AppData\Local\nvimnvim
 nvim
 ```
 
-## 其它
+【註】：
+
+1. 一定要執行過 nvim 一次；一定要執行過 nvim 一次；一定要執行過 nvim 一次。
+   因為 NvChad 的 Starter 需要 nvim 啟動後，才能正常運作。也只有 NvChad Starter
+   執行過後，NvChad 在 Neovim 所需之執行環境才能備妥，如：在 C:\Users\<UserName>\AppData\Local\nvim-data 目錄下
+   安裝 base46 這個插件。
+
+2. 如果您與 Linux 比較熟識：
+
+目錄： C:\Users\<UserName>\AppData\Local\nvim-data 等同 Linux 的 ~/.local/share/nvim/ 。
+
+## 安裝 Nvchad2025
+
+Nvchad2025 即本專案所建置的 NvChad 2.5 參考範本！
+
+### 最簡方式（一）
+
+```sh
+PS C:\Users\AlanJui> cd C:\Users\AlanJui\AppData\Local\
+PS C:\Users\AlanJui> mv nvim nvim_bak
+PS C:\Users\AlanJui\AppData\Local> git clone https://github.com/AlanJui/Nvchad2025.git nvim
+```
+
+【註】：
+
+1. 上述 AlanJui 那是我的 <UserName> 帳號。
+
+2. 當我啟動【Windows 終端機 + Windows PowerShell】之後，自【提示符號】可知目前正位於
+   路徑為：C:\Users\AlanJui 之目錄。當我輸入【cd ~\App】之後，按 <Tab> 鍵，便會自動轉換成目錄：
+   C:\Users\AlanJui\AppData 。
+
+### NvChad 專用模式（二）
+
+這種模式適用於對 nvim 運用有特殊需求之使用者，可令同一作業系統之下，
+有兩種以上之 nvim 設定檔，譬如：想研究 LunarVim / NvChad / LazyVim
+那一種用起來比較上手；或是，當年我想學著試用 Lua Script 客製自己
+的 Nvim 作業環境，需要有確保可正常操作的 nvim ；但也需要另一可供練功、
+做試驗的 my-nvim 。
+
+1. 建置批次執行檔 nvchad.ps1
+
+個人的使用習慣，會在路徑：【C:\bin】，建置一個專放雜七雜八的各式執行檔目錄。
+同時，設作業系統層級的環境變數：Path，放入【C:\bin】這個目錄。
+
+所以，此處所述之 nvchad.ps1 批次執行檔，便是放在如下之路徑中：
+`C:\bin\nvchad.ps1` 。
+
+在 nvchad.ps1 置入如下所示之 PowerShell Script ：
+
+```sh
+$env:NVIM_APPNAME = "nvchad"
+
+if ($args.Count -eq 0) {
+    Invoke-Expression "nvim"
+} else {
+    Invoke-Expression ("nvim " + ($args -join " "))
+}
+```
+
+2. 建置便於操作的 Alias
+
+上述之 .ps1 檔，執行時指令得輸入：.\nvchad.ps1 ；經過 PowerShell Alias 的轉化，
+以後之執行指令，僅需輸入：nvchad 即可。
+
+```sh
+Set-Alias nvchad C:\bin\nvchad.ps1
+```
+
+3. 首次啟動 nvchad
+
+首次啟動很重要！首次啟動很重要！首次啟動很重要！
+
+```sh
+nvchad
+```
+
+4. 下載 Nvchad2025 之 NvChad 2.5 參考範本
+
+```sh
+PS C:\Users\AlanJui> cd C:\Users\AlanJui\AppData\Local\
+PS C:\Users\AlanJui> mv nvchad nvchad_bak
+PS C:\Users\AlanJui\AppData\Local> git clone https://github.com/AlanJui/Nvchad2025.git nvchad
+```
+
+恭禧！您走到這裡，終於可以打完收工了。我承認以上的安裝程序不算 Smart ，
+可能還有些「煩~~~」，但這也是目前我所能做到的極限。
+
+敬請特別注意，此專案最主要目的只是在示範：NvChad V2.0 升級 V2.5 後，
+想要客製自訂自用的 NvChad 該怎麼做，給出一個較完整的參考範例。故也請不要
+期待此專案之産出可 Bug Free ；甚至要求我對有問題的地方，做立即處理反應。
+
+最後，敬祝：「NvChad 2.5 使用順心、愉快！！」
+
+## 其它（參考資訊）
+
+以下資訊，為安裝過程，可能會遇到的問題；或是遇狀況需進行檢測的輔助指令。
 
 ### 更新系統環境變數
 
@@ -170,10 +281,9 @@ git clone https://github.com/tree-sitter/tree-sitter-scala.git
 【參考】：強制使用舊版 TLS 1.2 ；而不使用新版 1.3
 
 ```
-git config --global http.sslVersion tls1.2 
+git config --global http.sslVersion tls1.2
 git clone https://github.com/tree-sitter/tree-sitter-scala.git
 ```
-
 
 ### 設定 Git 使用 OpenSSL, TLS 1.2
 
@@ -190,5 +300,3 @@ git config --global http.sslVersion tls1.2
 git config --global http.sslBackend
 openssl
 ```
-
-

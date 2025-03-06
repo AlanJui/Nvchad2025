@@ -6,11 +6,11 @@ return {
     build = "cd app && yarn install",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
-      { "<leader>um", "+MarkDown" },
-      { "<leader>umP", "<cmd> MarkdownPreview<CR>", desc = "Open Preview" },
-      { "<leader>umc", "<cmd> MarkdownPreviewStop<CR>", desc = "Close Preview" },
-      { "<leader>ump", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
-      { "<leader>tm", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
+      -- { "<leader>um", "+MarkDown" },
+      { "<leader>mp", "<cmd> MarkdownPreview<CR>", desc = "Open Preview" },
+      { "<leader>mP", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
+      { "<leader>mt", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
+      { "<leader>ms", "<cmd> MarkdownPreviewStop<CR>", desc = "Close Preview" },
     },
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }

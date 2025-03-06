@@ -1,11 +1,11 @@
- -- File Manager
-return  {
+-- File Manager
+return {
   "vifm/vifm.vim",
   lazy = false,
   cmd = { "Vifm", "VifmOpen", "VifmTabOpen", "VifmSplitOpen", "VifmVsplitOpen" },
   keys = {
     {
-      "<leader>uv",
+      "<leader>fv",
       function()
         vim.cmd "Vifm"
       end,

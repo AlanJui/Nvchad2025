@@ -17,6 +17,17 @@ NvChad 自 V2.5 起，變更了原先客製化環境的規格。原先的 lua/cu
 
 講坦白，這工作很漫長，又極其無聊，得耐著性子熬過。
 
+### Nerd 字型
+
+為求操作畫面之賞心悅目，需要使用【圖示符號字型】（即：Nerd 字型）。
+
+在 NvChad 要避用字型名稱結尾有 Mono 之字型。以
+官網的舉例而言：可安裝 JetbrainsMono Nerd Font ；但卻萬萬不可
+安裝 JetbrainsMono Nerd Font Mono 字型。
+
+- 字型： MesloLGS Nerd Font Propo, LXGW WenKai Mono TC
+- 尺寸： 16
+
 ### 編譯工具
 
 需要 C 編譯器，如：cc, gcc, clang, make, cl
@@ -31,28 +42,85 @@ NvChad 自 V2.5 起，變更了原先客製化環境的規格。原先的 lua/cu
 setx CC "C:\mingw64\bin\gcc.exe"
 ```
 
-### Nerd 字型
+### Python 直譯器
 
-- 字型： MesloLGS Nerd Font Propo, LXGW WenKai Mono TC
-- 尺寸： 16
-
-【註】：在 NvChad 要避用字型名稱結尾有 Mono 之字型。以
-官網的舉例而言：可安裝 JetbrainsMono Nerd Font ；但卻萬萬不可
-安裝 JetbrainsMono Nerd Font Mono 字型。
-
-### Python
+此為【選項】，可略過。
 
 - 版本：3.13
 - 安裝路徑：C:\Program Files\Python313
 - Path環境變數：要設定
 - Provider 套件： pip install pynvim
 
-### Node.js
+### Node.js 直譯器
 
-- 版本：3.13
+此為【選項】，可略過。
+
+但是，由於許多 nvim 插件（plugins）均引用 Node.js 進行「安裝、執行」作業，
+如：TreeSitter、copilot.lua ...，所以，建議您最好還是先行安裝備妥。
+
+特別提醒採用 zbirenbaum/copilot.lua 插件之使用者，你務必安裝 Node.js 直譯器，
+而且版本編號一定高於 18 以上；否則，就會發生 Copilot 看似能正常運作，但又常
+會莫名其妙的當掉。
+
+- 版本：23.5.0
 - 安裝路徑：C:\Program Files\nodejs
 - Path環境變數：要設定
 - Provider 套件： npm install -g neovim
+
+### Lua 直譯器
+
+此為【選項】，可略過。
+
+若是以 choco 安裝軟體套件，務必記得以下兩大要項：
+
+- 要以【系統管理員】身份，啟動 Windows PowerShell
+- 許多套件之安裝，會順便設定 Path 系統環境變數，但是
+  您得重啟 Windows PowerShell ，變更後的 Path 才會生效
+
+【註】：覺得重啟 Windows PowerShell 太麻煩的使用者，可用指令
+要求 PowerShell 重新載入 Path 系統環境變數
+
+```sh
+refreshenv
+```
+
+1. 安裝直譯器
+
+- 版本：v5.1.5.52
+
+```sh
+choco install lua
+refreshenv
+```
+
+2. 安裝套件管理器
+
+- 名稱：luarocks
+- 版本：v2.4.4
+- 安裝路徑： C:\Users\AlanJui\AppData\Local\Temp\chocolatey\luarocks-2.4.4-win32
+  C:\Users\AlanJui\AppData\Roaming\LuaRocks
+
+安裝操作：
+
+```
+choco install luarocks
+refreshenv
+```
+
+驗證安裝：
+
+```
+PS C:\Users\AlanJui> luarocks install luasocket
+Installing https://luarocks.org/luasocket-3.1.0-1.src.rock
+cl /nologo /MD /O2 -c -Fosrc/mime.obj -IC:/ProgramData/chocolatey/lib/luarocks/luarocks-2.4.4-win32/include src/mime.c -DLUASOCKET_DEBUG -DNDEBUG
+mime.c
+C:/ProgramData/chocolatey/lib/luarocks/luarocks-2.4.4-win32/include\lua.h(12): fatal error C1083: 無法開啟包含檔案: 'stdarg.h': No such file or directory
+
+Error: Build error: Failed compiling object src/mime.obj
+PS C:\Users\AlanJui>
+```
+
+"C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\luarocks.bat"
 
 ### 模糊搜尋工具
 
@@ -80,34 +148,22 @@ PCRE2 10.42 is available (JIT is available)
 PS C:\Users\AlanJui>
 ```
 
-### Lua Script 支援
+### 版本管理工具
 
-- 版本：v2.4.4
-- 權限：使用【系統管理員】身份
-- 安裝路徑： C:\Users\AlanJui\AppData\Local\Temp\chocolatey\luarocks-2.4.4-win32
-  C:\Users\AlanJui\AppData\Roaming\LuaRocks
+LazyGit 為類圖形介面之 Git ，屬【選項】，可略過。
 
-安裝操作：
-
-```
-$ choco install luarocks
-$ refreshenv
+```sh
+choco install lazygit
 ```
 
-驗證安裝：
+### 檔案管理工具
 
+ViFm 為類圖形介面之【檔案管理員】，操作按鍵多 Vim 類同。
+屬【選項】，可略過。
+
+```sh
+choco install vifm
 ```
-PS C:\Users\AlanJui> luarocks install luasocket
-Installing https://luarocks.org/luasocket-3.1.0-1.src.rock
-cl /nologo /MD /O2 -c -Fosrc/mime.obj -IC:/ProgramData/chocolatey/lib/luarocks/luarocks-2.4.4-win32/include src/mime.c -DLUASOCKET_DEBUG -DNDEBUG
-mime.c
-C:/ProgramData/chocolatey/lib/luarocks/luarocks-2.4.4-win32/include\lua.h(12): fatal error C1083: 無法開啟包含檔案: 'stdarg.h': No such file or directory
-
-Error: Build error: Failed compiling object src/mime.obj
-PS C:\Users\AlanJui>
-```
-
-"C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\luarocks.bat"
 
 ## 安裝 Neovim App
 
@@ -122,7 +178,7 @@ NvChad 亦為 Neovim 插件，可透過【Windows終端機 + PowerShell介面】
 建議：不要使用【系統管理員】權限，來執行以下之安裝。
 
 ```sh
-git clone https://github.com/NvChad/starter $ENV:USERPROFILE\AppData\Local\nvimnvim
+git clone https://github.com/NvChad/starter $ENV:USERPROFILE\AppData\Local\nvim
 nvim
 ```
 
@@ -130,12 +186,12 @@ nvim
 
 1. 一定要執行過 nvim 一次；一定要執行過 nvim 一次；一定要執行過 nvim 一次。
    因為 NvChad 的 Starter 需要 nvim 啟動後，才能正常運作。也只有 NvChad Starter
-   執行過後，NvChad 在 Neovim 所需之執行環境才能備妥，如：在 C:\Users\<UserName>\AppData\Local\nvim-data 目錄下
+   執行過後，NvChad 在 Neovim 所需之執行環境才能備妥，如：在 C:\Users\\\<UserName>\AppData\Local\nvim-data 目錄下
    安裝 base46 這個插件。
 
 2. 如果您與 Linux 比較熟識：
 
-目錄： C:\Users\<UserName>\AppData\Local\nvim-data 等同 Linux 的 ~/.local/share/nvim/ 。
+目錄： C:\Users\\\<UserName>\AppData\Local\nvim-data 等同 Linux 的 ~/.local/share/nvim/ 。
 
 ## 安裝 Nvchad2025 客製化範本
 
@@ -154,7 +210,7 @@ PS C:\Users\AlanJui\AppData\Local> git clone https://github.com/AlanJui/Nvchad20
 1. 上述 AlanJui 那是我的 <UserName> 帳號。
 
 2. 當我啟動【Windows 終端機 + Windows PowerShell】之後，自【提示符號】可知目前正位於
-   路徑為：C:\Users\AlanJui 之目錄。當我輸入【cd ~\App】之後，按 <Tab> 鍵，便會自動轉換成目錄：
+   路徑為：C:\Users\AlanJui 之目錄。當我輸入【cd ~\App】之後，按 \<Tab> 鍵，便會自動轉換成目錄：
    C:\Users\AlanJui\AppData 。
 
 ### NvChad 專用模式（二）

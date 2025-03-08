@@ -169,3 +169,21 @@ end
 
 -- 設定 Neovim 讀取這個拼字檔
 vim.opt.spellfile = { vim.fn.expand(custom_spellfile) }
+
+---------------------------------------------------
+-- 設定 Shell：預設情況下，使用 Windows PowerShell，
+-- 但若 Neovim 已經從 Git Bash (MINGW64) 中啟動時，
+-- 則改用 Git Bash 作為 shell。
+---------------------------------------------------
+local is_win = vim.loop.os_uname().sysname == "Windows_NT"
+
+if is_win then
+  -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
+  if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
+    -- 若在 Git Bash 啟動，則使用 Git Bash
+    vim.o.shell = "C:\\Program Files\\Git\\bin\\bash.exe"
+  else
+    -- 否則使用 Windows PowerShell
+    vim.o.shell = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+  end
+end

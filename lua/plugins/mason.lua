@@ -19,6 +19,7 @@ return {
       -- "ruff-lsp", -- Python LSP Server
       "clangd", -- C++ LSP Server
       "clang-format", -- Formatter
+      "cpptools", -- C++ LSP Server
       "codelldb", -- C/C++ DAP
       "gopls",
       "rust-analyzer",

@@ -49,7 +49,7 @@ return {
       -- ":Run clang++ %:t -o %:t:r <CR>",
       {
         "<leader>rgc",
-        ":Run g++ %:t -o %:t:r <CR>",
+        ":Run g++ -g %:t -o %:t:r <CR>",
         desc = "Compile C++ source code with debug info",
       },
       {

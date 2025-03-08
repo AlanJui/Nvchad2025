@@ -245,8 +245,10 @@ return {
       require "plugins.dap.adapters.javascript"
       -- DAP for Python
       require "plugins.dap.adapters.python"
-      -- DAP for C++
-      require "plugins.dap.adapters.cpp"
+      -- DAP for codelldb: LLVM (Clang) C++ (cl.exe)
+      require "plugins.dap.adapters.codelldb"
+      -- DAP for cpptools (Visual Studio 2022) C++ (cl.exe)/ MinGW-w64 (gcc/g++)
+      require "plugins.dap.adapters.cpptools"
     end,
   },
 }

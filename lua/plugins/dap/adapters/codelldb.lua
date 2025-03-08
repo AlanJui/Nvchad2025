@@ -1,3 +1,5 @@
+-- Ref: https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+-- C/C++/Rust (via codelldb)
 local dap = require "dap"
 local install_root_dir = vim.fn.stdpath "data" .. "/mason"
 local extension_path = install_root_dir .. "/packages/codelldb/extension/"
@@ -21,7 +23,7 @@ dap.adapters.codelldb = {
 
 dap.configurations.cpp = {
   {
-    name = "Launch file",
+    name = "Launch file via codelldb",
     type = "codelldb",
     request = "launch",
     program = function()

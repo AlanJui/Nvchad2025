@@ -189,3 +189,12 @@ if is_win then
     vim.o.shell = "powershell.exe"
   end
 end
+
+vim.keymap.set("n", "<leader>ts", function()
+  vim.opt.spell = not vim.opt.spell:get()
+  if vim.opt.spell:get() then
+    print "拼字檢查已開啟"
+  else
+    print "拼字檢查已關閉"
+  end
+end, { desc = "開關拼字檢查" })

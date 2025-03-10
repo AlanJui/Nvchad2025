@@ -1,4 +1,10 @@
 -- https://www.cyberciti.biz/faq/howto-compile-and-run-c-cplusplus-code-in-linux/
+-- 【快速參考】
+-- /home/user/project/demo.cpp
+-- %     就是 /home/user/project/demo.cpp
+-- %:t   就是 demo.cpp
+-- %:r   就是 /home/user/project/demo
+-- %:t:r 就是 demo
 return {
   {
     "stevearc/overseer.nvim",
@@ -8,7 +14,22 @@ return {
       { "<leader>rr", ":OverseerRun<CR>", "Build by OverseerRun" },
     },
     config = function()
+      local cmd_shell = { "cmd.exe", "/c" }
+      local is_win_nt = vim.loop.os_uname().sysname == "Windows_NT"
+      -- local cmd_shell = { "cmd.exe", "/c" }
+      if is_win_nt then
+        -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
+        if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
+          -- cmd_shell = { "'C:/msys64/usr/bin/bash.exe'", "-c" }
+          cmd_shell = { "bash.exe", "/c" }
+        end
+      end
+
       require("overseer").setup {
+        -- cmd = vim.o.shell,
+        -- cmd = { "bash", "/c" },
+        -- cmd = { "cmd.exe", "/c" },
+        cmd = cmd_shell,
         templates = { "builtin", "user.cpp_build" },
         -- templates = { "builtin", "user.run_script" },
       }
@@ -20,6 +41,49 @@ return {
     -- enable = false,
     lazy = false,
     keys = {
+      ----------------------------------------------------------
+      -- C++ with g++
+      ----------------------------------------------------------
+      {
+        "<leader>rgc",
+        ':Run g++ -g -o "%:r.exe" "%"<CR>',
+        desc = "Compile C++ source code with debug info (.exe)",
+      },
+      {
+        "<leader>rgr",
+        ':Run g++ "%:t" -o "%:t:r.exe" && "%:p:r.exe"<CR>',
+        desc = "Compile and Run C++ file (.exe)",
+      },
+      -- -- g++ -g -o hello.exe hello.cpp
+      -- {
+      --   "<leader>rgc",
+      --   ":Run g++ -g -o %:t:r.exe %:t<CR>",
+      --   desc = "Compile C++ source code with debug info (.exe)",
+      -- },
+      -- -- g++ -g -o hello hello.cpp
+      -- {
+      --   "<leader>rgr",
+      --   ":Run g++ %:t -o %:t:r.exe && ./%:t:r.exe<CR>",
+      --   desc = "Compile and Run C++ file (.exe)",
+      -- },
+      ----------------------------------------------------------
+      -- C++ with clang++
+      ----------------------------------------------------------
+      -- {
+      --   "<leader>rgc",
+      --   ":Run clang++ %:t -o %:t:r <CR>",
+      --   desc = "Compile C++ source code with debug info",
+      -- },
+      -- {
+      --   "<leader>rgm",
+      --   ":Run make %:t:r <CR>",
+      --   desc = "Make C++ object code",
+      -- },
+      -- {
+      --   "<leader>rgr",
+      --   ":Run g++ %:t -o %:t:r && ./%:t:r <CR>",
+      --   desc = "Compile and Run C++ file",
+      -- },
       {
         "<leader>rL",
         function()
@@ -44,23 +108,6 @@ return {
         "<leader>rcr",
         ":Run gcc %:t -o %:t:r && ./%:t:r <CR>",
         desc = "Compile and Run C file",
-      },
-      -- C++
-      -- ":Run clang++ %:t -o %:t:r <CR>",
-      {
-        "<leader>rgc",
-        ":Run g++ -g %:t -o %:t:r <CR>",
-        desc = "Compile C++ source code with debug info",
-      },
-      {
-        "<leader>rgm",
-        ":Run make %:t:r <CR>",
-        desc = "Make C++ object code",
-      },
-      {
-        "<leader>rgr",
-        ":Run g++ %:t -o %:t:r && ./%:t:r <CR>",
-        desc = "Compile and Run C++ file",
       },
       -- Lua Script
       {

@@ -170,26 +170,7 @@ end
 -- 設定 Neovim 讀取這個拼字檔
 vim.opt.spellfile = { vim.fn.expand(custom_spellfile) }
 
----------------------------------------------------
--- 設定 Shell：預設情況下，使用 Windows PowerShell，
--- 但若 Neovim 已經從 Git Bash (MINGW64) 中啟動時，
--- 則改用 Git Bash 作為 shell。
----------------------------------------------------
-local is_win = vim.loop.os_uname().sysname == "Windows_NT"
-
-if is_win then
-  -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
-  if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
-    -- 若在 Git Bash 啟動，則使用 Git Bash
-    -- vim.o.shell = "C:\\Program Files\\Git\\bin\\bash.exe"
-    vim.o.shell = "bash.exe"
-  else
-    -- 否則使用 Windows PowerShell
-    -- vim.o.shell = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
-    vim.o.shell = "powershell.exe"
-  end
-end
-
+-- 拼字檢查開/關快捷鍵
 vim.keymap.set("n", "<leader>ts", function()
   vim.opt.spell = not vim.opt.spell:get()
   if vim.opt.spell:get() then
@@ -198,3 +179,25 @@ vim.keymap.set("n", "<leader>ts", function()
     print "拼字檢查已關閉"
   end
 end, { desc = "開關拼字檢查" })
+
+---------------------------------------------------
+-- 設定 Shell：預設情況下，使用 Windows PowerShell，
+-- 但若 Neovim 已經從 Git Bash (MINGW64) 中啟動時，
+-- 則改用 Git Bash 作為 shell。
+---------------------------------------------------
+-- -- 判斷是否 Shell 為 MINGW64 Bash
+-- local is_win_nt = vim.loop.os_uname().sysname == "Windows_NT"
+--
+-- if is_win_nt then
+--   -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
+--   if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
+--     -- 若在 Git Bash 啟動，則使用 Git Bash
+--     vim.o.shell = "bash.exe"
+--     -- vim.o.shell = "C:\\Program Files\\Git\\bin\\bash.exe"
+--     -- vim.o.shell = "C:\\msys64\\usr\\bin\\bash.exe"
+--     -- vim.o.shell = "'C:/Program Files/Git/bin/bash.exe'"
+--   else
+--     -- 預設： Windows PowerShell
+--     vim.o.shell = "powershell.exe"
+--   end
+-- end

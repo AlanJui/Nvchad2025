@@ -194,7 +194,7 @@ map("n", "<leader>l", "<cmd>:Lazy<cr>", { desc = "Lazy" })
 -- Terminal toggle options
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 --------------------------------------------------------------------
--- Run Compiler
+-- Compile and Run
 --------------------------------------------------------------------
 map("n", "<leader>rn", function()
   local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
@@ -210,15 +210,32 @@ map("n", "<leader>rn", function()
   elseif file_type == "python" then
     vim.cmd(":terminal python " .. file_name)
   elseif file_type == "c" then
-    vim.cmd(":terminal gcc " .. file_name)
+    if is_win then
+      -- gcc -g -o %:t:r.exe %:t && ./%:t:r.exe
+      vim.cmd(
+        ":terminal gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. sub_dir .. main_file_name .. ".exe"
+      )
+    else
+      -- gcc -g -o %:t:r %:t && ./%:t:r
+      vim.cmd(":terminal gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+    end
   elseif file_type == "cpp" then
     if is_win then
-      -- g++ -g -o %:t:r.exe %:t && ./%:t:r.exe
-      vim.cmd [[terminal g++ -g -o %:t:r.exe %:t && ./%:t:r.exe]]
-      vim.cmd [[":terminal g++ -g -o " .. main_file_name .. ".exe " .. file_name .. " ; ." .. sub_dir .. main_file_name .. ".exe"]]
+      -- "Compile and Run C++ file (.exe)",
+      -- g++ -g -o %:t:r.exe %:t && .\%:t:r.exe
+      vim.cmd(
+        ":terminal g++ -g -o "
+          .. main_file_name
+          .. ".exe "
+          .. file_name
+          .. " && ."
+          .. sub_dir
+          .. main_file_name
+          .. ".exe"
+      )
     else
       -- g++ -g -o %:t:r %:t && ./%:t:r
       vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
     end
   end
-end, { desc = "Run Compiler" })
+end, { desc = "Compile and Run" })

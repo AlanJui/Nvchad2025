@@ -89,7 +89,7 @@ return {
         function()
           require("user.overseer_util").restart_last_task()
         end,
-        "Run last task",
+        desc = "Run last task",
       },
       -- Tools for Run Time
       { "<leader>rk", ":Run npx kill-port 8000<CR>", desc = "Kill Port" },
@@ -117,12 +117,12 @@ return {
       },
       -- Python
       {
-        "<leader>rpp",
+        "<leader>rpr",
         ":Run python %<CR>",
         desc = "Run current Python file",
       },
       {
-        "<leader>rpk",
+        "<leader>rpl",
         ":Run ruff %<CR>",
         desc = "Lint current file",
       },

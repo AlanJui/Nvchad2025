@@ -11,28 +11,35 @@
 -- (3) 取得常用工具路徑：
 --     提供了 python 與 node 執行檔的動態路徑取得方式。
 
+-- lua/utils/env.lua
 local M = {}
 
 -- 偵測作業系統是否為 Windows
-M.is_windows = vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1
+M.is_win = vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1
 
 -- 偵測是否為 WSL (Windows Subsystem for Linux)
 M.is_wsl = (function()
-  local uname = vim.loop.os_uname().release
-  return vim.fn.has "unix" == 1
-    and string.find(string.lower(unpack(vim.fn.readfile "/proc/version")), "microsoft") ~= nil
+  if vim.fn.has "unix" ~= 1 then
+    return false
+  end
+  local lines = vim.fn.readfile "/proc/version"
+  if lines and #lines > 0 then
+    return string.lower(lines[1]):find "microsoft" ~= nil
+  end
+  return false
 end)()
 
 -- 偵測是否為純 Linux (非 WSL)
 M.is_linux = vim.fn.has "unix" == 1 and not M.is_wsl
 
 -- 偵測 Neovim 是否從 Git Bash 啟動
-M.is_git_bash = (vim.fn.getenv "MSYSTEM" or ""):match "MINGW" ~= nil
+local msystem = vim.fn.getenv "MSYSTEM"
+M.is_git_bash = msystem ~= vim.NIL and msystem:match "MINGW" ~= nil
 
 -- 取得使用中的 Shell 環境
 function M.get_shell()
   if M.is_win then
-    if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
+    if M.is_git_bash then
       return { shell = "bash.exe", shellcmdflag = "-s" }
     else
       return {
@@ -57,8 +64,7 @@ function M.get_python()
     return "C:\\Program Files\\Python313\\python.exe"
   else
     local home_dir = os.getenv "HOME" or "~"
-    -- local python_version = "3.12.1"
-    local python_version = "3.13.1"
+    local python_version = "3.12.1"
     return home_dir .. "/.pyenv/versions/" .. python_version .. "/bin/python"
   end
 end
@@ -72,8 +78,5 @@ function M.get_node()
     return home_dir .. "/.nvm/versions/node/v22.7.0/bin/node"
   end
 end
-
--- 路徑分隔符號
-M.path_sep = M.is_win and "\\" or "/"
 
 return M

@@ -42,3 +42,24 @@ end)
 -- 確保 Mason 先執行 setup()
 local mason = require "mason"
 mason.setup()
+-------------------------------------------------
+-- 作業環境
+-------------------------------------------------
+local env = require "utils.env"
+local tbl = require "utils.table"
+
+-- 使用範例
+if env.is_win then
+  print "目前環境是 Windows"
+elseif env.is_linux then
+  print "目前環境是純 Linux"
+elseif env.is_wsl then
+  print "目前環境是 WSL2"
+end
+
+local shell_config = env.get_shell()
+vim.o.shell = shell_config.shell
+vim.o.shellcmdflag = shell_config.shellcmdflag
+
+print("使用的 Shell 環境：", tbl.to_string(vim.o.shell))
+print("Shell 指令參數：", tbl.to_string(vim.o.shellcmdflag))

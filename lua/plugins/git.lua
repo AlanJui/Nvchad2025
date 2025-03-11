@@ -2,17 +2,18 @@
 -- Git Tools
 -----------------------------------------------------------
 return {
-  {
-    "kdheepak/lazygit.nvim",
-    -- optional for floating window border decoration
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    lazy = false,
-    keys = {
-      { "<leader>gl", ":LazyGit<CR>", desc = "LazyGit" },
-    },
-  },
+  -- 為與 ToggleTerm 整合，此插件之設定置於 lua/plugins/terminal.lua
+  -- {
+  --   "kdheepak/lazygit.nvim",
+  --   -- optional for floating window border decoration
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --   },
+  --   lazy = false,
+  --   keys = {
+  --     { "<leader>gl", ":LazyGit<CR>", desc = "LazyGit" },
+  --   },
+  -- },
   -- A work-in-progress Magit clone for Neovim that is geared toward the Vim philosophy.
   {
     "TimUntersberger/neogit",

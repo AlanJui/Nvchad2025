@@ -1,4 +1,5 @@
 require "nvchad.mappings"
+local tbl = require "utils.table"
 
 -- add yours here
 
@@ -14,7 +15,7 @@ map("n", "<leader>ff", "<cmd> Telescope <cr>")
 map({ "i", "n" }, "<C-k>", "<Up>", { desc = "Move up" })
 map({ "i", "n" }, "<C-j>", "<Down>", { desc = "Move down" })
 
--- mapping with a lua function
+-- mapping with a lua functionG
 map("n", "<A-i>", function()
   -- do something
 end, { desc = "Terminal toggle floating" })
@@ -200,42 +201,45 @@ map("n", "<leader>rn", function()
   local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
   local sub_dir = is_win and "\\" or "/"
 
-  -- local file_name = vim.api.nvim_buf_get_name(0)
-  local main_file_name = vim.fn.expand "%:t:r"
+  local file_path = vim.fn.expand "%:p"
   local file_name = vim.fn.expand "%:t"
+  local main_file_name = vim.fn.expand "%:t:r"
+  local output = vim.fn.expand "%:p:r" .. ".exe"
+  local compile_cmd = { "g++", "-g", "-o", output, file_path }
   local file_type = vim.bo.filetype
   -- print(file_name, file_type)
+
+  local cmd_str
   if file_type == "lua" then
-    vim.cmd(":terminal lua " .. file_name)
+    -- vim.cmd(":terminal lua " .. file_name)
+    cmd_str = "lua " .. file_name
   elseif file_type == "python" then
-    vim.cmd(":terminal python " .. file_name)
+    -- vim.cmd(":terminal python " .. file_name)
+    cmd_str = "python " .. file_name
   elseif file_type == "c" then
     if is_win then
       -- gcc -g -o %:t:r.exe %:t && ./%:t:r.exe
-      vim.cmd(
-        ":terminal gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. sub_dir .. main_file_name .. ".exe"
-      )
+      -- vim.cmd(
+      --   ":terminal gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. sub_dir .. main_file_name .. ".exe"
+      -- )
+      cmd_str = "gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. sub_dir .. main_file_name .. ".exe"
     else
       -- gcc -g -o %:t:r %:t && ./%:t:r
-      vim.cmd(":terminal gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      -- vim.cmd(":terminal gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      cmd_str = "gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r"
     end
   elseif file_type == "cpp" then
     if is_win then
       -- "Compile and Run C++ file (.exe)",
       -- g++ -g -o %:t:r.exe %:t && .\%:t:r.exe
-      vim.cmd(
-        ":terminal g++ -g -o "
-          .. main_file_name
-          .. ".exe "
-          .. file_name
-          .. " && ."
-          .. sub_dir
-          .. main_file_name
-          .. ".exe"
-      )
+      -- vim.cmd(":terminal " .. cmd_str)
+      cmd_str = table.concat(compile_cmd, " ")
     else
       -- g++ -g -o %:t:r %:t && ./%:t:r
-      vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      -- vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      -- vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      cmd_str = "g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r"
     end
   end
+  require("toggleterm").exec(cmd_str)
 end, { desc = "Compile and Run" })

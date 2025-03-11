@@ -185,19 +185,28 @@ end, { desc = "開關拼字檢查" })
 -- 但若 Neovim 已經從 Git Bash (MINGW64) 中啟動時，
 -- 則改用 Git Bash 作為 shell。
 ---------------------------------------------------
--- -- 判斷是否 Shell 為 MINGW64 Bash
--- local is_win_nt = vim.loop.os_uname().sysname == "Windows_NT"
---
--- if is_win_nt then
---   -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
---   if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
---     -- 若在 Git Bash 啟動，則使用 Git Bash
---     vim.o.shell = "bash.exe"
---     -- vim.o.shell = "C:\\Program Files\\Git\\bin\\bash.exe"
---     -- vim.o.shell = "C:\\msys64\\usr\\bin\\bash.exe"
---     -- vim.o.shell = "'C:/Program Files/Git/bin/bash.exe'"
---   else
---     -- 預設： Windows PowerShell
---     vim.o.shell = "powershell.exe"
---   end
--- end
+-- 判斷是否 Shell 為 MINGW64 Bash
+local is_win_nt = vim.loop.os_uname().sysname == "Windows_NT"
+
+if is_win_nt then
+  -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
+  if vim.fn.getenv "MSYSTEM" ~= vim.NIL then
+    -- 若在 Git Bash 啟動，則使用 Git Bash
+    vim.o.shell = "bash.exe"
+    vim.o.shellcmdflag = "-s"
+  else
+    -- 預設： Windows PowerShell
+    vim.o.shell = "powershell.exe"
+    local powershell_options = {
+      shell = vim.fn.executable "powershell" == 1 and "powershell.exe" or "pwsh",
+      shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
+      shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
+      shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+      shellquote = "",
+      shellxquote = "",
+    }
+    for option, value in pairs(powershell_options) do
+      vim.opt[option] = value
+    end
+  end
+end

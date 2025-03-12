@@ -197,6 +197,8 @@ map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 --------------------------------------------------------------------
 -- Compile and Run
 --------------------------------------------------------------------
+local env = require "utils.env"
+
 map("n", "<leader>rn", function()
   local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
   local sub_dir = is_win and "\\" or "/"
@@ -209,37 +211,74 @@ map("n", "<leader>rn", function()
   local file_type = vim.bo.filetype
   -- print(file_name, file_type)
 
-  local cmd_str
-  if file_type == "lua" then
-    -- vim.cmd(":terminal lua " .. file_name)
-    cmd_str = "lua " .. file_name
-  elseif file_type == "python" then
-    -- vim.cmd(":terminal python " .. file_name)
-    cmd_str = "python " .. file_name
-  elseif file_type == "c" then
-    if is_win then
+  local cmd_str = ""
+  if env.is_win or env.is_cmd then
+    -----------------------------------------------------------------------------------
+    -- Windows 作業系統 + cmd / powershell shell
+    -----------------------------------------------------------------------------------
+    local path_sep = "\\"
+    if file_type == "c" then
       -- gcc -g -o %:t:r.exe %:t && ./%:t:r.exe
       -- vim.cmd(
       --   ":terminal gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. sub_dir .. main_file_name .. ".exe"
       -- )
-      cmd_str = "gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. sub_dir .. main_file_name .. ".exe"
-    else
-      -- gcc -g -o %:t:r %:t && ./%:t:r
-      -- vim.cmd(":terminal gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
-      cmd_str = "gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r"
-    end
-  elseif file_type == "cpp" then
-    if is_win then
+      cmd_str = "gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ." .. path_sep .. main_file_name .. ".exe"
+    elseif file_type == "cpp" then
       -- "Compile and Run C++ file (.exe)",
       -- g++ -g -o %:t:r.exe %:t && .\%:t:r.exe
-      -- vim.cmd(":terminal " .. cmd_str)
-      cmd_str = table.concat(compile_cmd, " ")
-    else
+      -- cmd_str = table.concat(compile_cmd, " ")
+      cmd_str = "g++ -g -o %:t:r.exe %:t && ." .. path_sep .. "%:t:r.exe"
+    end
+  elseif env.is_msys2 or env.is_git_bash then
+    -----------------------------------------------------------------------------------
+    -- Windows 作業系統 + MSYS2 / Git Bash shell
+    -----------------------------------------------------------------------------------
+    local path_sep = "/"
+    if file_type == "c" then
+      -- gcc -g -o %:t:r %:t && ./%:t:r
+      -- vim.cmd(":terminal gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      -- cmd_str = "gcc -o %:t:r.exe %:t && ." .. path_sep .. "%:t:r.exe"
+      cmd_str = "gcc -o " .. main_file_name .. ".exe " .. file_name .. " && ./" .. main_file_name .. ".exe"
+    elseif file_type == "cpp" then
+      -- g++ -g -o %:t:r %:t && ./%:t:r
+      -- vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      cmd_str = "g++ -g -o "
+        .. main_file_name
+        .. ".exe "
+        .. file_name
+        .. " && ."
+        .. path_sep
+        .. main_file_name
+        .. ".exe"
+    end
+  elseif env.is_wsl or env.is_linux then
+    -----------------------------------------------------------------------------------
+    -- Linux 作業系統 + zsh / bash shell
+    -- Windows 作業系統 + WSL2
+    -----------------------------------------------------------------------------------
+    local path_sep = "/"
+    if file_type == "c" then
+      -- gcc -g -o %:t:r %:t && ./%:t:r
+      -- vim.cmd(":terminal gcc -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
+      cmd_str = "gcc -o %:t:r %:t && ." .. path_sep .. "%:t:r"
+    elseif file_type == "cpp" then
       -- g++ -g -o %:t:r %:t && ./%:t:r
       -- vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
       -- vim.cmd(":terminal g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r")
-      cmd_str = "g++ -g -o %:t:r %:t && ." .. sub_dir .. "%:t:r"
+      cmd_str = "g++ -g -o %:t:r %:t && ." .. path_sep .. "%:t:r"
+    end
+  else
+    -----------------------------------------------------------------------------------
+    -- 無需編譯，透過直譯器便能執行的程式語言
+    -----------------------------------------------------------------------------------
+    if file_type == "lua" then
+      -- vim.cmd(":terminal lua " .. file_name)
+      cmd_str = "lua " .. file_name
+    elseif file_type == "python" then
+      -- vim.cmd(":terminal python " .. file_name)
+      cmd_str = "python " .. file_name
     end
   end
+  -- 透過 toggleterm 執行編譯/執行指令
   require("toggleterm").exec(cmd_str)
 end, { desc = "Compile and Run" })

@@ -31,6 +31,7 @@ function M.show_env_check()
 
   -- Shell 設定
   local shell_config = env.get_shell()
+  local env = require "utils.env"
   vim.o.shell = shell_config.shell
   vim.o.shellcmdflag = shell_config.shellcmdflag
 
@@ -38,6 +39,8 @@ function M.show_env_check()
   table.insert(lines, "📌 Shell 環境設定：")
   table.insert(lines, " • 使用的 Shell：" .. tostring(vim.o.shell))
   table.insert(lines, " • Shell 指令參數：" .. tostring(vim.o.shellcmdflag))
+  table.insert(lines, "📌 子目錄設定：")
+  table.insert(lines, " • 目錄分隔符號：" .. tostring(env.path_sep))
 
   -- 插入資訊到 buffer
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)

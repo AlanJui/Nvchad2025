@@ -210,3 +210,8 @@ if is_win_nt then
     end
   end
 end
+
+-- 在 Nvim 新增自訂指令：EnvCheck ，可供使用者查檢所處作業環境
+vim.api.nvim_create_user_command("EnvCheck", function()
+  require("utils.envcheck").show_env_check()
+end, {})

@@ -357,3 +357,48 @@ git config --global http.sslVersion tls1.2
 git config --global http.sslBackend
 openssl
 ```
+
+## 常見問題排除
+
+### 退出 Nvim 出現執行錯誤
+
+【問題描述】：
+
+執行指令 :q ，欲退出 nvim ，狀態列欲顯現以下訊息：
+
+```sh
+E138: All C:\Users\AlanJui\AppData\Local\nvim-data\shada\main.shada.tmp.X files exist, cannot write ShaDa file!
+```
+
+【導因分析】：
+
+這是因為 Neovim（包含 NvChad）嘗試將 session 和歷史紀錄儲存到 ShaDa（Shared Data）檔案時發生了錯誤，通常是暫存檔沒有正常清除導致的。
+
+通常此問題的原因是 Neovim 上次關閉時非正常結束，或是暫存的 ShaDa 檔案殘留，導致無法寫入新的 ShaDa 資料。
+
+檔案所處位置：
+
+```sh
+C:\Users\你的使用者名稱\AppData\Local\nvim-data\shada\
+```
+
+【排除問題】：
+
+1. 進入目錄：
+
+```sh
+cd ~\AppData\Local\nvim-data\shada\
+```
+
+2. 刪除檔案名稱為： `main.shada.tmp.*` 之所有檔案：
+
+```sh
+rm main.shada.tmp.*
+```
+
+【註】：迅簡法：
+
+```sh
+ls ~\AppData\Local\nvim-data\shada\main.shada.tmp.*
+rm ~\AppData\Local\nvim-data\shada\main.shada.tmp.*
+```

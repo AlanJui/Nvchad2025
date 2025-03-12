@@ -1,28 +1,11 @@
+-------------------------------------------------
+-- DAP 插件安裝，交由 Mason 負責
+-------------------------------------------------
 return {
   -- 常用程式語言 DAP
   { "jbyuki/one-small-step-for-vimkind" },
   { "mfussenegger/nvim-dap-python" },
   { "mxsdev/nvim-dap-vscode-js" },
-  -- 需請 mason 安裝的 DAP for Neovim
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "mfussenegger/nvim-dap",
-    },
-    config = function()
-      require("mason-nvim-dap").setup {
-        handers = {},
-        ensure_installed = {
-          "python",
-          "codelldb",
-          "js",
-          "stylua",
-        },
-      }
-    end,
-  },
   -- virtual text for the debugger
   {
     "theHamsta/nvim-dap-virtual-text",

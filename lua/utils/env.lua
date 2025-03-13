@@ -79,4 +79,40 @@ function M.get_shell()
   end
 end
 
+-- 自動抓取 fnm 設定的 Node.js 版本
+function M.get_node_version()
+  local handle = io.popen "fnm current"
+  if not handle then
+    return nil -- 防 io.popen() 執行失敗
+  end
+
+  local result = handle:read "*a"
+  handle:close()
+
+  if not result or result == "" then
+    return nil -- 防讀取不到任何資料
+  end
+
+  result = result:gsub("\n", "") -- 移除換行符號
+  return result
+end
+
+-- function M.get_fnm_node()
+--   local handle = io.popen "fnm current"
+--   if not handle then
+--     return nil -- 防 io.popen() 執行失敗
+--   end
+--
+--   local result = handle:read "*a"
+--   handle:close()
+--
+--   if not result or result == "" then
+--     return nil -- 防讀取不到任何資料
+--   end
+--
+--   result = result:gsub("\n", "") -- 移除換行符號
+--   -- return result
+--   return "C:\\Users\\AlanJui\\AppData\\Local\\fnm_multishells\\" .. result .. "\\installation\\node.exe"
+-- end
+
 return M

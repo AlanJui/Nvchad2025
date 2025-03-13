@@ -62,55 +62,260 @@ setx CC "C:\mingw64\bin\gcc.exe"
 而且版本編號一定高於 18 以上；否則，就會發生 Copilot 看似能正常運作，但又常
 會莫名其妙的當掉。
 
-- 版本：23.5.0
-- 安裝路徑：C:\Program Files\nodejs
-- Path環境變數：要設定
+- 版本：22.8.0
 - Provider 套件： npm install -g neovim
 
-### Lua 直譯器
+1. 安裝 Fast Node Manager (fnm)
 
-此為【選項】，可略過。
+```sh
+PS C:\Users\AlanJui> choco install fnm
+Chocolatey v2.4.1
+Installing the following packages:
+fnm
+By installing, you accept licenses for the packages.
+Downloading package from source 'https://community.chocolatey.org/api/v2/'
+Progress: Downloading fnm 1.38.1... 100%
 
-若是以 choco 安裝軟體套件，務必記得以下兩大要項：
+fnm v1.38.1 [Approved]
+fnm package files install completed. Performing other installation steps.
+The package fnm wants to run 'chocolateyInstall.ps1'.
+Note: If you don't run this script, the installation will fail.
+Note: To confirm automatically next time, use '-y' or consider:
+choco feature enable -n allowGlobalConfirmation
+Do you want to run the script?([Y]es/[A]ll - yes to all/[N]o/[P]rint): y
 
-- 要以【系統管理員】身份，啟動 Windows PowerShell
-- 許多套件之安裝，會順便設定 Path 系統環境變數，但是
-  您得重啟 Windows PowerShell ，變更後的 Path 才會生效
+Extracting 64-bit C:\ProgramData\chocolatey\lib\fnm\tools\fnm-windows_x64.zip to C:\ProgramData\chocolatey\lib\fnm\tools...
+C:\ProgramData\chocolatey\lib\fnm\tools
+ ShimGen has successfully created a shim for fnm.exe
+ The install of fnm was successful.
+  Deployed to 'C:\ProgramData\chocolatey\lib\fnm\tools'
 
-【註】：覺得重啟 Windows PowerShell 太麻煩的使用者，可用指令
-要求 PowerShell 重新載入 Path 系統環境變數
+Chocolatey installed 1/1 packages.
+ See the log for details (C:\ProgramData\chocolatey\logs\chocolatey.log).
+```
+
+2. 設定所需使用之環境變數
+
+（1）在 Path 系統環境變數加入 fnm 安裝路徑
+
+```sh
+C:\ProgramData\chocolatey\lib\fnm\tools
+```
+
+（2）在 Profile 加入 fnm 使用之環境變數
+
+```sh
+fnm env | Invoke-Expression
+```
+
+3. 重載系統環境變數
 
 ```sh
 refreshenv
 ```
 
-1. 安裝直譯器
-
-- 版本：v5.1.5.52
+4. 驗證安裝結果
 
 ```sh
-choco install lua
-refreshenv
+PS C:\Users\AlanJui> fnm --version
+fnm 1.38.1
 ```
 
-2. 安裝套件管理器
+5. 條列 Node.js 可用版本
 
-- 名稱：luarocks
-- 版本：v2.4.4
-- 安裝路徑： C:\Users\AlanJui\AppData\Local\Temp\chocolatey\luarocks-2.4.4-win32
-  C:\Users\AlanJui\AppData\Roaming\LuaRocks
-
-安裝操作：
-
-```
-choco install luarocks
-refreshenv
+```sh
+PS C:\Users\AlanJui> fnm ls-remote
+...
+...
 ```
 
-驗證安裝：
+6. 查檢作業系統已安裝之 Node.js 版本
 
+```sh
+PS C:\Users\AlanJui> fnm list
+* v22.7.0 default
+* system
 ```
+
+6. 安裝 Node.js(node) 及套件管理器(npm)
+
+```sh
+PS C:\Users\AlanJui> fnm ls-remote | grep 22.8
+v12.22.8 (Erbium)
+v22.8.0
+
+PS C:\Users\AlanJui> fnm install 22.8.0
+Installing Node v22.8.0 (x64)
+
+PS C:\Users\AlanJui> fnm list
+* v22.7.0 default
+* v22.8.0
+* system
+```
+
+【註】：fnm 將 Node.js 各版本，安裝於路徑： C:\Users\<使用者帳號>\AppData\Local\fnm\node-versions\<版本號>\installation\
+
+7. 指定使用某版 Node.js
+
+```sh
+PS C:\Users\AlanJui> fnm use 22.8.0
+Using Node v22.8.0
+
+PS C:\Users\AlanJui> fnm list
+* v22.7.0 default
+* v22.8.0 《== 以藍色字體標示為使用中
+* system
+
+PS C:\Users\AlanJui> node -v
+v22.8.0
+PS C:\Users\AlanJui> npm -v
+10.8.2
+```
+
+8. 安裝 nvim 所需使用之 Node.js Provider 套件
+
+```sh
+PS C:\Users\AlanJui> npm install -g neovim
+
+added 32 packages in 3s
+```
+
+9. 查核 Node.js 執行檔之安裝路徑：
+
+```sh
+PS C:\Users\AlanJui> fnm current
+v22.7.0
+
+PS C:\Users\AlanJui> where.exe node
+C:\Users\AlanJui\AppData\Local\fnm_multishells\28784_1741874123662\node.exe
+```
+
+10. 在options.lua 選項設定檔，宣告 Node.js 使用之 Provider 。
+
+~\AppData\Local\nvim\lua\options.lua 
+
+```sh
+  local node_win = "C:\Users\AlanJui\AppData\Local\fnm_multishells\6348_1741877567248\node_modules\neovim\bin\cli.js"
+```
+
+### 安裝 Lua 直譯器及套件管理器
+
+（1）安裝直譯器
+
+- 版本：v5.1 (LuaBinaries 5.1.5 - Release 1)
+- 下載網址：[LuaBinaries 官網](https://luabinaries.sourceforge.net/download.html)
+- 套件名稱：
+  - lua5_1_5_Win64_bin.zip: Windows x64 Executables
+  - lua5_1_5_Win64_dll8_lib.zip: Windows x64 DLL and Includes (Visual C++ 2005 Built)
+- 安裝路徑：C:\bin\lua
+- 設定系統環境變數：在 Path 加入目錄路徑 "C:\bin\lua"
+
+1. 下戴套件：[lua5_1_5_Win64_bin.zip](https://sourceforge.net/projects/luabinaries/files/5.1.5/Tools%20Executables/lua-5.1.5_Win64_bin.zip/download) 與 [lua-5.1.5_Win64_dll12_lib.zip](https://sourceforge.net/projects/luabinaries/files/5.1.5/Windows%20Libraries/Dynamic/lua-5.1.5_Win64_dll12_lib.zip/download)
+
+2. 建立新目錄：C:\bin\lua
+
+3. 將【步驟 1】之套件壓縮檔解壓縮，並複製檔案放入 C:\bin\lua 。
+
+4. 透過 Windows 11 之【開始功能】/【編輯系統環境變數】，設定 Path 系統環境變數。
+
+5. 重啟終端機，執行以下指令驗證 lua 直譯器已能正確運作：
+
+```sh
+PS C:\Users\AlanJui> lua5.1 -v
+Lua 5.1.5  Copyright (C) 1994-2012 Lua.org, PUC-Rio
+```
+
+6. 編輯 PowerShell Profile 檔案，加入以下設定：
+
+（a）編輯 Profile
+
+```sh
+nvim $PROFILE
+```
+
+（b）加入設定：
+
+```sh
+Set-Alias lua C:\bin\lua\lua5.1.exe
+```
+
+（b）重載 Profile
+
+```sh
+. $PROFILE
+```
+
+（c）驗證結果
+
+```sh
+PS C:\Users\AlanJui> lua -v
+Lua 5.1.5  Copyright (C) 1994-2012 Lua.org, PUC-Rio
+```
+
+（2）安裝 Lua 套件管理器：luarocks
+
+- 版本：3.11.1 Windows 64 bits
+- 下載網址：[LuaRocks 官網](https://luarocks.github.io/luarocks/releases/)
+- 套件名稱：luarocks-3.11.1-windows-64.zip (luarocks.exe stand-alone Windows 64-bit binary)
+- 安裝路徑：C:\bin\lua
+
+【安裝及驗證作業】：
+
+1. 下戴套件：luarocks-3.11.1-windows-64.zip
+
+2. 將【步驟 1】之套件壓縮檔解壓縮，並複製檔案放入 C:\bin\lua 。
+
+3. 驗證 luarocks 已能運作：
+
+```sh
+PS C:\Users\AlanJui> luarocks --version
+luarocks 3.11.1
+LuaRocks main command-line interface
+```
+
+4. 指定 luarocks 使用 lua5.1.exe 編譯 Lua 套件檔。
+
+```sh
+PS C:\Users\AlanJui> luarocks config variables.LUA C:\bin\lua\lua5.1.exe
+Wrote
+        variables.LUA = "C:\\bin\\lua\\lua5.1.exe"
+to
+        C:\Users\AlanJui\AppData\Roaming\luarocks\config-5.4.lua
+```
+
+5. 驗證 luarocks 能安裝 Lua 套件
+
+```sh
 PS C:\Users\AlanJui> luarocks install luasocket
+Installing https://luarocks.org/luasocket-3.1.0-1.src.rock
+
+luasocket 3.1.0-1 depends on lua >= 5.1 (5.4-1 provided by VM: success)
+C:\bin\clang+llvm-19.1.7-x86_64-pc-windows-msvc\bin\clang.exe -O2 -c -o src/luasocket.o -IC:\bin\lua/include src/luasocket.c -DLUASOCKET_DEBUG -DWINVER=0x0501 -Ic:\windows\system32\include
+The system cannot find the path specified.
+
+Error: Build error: Failed compiling object src/luasocket.o
+PS C:\Users\AlanJui>
+```
+
+若見安裝順利結束，即表 luarocks 已能正常運作。因早期之 lua 有 32/64 bits
+之分。以下透過指令：choco ，進行安裝作業，所得結果為 32 bits 之 luarocks 。
+
+【註】：
+
+1. 在 Windows 11 安裝 lua 直譯器及其套件，需留心 lua, luarocks, lua 套件，同樣都是
+   64 bits 或同樣是 32 bits ，決不可相互混雜，否則會有執行錯誤發生。
+
+2. 在 Windows 作業系統，透過 choco 安裝 luarocks ，需留心其預設安裝為 32 bits 。
+
+```sh
+choco install luarocks
+ls "C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\luarocks.bat"
+```
+
+所以在 Windows 11 作業系統安裝之 luarocks 是 32 bits 之版本，就會
+發生如下之安裝錯誤之問題：
+
+```sh
 Installing https://luarocks.org/luasocket-3.1.0-1.src.rock
 cl /nologo /MD /O2 -c -Fosrc/mime.obj -IC:/ProgramData/chocolatey/lib/luarocks/luarocks-2.4.4-win32/include src/mime.c -DLUASOCKET_DEBUG -DNDEBUG
 mime.c
@@ -120,8 +325,6 @@ Error: Build error: Failed compiling object src/mime.obj
 PS C:\Users\AlanJui>
 ```
 
-"C:\ProgramData\chocolatey\lib\luarocks\luarocks-2.4.4-win32\luarocks.bat"
-
 ### 模糊搜尋工具
 
 - 官網：[ripgrep](https://github.com/BurntSushi/ripgrep)
@@ -130,13 +333,13 @@ PS C:\Users\AlanJui>
 
 安裝操作：
 
-```
+```sh
 $ choco install ripgrep
 ```
 
 驗證安裝：
 
-```
+```sh
 PS C:\Users\AlanJui> rg --version
 ripgrep 14.1.0 (rev e50df40a19)
 
@@ -172,46 +375,57 @@ choco install vifm
 - 發行版：nvim-win64.msi
 - 安裝路徑：C:\Program Files\Neovim
 
-## 安裝 NvChad 插件
-
-NvChad 亦為 Neovim 插件，可透過【Windows終端機 + PowerShell介面】安裝。
-建議：不要使用【系統管理員】權限，來執行以下之安裝。
-
-```sh
-git clone https://github.com/NvChad/starter $ENV:USERPROFILE\AppData\Local\nvim
-nvim
-```
-
-【註】：
-
-1. 一定要執行過 nvim 一次；一定要執行過 nvim 一次；一定要執行過 nvim 一次。
-   因為 NvChad 的 Starter 需要 nvim 啟動後，才能正常運作。也只有 NvChad Starter
-   執行過後，NvChad 在 Neovim 所需之執行環境才能備妥，如：在 C:\Users\\\<UserName>\AppData\Local\nvim-data 目錄下
-   安裝 base46 這個插件。
-
-2. 如果您與 Linux 比較熟識：
-
-目錄： C:\Users\\\<UserName>\AppData\Local\nvim-data 等同 Linux 的 ~/.local/share/nvim/ 。
-
 ## 安裝 Nvchad2025 客製化範本
 
 Nvchad2025 即本專案所建置的 NvChad 2.5 參考範本！
 
 ### 最簡方式（一）
 
+【Windows 安裝作業】：
+
+1. 下載本專案産出之設定檔：
+
 ```sh
-PS C:\Users\AlanJui> cd C:\Users\AlanJui\AppData\Local\
+PS C:\Users\AlanJui> cd ~\AppData\Local\
 PS C:\Users\AlanJui> mv nvim nvim_bak
 PS C:\Users\AlanJui\AppData\Local> git clone https://github.com/AlanJui/Nvchad2025.git nvim
 ```
 
+2. 啟動 nvim 。
+
+3. 執行 nvim 指令，透過 Mason 安裝：LangServer / DAP / Linter / Formatter。
+
+```sh
+:MasonInstallAll
+```
+
+【Linux / macOS / WSL2 安裝作業】：
+
+1. 下載本專案産出之設定檔：
+
+```sh
+$ git clone https://github.com/AlanJui/Nvchad2025.git ~/.config/nvim
+```
+
+2. 啟動 nvim 。
+
+3. 執行 nvim 指令，透過 Mason 安裝：LangServer / DAP / Linter / Formatter。
+
+```sh
+:MasonInstallAll
+```
+
 【註】：
 
-1. 上述 AlanJui 那是我的 <UserName> 帳號。
+1. 在【Windows 終端機 + Windows PowerShell】輸入目錄： "~\AppData" 會被自動轉換成 "C:\Users\《UserName》\AppData" 。
+   操作方法：【cd ~\App】之後，按 \<Tab> 鍵，便會自動轉換成目錄：
+   C:\Users\《UserName》\AppData ；
 
-2. 當我啟動【Windows 終端機 + Windows PowerShell】之後，自【提示符號】可知目前正位於
-   路徑為：C:\Users\AlanJui 之目錄。當我輸入【cd ~\App】之後，按 \<Tab> 鍵，便會自動轉換成目錄：
-   C:\Users\AlanJui\AppData 。
+2. 目錄路徑：~\AppData\Local\nvim 等同 Linux 的 ~/.local/share/nvim/ ；
+
+3. Nvim 設定檔目錄路徑： ~/.config/nvim = ~/AppData/Local/nvim ；
+
+4. Nvim 插件檔目錄路徑： ~/.local/share/nvim = ~/AppData/Local/nvim-data
 
 ### NvChad 專用模式（二）
 
@@ -250,21 +464,22 @@ if ($args.Count -eq 0) {
 Set-Alias nvchad C:\bin\nvchad.ps1
 ```
 
-3. 首次啟動 nvchad
-
-首次啟動很重要！首次啟動很重要！首次啟動很重要！
-
-```sh
-nvchad
-```
-
-4. 下載 Nvchad2025 之 NvChad 2.5 參考範本
+3. 下載 Nvchad2025 之 NvChad 2.5 參考範本
 
 ```sh
 PS C:\Users\AlanJui> cd C:\Users\AlanJui\AppData\Local\
-PS C:\Users\AlanJui> mv nvchad nvchad_bak
 PS C:\Users\AlanJui\AppData\Local> git clone https://github.com/AlanJui/Nvchad2025.git nvchad
 ```
+
+4. 啟動 nvim 。
+
+5. 執行 nvim 指令，透過 Mason 安裝：LangServer / DAP / Linter / Formatter。
+
+```sh
+:MasonInstallAll
+```
+
+---
 
 恭禧！您走到這裡，終於可以打完收工了。我承認以上的安裝程序不算 Smart ，
 可能還有些「煩~~~」，但這也是目前我所能做到的極限。
@@ -281,19 +496,34 @@ PS C:\Users\AlanJui\AppData\Local> git clone https://github.com/AlanJui/Nvchad20
 
 ### 更新系統環境變數
 
-安裝：
+透過 PowerShell 指令 refreshenv （類似 Linux Bash Shell 的指令： source ~/.bashrc）
+，可立即更新系統環境變數之設定。
 
-```
-refreshenv
-Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+1. 查詢 PowerShell Profile 路徑
+
+```sh
+PS C:\Users\AlanJui> $PROFILE
+C:\Users\AlanJui\OneDrive\文件\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 ```
 
-範例：
+2. 啟用 refreshenv 指令
 
+建立 PowerShell Profile 檔案，可以下列指令建立：
+
+```sh
+if (!(Test-Path -Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
 ```
-PS C:\Users\AlanJui> refreshenv
-RefreshEnv.cmd does not work when run from this process. If you're in PowerShell, please 'Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1' and try again.
-PS C:\Users\AlanJui> Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+
+3. 編輯 PowerShell Profile
+
+```sh
+PS C:\Users\AlanJui> nvim $PROFILE
+```
+
+4. 重新載入 PowerShell Profile，執行 refreshenv 指令：
+
+```sh
+PS C:\Users\AlanJui> . $PROFILE
 PS C:\Users\AlanJui> refreshenv
 Refreshing environment variables from the registry for powershell.exe. Please wait...
 Finished
@@ -304,20 +534,20 @@ PS C:\Users\AlanJui>
 
 【PowerShell】
 
-```
+```sh
 Remove-Item -Recurse -Force C:\Users\AlanJui\AppData\Local\nvim\lua\custom
 Remove-Item -Recurse -Force ~\AppData\Local\nvim\lua\custom
 ```
 
 【CMD】
 
-```
+```sh
 rd /s /q Remove-Item -Recurse -Force C:\Users\AlanJui\AppData\Local\nvim\lua\custom
 ```
 
 ### 在 Windows 環境安裝 OpenSSL
 
-```
+```sh
 fatal: unable to access 'https://github.com/tree-sitter/tree-sitter-scala/': OpenSSL SSL_read: SSL_ERROR_SYSCALL, errno 0
 ```
 
@@ -325,19 +555,19 @@ fatal: unable to access 'https://github.com/tree-sitter/tree-sitter-scala/': Ope
 
 （1）設定 git 改用 OpenSSL
 
-```
+```sh
 git config --global http.sslBackend openssl
 ```
 
 （2）利用 git clone 驗證 OpenSSL 已能正常運作
 
-```
+```sh
 git clone https://github.com/tree-sitter/tree-sitter-scala.git
 ```
 
 【參考】：強制使用舊版 TLS 1.2 ；而不使用新版 1.3
 
-```
+```sh
 git config --global http.sslVersion tls1.2
 git clone https://github.com/tree-sitter/tree-sitter-scala.git
 ```
@@ -346,14 +576,14 @@ git clone https://github.com/tree-sitter/tree-sitter-scala.git
 
 設定：
 
-```
+```sh
 git config --global http.sslBackend openssl
 git config --global http.sslVersion tls1.2
 ```
 
 驗證：
 
-```
+```sh
 git config --global http.sslBackend
 openssl
 ```

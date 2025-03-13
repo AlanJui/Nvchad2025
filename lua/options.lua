@@ -1,5 +1,7 @@
 require "nvchad.options"
 
+local env = require "utils.env"
+
 -- add yours here!
 
 -- local o = vim.o
@@ -11,13 +13,10 @@ require "nvchad.options"
 -- vim.g.loaded_node_provider = 0
 -- vim.g.loaded_python3_provider = 0
 
--- 判斷作業系統 (Windows vs. Unix-like)
-local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
-
 -------------------------------------------------
 -- 設定 Provider
 -------------------------------------------------
-if is_win then
+if env.is_win then
   -- Windows 環境的設定
   -- 請確認檔案路徑中使用「\\」做跳脫，或使用正斜線 "/"
 
@@ -33,10 +32,14 @@ if is_win then
   -- Node.js
   -- 假設全域路徑在 /usr/local/lib/node_modules/neovim/bin/cli.js
   -- 注意: Windows 會是類似 C:\\Users\\<username>\\AppData\\Roaming\\npm\\node_modules\\neovim\\bin\\cli.js
-  local node_win = "C:\\Program Files\\nodejs\\node.exe"
+  -- local node_win = "C:\\Users\\AlanJui\\AppData\\Roaming\\npm\\node_modules\\neovim\\bin\\cli.js"
+  -- local node_win =
+  --   "C:\\Users\\AlanJui\\AppData\\Local\\fnm_multishells\\6348_1741877567248\\node_modules\\neovim\\bin\\cli.js"
+  local node_win = "C:\\Users\\AlanJui\\AppData\\Local\\fnm_multishells\\28784_1741874123662\\node.exe"
   if vim.fn.executable(node_win) == 1 then
-    vim.g.node_host_prog = node_win
-    vim.g.loaded_node_provider = 1
+    -- vim.g.node_host_prog = node_win
+    -- vim.g.loaded_node_provider = 1
+    vim.g.loaded_node_provider = 0
   end
 else
   -- Linux 或其他 Unix-like 環境
@@ -56,7 +59,7 @@ else
   end
 end
 -- using with vscode extensions. i.e ~/.vscode/extensions/deinsoftware.vitest-snippets-1.8.0
-if is_win then
+if env.is_win then
   vim.g.vscode_snippets_path = "C:/Users/AlanJui/AppData/Local/nvim/my_snippets"
 else
   vim.g.vscode_snippets_path = vim.fn.stdpath "config" .. "/my_snippets"
@@ -95,7 +98,7 @@ opt.shiftwidth = 2
 -------------------------------------------------
 -- 設置剪貼板
 -------------------------------------------------
-if is_win then
+if env.is_win then
   -- vim.cmd [[
   --   set clipboard+=unnamedplus
   -- ]]
@@ -155,7 +158,7 @@ local home_dir = os.getenv "HOME" or os.getenv "USERPROFILE"
 -- 自訂拼字檔最終路徑
 local custom_spellfile = ""
 
-if is_win then
+if env.is_win then
   -- Windows 的拼字檔放在 C:\Users\<使用者>\AppData\Local\nvim\spell\
   -- 你也可以直接寫死完整路徑
   custom_spellfile = home_dir .. "\\AppData\\Local\\nvim\\spell\\en.utf-8.add"

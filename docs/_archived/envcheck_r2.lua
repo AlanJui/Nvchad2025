@@ -24,19 +24,9 @@ function M.show_report()
     string.format("• 目錄分隔符號：%s", env.path_sep),
   }
 
-  -- 建立全螢幕的新 buffer 顯示報告
-  vim.cmd "tabnew"
-  local buf = vim.api.nvim_get_current_buf()
-  vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
-  vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
-  vim.api.nvim_buf_set_option(buf, "swapfile", false)
-  vim.api.nvim_buf_set_option(buf, "buflisted", false)
-  vim.api.nvim_buf_set_option(buf, "modifiable", true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_option(buf, "modifiable", false)
-
-  -- 調整視窗為唯讀模式，避免誤修改
-  vim.cmd "setlocal nomodifiable readonly"
+  vim.cmd "new | setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted"
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  vim.cmd "setlocal nomodifiable"
 end
 
 return M

@@ -216,6 +216,8 @@ map("n", "<leader>rn", function()
     cmd_str = "lua " .. file_name
   elseif file_type == "python" then
     cmd_str = "python " .. file_name
+  elseif file_type == "rust" then
+    cmd_str = "cargo build "
   end
 
   require("toggleterm").exec(cmd_str)

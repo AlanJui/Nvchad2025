@@ -348,6 +348,14 @@ Error: Build error: Failed compiling object src/mime.obj
 PS C:\Users\AlanJui>
 ```
 
+### 建置 Rust 作業環境
+
+由於 Mason 插件在安裝 LangServer / DAP / Linter / Formatter 等 nvim 支援套件時，
+很有可能會用 Rust 程式語言及其 Cargo 套件管理器，來編譯原始程式碼。例如：toml 檔案
+之 LangServer: taplo ，必須依賴 Rust / Cargo 才能使用 :MasonInstall taplo 指令完成安裝。
+
+如何架設 Rust 作業環境，請參考：[《Rust 作業環境建置指引》](docs/Rust_Guide.md) 文件。
+
 ### 模糊搜尋工具
 
 - 官網：[ripgrep](https://github.com/BurntSushi/ripgrep)

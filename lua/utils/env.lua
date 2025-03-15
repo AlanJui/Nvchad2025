@@ -97,22 +97,51 @@ function M.get_node_version()
   return result
 end
 
--- function M.get_fnm_node()
---   local handle = io.popen "fnm current"
---   if not handle then
---     return nil -- 防 io.popen() 執行失敗
---   end
---
---   local result = handle:read "*a"
---   handle:close()
---
---   if not result or result == "" then
---     return nil -- 防讀取不到任何資料
---   end
---
---   result = result:gsub("\n", "") -- 移除換行符號
---   -- return result
---   return "C:\\Users\\AlanJui\\AppData\\Local\\fnm_multishells\\" .. result .. "\\installation\\node.exe"
--- end
+function M.get_fnm_node()
+  -- 執行 PowerShell 命令取得 node.exe 的真實路徑
+  local command = 'powershell.exe -Command "(Get-Command node.exe).Source"'
+  local handle = io.popen(command)
+  if not handle then
+    return nil
+  end
+
+  local result = handle:read "*a"
+  handle:close()
+
+  -- 移除換行符號及空白
+  result = result:gsub("[\r\n]+", "")
+
+  if result == "" then
+    return nil -- 找不到 node 路徑
+  end
+
+  return result
+end
+
+function M.get_node_host_prog()
+  local node_path = M.get_fnm_node()
+  if not node_path then
+    return nil
+  end
+
+  -- 取得 Node.js 所在目錄
+  local node_dir = node_path:match "(.*)[/\\]node%.exe$"
+  if not node_dir then
+    return nil
+  end
+
+  local host_prog = ""
+
+  if M.is_powershell then
+    host_prog = node_dir .. "\\neovim-node-host.ps1"
+  elseif M.is_cmd then
+    host_prog = node_dir .. "\\neovim-node-host.cmd"
+  else
+    -- 預設其他情況 (WSL/Git Bash等)
+    host_prog = node_dir .. "/neovim-node-host"
+  end
+
+  return host_prog
+end
 
 return M

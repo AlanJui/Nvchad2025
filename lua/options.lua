@@ -16,6 +16,21 @@ local env = require "utils.env"
 -------------------------------------------------
 -- 設定 Provider
 -------------------------------------------------
+
+-- Node.js Provider
+-- 使用 n 管理 Node.js 直譯器： os.getenv("HOME") .. "/n/bin/neovim-node-host"
+-- 假設全域路徑在 /usr/local/bin/neovim-node-host
+-- 注意: Windows ==> C:\Users\AlanJui\AppData\Roaming\fnm\node-versions\v22.8.0\installation\neovim-node-host.ps1
+-- local env = require("utils.env")
+local node_host_prog = env.get_node_host_prog()
+if node_host_prog then
+  vim.g.node_host_prog = node_host_prog
+  vim.g.loaded_node_provider = 1
+else
+  vim.notify("找不到 neovim-node-host 路徑！", vim.log.levels.WARN)
+end
+
+-- Python Provider
 if env.is_win then
   -- Windows 環境的設定
   -- 請確認檔案路徑中使用「\\」做跳脫，或使用正斜線 "/"
@@ -28,19 +43,6 @@ if env.is_win then
     vim.g.python3_host_prog = py_win
     vim.g.loaded_python3_provider = 1
   end
-
-  -- Node.js
-  -- 假設全域路徑在 /usr/local/lib/node_modules/neovim/bin/cli.js
-  -- 注意: Windows 會是類似 C:\\Users\\<username>\\AppData\\Roaming\\npm\\node_modules\\neovim\\bin\\cli.js
-  -- local node_win = "C:\\Users\\AlanJui\\AppData\\Roaming\\npm\\node_modules\\neovim\\bin\\cli.js"
-  -- local node_win =
-  --   "C:\\Users\\AlanJui\\AppData\\Local\\fnm_multishells\\6348_1741877567248\\node_modules\\neovim\\bin\\cli.js"
-  local node_win = "C:\\Users\\AlanJui\\AppData\\Local\\fnm_multishells\\28784_1741874123662\\node.exe"
-  if vim.fn.executable(node_win) == 1 then
-    -- vim.g.node_host_prog = node_win
-    -- vim.g.loaded_node_provider = 1
-    vim.g.loaded_node_provider = 0
-  end
 else
   -- Linux 或其他 Unix-like 環境
   -- 假設你在 Linux 使用 pyenv 的 python3
@@ -51,13 +53,8 @@ else
   if vim.fn.executable(py_linux) == 1 then
     vim.g.python3_host_prog = py_linux
   end
-
-  -- Node host (假設你用 n 管理器)
-  local node_linux = home_dir .. "/n/bin/neovim-node-host"
-  if vim.fn.executable(node_linux) == 1 then
-    vim.g.node_host_prog = node_linux
-  end
 end
+
 -- using with vscode extensions. i.e ~/.vscode/extensions/deinsoftware.vitest-snippets-1.8.0
 if env.is_win then
   vim.g.vscode_snippets_path = "C:/Users/AlanJui/AppData/Local/nvim/my_snippets"

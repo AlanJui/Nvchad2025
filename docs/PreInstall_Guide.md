@@ -203,6 +203,24 @@ C:\Users\AlanJui\AppData\Local\fnm_multishells\28784_1741874123662\node.exe
   local node_win = "C:\Users\AlanJui\AppData\Local\fnm_multishells\6348_1741877567248\node_modules\neovim\bin\cli.js"
 ```
 
+**【設定 Path 系統環境變數】**：
+
+建立軟連結（Symbolic Link）永遠指向 C:\bin\nodejs 目錄路徑。
+下述之操作，需以【系統管理員】身份操作。
+
+1. 建立目錄：
+
+```sh
+mkdir c:\bin\nodejs
+```
+
+2. 執行 PowerShell 指令，建立軟連結：
+
+```sh
+cd ~\AppData\Local\nvim\docs
+.\fnm_path.ps1
+```
+
 ### 安裝 Lua 直譯器及套件管理器
 
 （1）安裝直譯器

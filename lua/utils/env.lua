@@ -138,7 +138,9 @@ function M.get_node_host_prog()
     host_prog = node_dir .. "\\neovim-node-host.cmd"
   else
     -- 預設其他情況 (WSL/Git Bash等)
-    host_prog = node_dir .. "/neovim-node-host"
+    -- host_prog = node_dir .. "/neovim-node-host"
+    -- ~/n/lib/node_modules/neovim/bin/cli.js
+    host_prog = os.getenv "HOME" .. "/n/bin/neovim-node-host"
   end
 
   return host_prog

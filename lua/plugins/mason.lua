@@ -12,6 +12,10 @@ return {
       "MasonLog",
     },
     opts = {
+      providers = {
+        "mason.providers.client",
+        "mason.providers.registry-api",
+      },
       ensure_installed = {
         "lua-language-server", -- Lua LSP Server
         "stylua",

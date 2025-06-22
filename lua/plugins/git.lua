@@ -77,7 +77,7 @@ return {
   },
   {
     "lewis6991/gitsigns.nvim",
-    enabled = false, -- Disable gitsigns.nvim as it conflicts with diffview.nvim
+    -- enabled = false, -- Disable gitsigns.nvim as it conflicts with diffview.nvim
     event = { "BufReadPre", "BufNewFile" },
     opts = {
       signs = {
@@ -619,13 +619,15 @@ return {
       }
     end,
   },
-  -- Git commands in nvim
-  "tpope/vim-fugitive",
-  -- Fugitive-companion to interact with github
-  -- "tpope/vim-rhubarb",
-  -- Add git related info in the signs columns and popups
-  -- for creating gist
-  -- Personal Access Token: ~/.gist-vim
-  -- token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  -- { "mattn/vim-gist", dependencies = "mattn/webapi-vim" },
+  {
+    -- Git commands in nvim
+    "tpope/vim-fugitive",
+    -- Fugitive-companion to interact with github
+    -- "tpope/vim-rhubarb",
+    -- Add git related info in the signs columns and popups
+    -- for creating gist
+    -- Personal Access Token: ~/.gist-vim
+    -- token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -- { "mattn/vim-gist", dependencies = "mattn/webapi-vim" },
+  },
 }

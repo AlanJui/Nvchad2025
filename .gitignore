@@ -1,0 +1,53 @@
+#================================
+# 作業系統層級工作目錄/日誌檔
+#================================
+.DS_Store
+.hg
+.svn
+.idea
+# Temporary files
+*.kate-swp
+*.swp
+*.swo
+# 系統服務工作目錄/日誌檔
+pids
+logs
+coverage/
+.DS_Store
+.nyc_output
+.basement
+basement_dist
+#================================================
+# Microsoft 常用工作目錄/日誌檔/暫存檔
+#================================================
+# 微軟Office文件工作暫存檔
+*~
+~$*
+#================================================
+# Node.js IDE/編輯器工作目錄/日誌檔
+#================================================
+node_modules
+npm-debug.log
+dist
+run
+config.local.js
+#================================================
+# Python IDE/編輯器工作目錄/日誌檔
+#================================================
+#.vscode
+**/.null-ls*.py
+.ipynb_checkpoints/
+# Python virtual environments
+.venv/
+env/
+__pycache__/
+.pyc
+static_collected/
+#================================================
+# 個人作業常用暫存檔或檔案夾
+#================================================
+process_log.txt
+_archived/
+Documents/tmp*.xlsx
+docs/tmp.csv
+_bak

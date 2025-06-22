@@ -1,0 +1,22 @@
+[tool.djlint]
+ignore = "H014,H015"
+exclude=".venv,venv,.tox,.eggs,..."  # 忽略檢查的目錄
+
+[tool.ruff]
+ignore = ["E501"]  # 忽略行長度限制
+line-length = 160
+
+[tool.ruff.format]
+quote-style = "double"  # 若偏好單引號可設 single
+indent-style = "space"
+
+[tool.pycodestyle]
+count = false
+ignore = ["E226", "E302", "E71", "W293"]
+max-line-length = 160
+statistics = true
+
+[tool.pydocstyle]
+inherit = false
+ignore = ["D100", "D103", "D203", "D405", "E501"]
+match = "*.py"

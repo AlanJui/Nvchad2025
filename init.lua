@@ -56,6 +56,24 @@ end)
 -------------------------------------------------
 -- 個人化設定
 -------------------------------------------------
+local toggle = require "my.toggle_list"
+vim.keymap.set("n", "<leader>tl", toggle.toggle_list, { desc = "Toggle List Characters" })
+-- toggle_list = function()
+--   if vim.opt.list:get() then
+--     vim.opt.list = false
+--     vim.notify("Control characters hidden (list = off)", vim.log.levels.INFO)
+--   else
+--     vim.opt.list = true
+--     vim.opt.listchars = {
+--       tab = "»·",
+--       trail = "·",
+--       extends = ">",
+--       precedes = "<",
+--     }
+--     vim.notify("Control characters shown (list = on)", vim.log.levels.INFO)
+--   end
+-- end
+-- vim.keymap.set("n", "<leader>tl", toggle_list, { desc = "Toggle List Characters" })
 -- -- 確保 Mason 先執行 setup()
 -- local mason = require "mason"
 -- mason.setup()

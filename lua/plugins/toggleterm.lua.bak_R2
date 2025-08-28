@@ -1,0 +1,194 @@
+return {
+  "akinsho/toggleterm.nvim",
+  dependencies = {
+    "kdheepak/lazygit.nvim",
+    "nvim-lua/plenary.nvim",
+  },
+  lazy = false, -- 立即可用；若想延後載入可改為 true 並以 cmd/keys 觸發
+  cmd = { "ToggleTerm", "TermExec", "LazyGit" },
+  keys = {
+    -- { [[<C-t>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", desc = "Horizontal Terminal" },
+    { [[<C-\>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", desc = "Horizontal Terminal" },
+    { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<CR>", desc = "Vertical Terminal" },
+    { "<leader>2", "<cmd>2ToggleTerm<CR>", desc = "Terminal #2" },
+  },
+
+  config = function()
+    ---------------------------------------------------------------------------
+    -- 工具函式：偵測 / 尋找可執行檔
+    ---------------------------------------------------------------------------
+    local uv = vim.loop
+    local fn = vim.fn
+
+    local function is_windows()
+      return uv.os_uname().sysname == "Windows_NT"
+    end
+
+    local function in_wsl()
+      -- 在 WSL 環境：sysname=Linux 且帶有 WSL 相關環境變數
+      return (uv.os_uname().sysname == "Linux")
+        and (fn.getenv "WSL_INTEROP" ~= vim.NIL or fn.getenv "WSL_DISTRO_NAME" ~= vim.NIL)
+    end
+
+    local function exists(path)
+      return path and uv.fs_stat(path) ~= nil
+    end
+
+    local function which(names)
+      for _, name in ipairs(names) do
+        if fn.executable(name) == 1 then
+          return name
+        end
+      end
+      return nil
+    end
+
+    -- 嘗試在常見安裝路徑找到 Git Bash（就算不在 PATH 也能用）
+    local function find_git_bash()
+      -- 若在 Git Bash 啟動（有 MSYSTEM），直接用 bash.exe
+      if fn.getenv "MSYSTEM" ~= vim.NIL then
+        return which { "bash.exe" } or "bash.exe"
+      end
+      -- 常見安裝路徑（依您實際安裝位置可再增補）
+      local candidates = {
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "C:\\Program Files\\Git\\usr\\bin\\bash.exe",
+        "C:\\Program Files (x86)\\Git\\bin\\bash.exe",
+        "C:\\Program Files (x86)\\Git\\usr\\bin\\bash.exe",
+      }
+      for _, p in ipairs(candidates) do
+        if exists(p) then
+          return p
+        end
+      end
+      -- 最後再看 PATH
+      return which { "bash.exe" }
+    end
+
+    ---------------------------------------------------------------------------
+    -- 選擇「預設 Shell」的策略
+    ---------------------------------------------------------------------------
+    local function pick_default_shell()
+      if is_windows() then
+        -- 1) 若偵測到 Git Bash（或使用者在 Git Bash 裡啟動），優先用 Git Bash
+        local git_bash = find_git_bash()
+        if git_bash then
+          return git_bash
+        end
+
+        -- 2) PowerShell 7 → PowerShell 5 → CMD
+        local pwsh = which { "pwsh.exe" }
+        if pwsh then
+          return pwsh
+        end
+
+        local ps51 = which { "powershell.exe" }
+        if ps51 then
+          return ps51
+        end
+
+        return "cmd.exe"
+      end
+
+      -- Linux / macOS / WSL：依常見喜好排序
+      local z = which { "zsh" }
+      if z then
+        return z
+      end
+
+      local b = which { "bash" }
+      if b then
+        return b
+      end
+
+      local f = which { "fish" }
+      if f then
+        return f
+      end
+
+      return "sh"
+    end
+
+    -- 決定最終 shell（WSL 也走 Linux 邏輯；若您在 Win 的 Neovim 想啟動 WSL，可改成 "wsl.exe"）
+    local DEFAULT_SHELL = pick_default_shell()
+
+    ---------------------------------------------------------------------------
+    -- ToggleTerm 主設定
+    ---------------------------------------------------------------------------
+    require("toggleterm").setup {
+      size = 20,
+      hide_numbers = true,
+      shade_terminals = true,
+      shading_factor = 2,
+      start_in_insert = true,
+      insert_mappings = true,
+      persist_size = true,
+      direction = "float",
+      close_on_exit = true,
+
+      -- ★關鍵：明確指定為我們選出的預設 shell，避免初始化時機差導致回退到 cmd.exe
+      shell = DEFAULT_SHELL,
+
+      float_opts = {
+        border = "curved",
+        winblend = 0,
+        highlights = { border = "Normal", background = "Normal" },
+      },
+    }
+
+    ---------------------------------------------------------------------------
+    -- 便捷切換：:TTpwsh / :TTbash / :TTcmd
+    -- 會改寫 ToggleTerm 之後開啟的終端使用的 shell（已開的 buffer 不會強制換）
+    ---------------------------------------------------------------------------
+    local function set_toggleterm_shell(sh)
+      local term = require("toggleterm.terminal").Terminal
+      term.shell = sh
+      vim.notify(("ToggleTerm shell → %s"):format(sh), vim.log.levels.INFO)
+    end
+
+    -- PowerShell：優先 pwsh.exe，否則 powershell.exe
+    vim.api.nvim_create_user_command("TTpwsh", function()
+      local sh = which { "pwsh.exe", "powershell.exe" } or "powershell.exe"
+      set_toggleterm_shell(sh)
+    end, {})
+
+    -- Bash：在 Windows 也嘗試找 Git Bash
+    vim.api.nvim_create_user_command("TTbash", function()
+      local sh
+      if is_windows() then
+        sh = find_git_bash() or which { "bash.exe" } or "bash.exe"
+      else
+        sh = which { "bash", "zsh", "sh" } or "bash"
+      end
+      set_toggleterm_shell(sh)
+    end, {})
+
+    -- CMD：僅 Windows 使用
+    vim.api.nvim_create_user_command("TTcmd", function()
+      local sh = is_windows() and "cmd.exe" or (which { "sh", "bash" } or "sh")
+      set_toggleterm_shell(sh)
+    end, {})
+
+    ---------------------------------------------------------------------------
+    -- Terminal 模式常用鍵位（沿用您原設）
+    ---------------------------------------------------------------------------
+    function _G.set_terminal_keymaps()
+      local opts = { buffer = 0 }
+      vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], opts)
+      vim.keymap.set("t", "jk", [[<C-\><C-n>]], opts)
+      vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
+      vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
+      vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
+      vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
+      vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
+    end
+    vim.cmd "autocmd! TermOpen term://* lua set_terminal_keymaps()"
+
+    ---------------------------------------------------------------------------
+    -- （選配）載入您原本的常用終端配置
+    ---------------------------------------------------------------------------
+    pcall(require, "configs.lazygit")
+    pcall(require, "configs.nodejs_console")
+    pcall(require, "configs.python_console")
+  end,
+}

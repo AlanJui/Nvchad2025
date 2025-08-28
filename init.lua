@@ -98,3 +98,13 @@ vim.keymap.set("n", "<leader>tl", toggle.toggle_list, { desc = "Toggle List Char
 --
 -- print("使用的 Shell 環境：", tbl.to_string(vim.o.shell))
 -- print("Shell 指令參數：", tbl.to_string(vim.o.shellcmdflag))
+----------------------------------------------------------------
+-- 設定預設 shell 為 Windows PowerShell
+----------------------------------------------------------------
+if vim.fn.has "win32" == 1 then
+  -- vim.opt.shell = "pwsh.exe" -- 或 "powershell.exe"
+  vim.opt.shell = "powershell.exe" -- 或 "powershell.exe"
+  vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+  vim.opt.shellquote = ""
+  vim.opt.shellxquote = ""
+end

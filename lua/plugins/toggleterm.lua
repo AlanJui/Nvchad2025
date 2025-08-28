@@ -7,6 +7,7 @@ return {
   lazy = false,
   cmd = { "ToggleTerm", "TermExec", "LazyGit" },
   keys = {
+    -- { [[<C-\>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
     { [[<C-t>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
     { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<CR>", { desc = "Vertical Terminal" } },
     {
@@ -21,7 +22,6 @@ return {
     ---------------------------------------------------------------------
     local function setup_for_git_bash()
       require("toggleterm").setup {
-        open_mapping = "<C-\\>",
         start_in_insert = true,
         direction = "float",
       }
@@ -32,7 +32,6 @@ return {
     local function setup_for_powershell()
       require("toggleterm").setup {
         size = 20,
-        open_mapping = [[<c-\>]],
         hide_numbers = true,
         shade_filetypes = {},
         shade_terminals = true,
@@ -42,7 +41,8 @@ return {
         persist_size = true,
         direction = "float",
         close_on_exit = true,
-        shell = vim.o.shell,
+        -- shell = vim.o.shell,
+        shell = (vim.fn.executable "pwsh.exe" == 1) and "pwsh.exe" or "powershell.exe",
         float_opts = {
           border = "curved",
           winblend = 0,
@@ -58,7 +58,7 @@ return {
     -- 設置 ToggleTerm 引用 Shell 環境設定
     ---------------------------------------------------------------------
     local is_win_nt = vim.loop.os_uname().sysname == "Windows_NT"
-    local has_powershell = vim.fn.executable "powershell.exe" == 1
+    local has_powershell = vim.fn.executable "powershell.exe" == 1 or vim.fn.executable "pwsh.exe" == 1
 
     if is_win_nt and has_powershell then
       -- 偵測是否在 Git Bash 環境啟動 (檢查環境變數 MSYSTEM 是否存在)
@@ -81,7 +81,6 @@ return {
       vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
       vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
     end
-
     -- if you only want these mappings for toggle term use term://*toggleterm#* instead
     vim.cmd "autocmd! TermOpen term://* lua set_terminal_keymaps()"
 

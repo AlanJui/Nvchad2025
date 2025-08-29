@@ -1,6 +1,142 @@
 # 使用 Mermaid Script 繪製圖表
 
+## 需求圖
+
+```mermaid
+requirementDiagram
+
+    requirement test_req {
+    id: 1
+    text: the test text.
+    risk: high
+    verifymethod: test
+    }
+
+    element test_entity {
+    type: simulation
+    }
+
+    test_entity - satisfies -> test_req
+```
+
+## 循序圖
+
+```mermaid
+sequenceDiagram
+    Alice->>John: Hello John, how are you?
+    activate John
+    John-->>Alice: Great!
+    deactivate John
+```
+
+```mermaid
+sequenceDiagram
+    Alice->>+John: Hello John, how are you?
+    Alice->>+John: John, can you hear me?
+    John-->>-Alice: Hi Alice, I can hear you!
+    John-->>-Alice: I feel great!
+```
+
+```mermaid
+sequenceDiagram
+    Alice->John: Hello John, how are you?
+    loop Every minute
+        John-->Alice: Great!
+    end
+```
+
+```mermaid
+sequenceDiagram
+    Alice->>Bob: Hello Bob, how are you?
+    alt is sick
+        Bob->>Alice: Not so good :(
+    else is well
+        Bob->>Alice: Feeling fresh like a daisy
+    end
+    opt Extra response
+        Bob->>Alice: Thanks for asking
+    end
+```
+
+```mermaid
+sequenceDiagram
+    par Alice to Bob
+        Alice->>Bob: Hello guys!
+    and Alice to John
+        Alice->>John: Hello guys!
+    end
+    Bob-->>Alice: Hi Alice!
+    John-->>Alice: Hi Alice!
+```
+
+```mermaid
+sequenceDiagram
+    critical Establish a connection to the DB
+        Service-->DB: connect
+    option Network timeout
+        Service-->Service: Log error
+    option Credentials rejected
+        Service-->Service: Log different error
+    end
+```
+
+```mermaid
+sequenceDiagram
+    autonumber
+    Alice->>John: Hello John, how are you?
+    loop HealthCheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!
+```
+
+## 類別圖
+
+```mermaid
+---
+title: 類別圖範本
+---
+classDiagram
+    note "From Duck till Zebra"
+    Animal <|-- Duck
+    note for Duck "can fly\ncan swim\ncan dive\ncan help in debugging"
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
+    }
+    class Fish{
+        -int sizeInFeet
+        -canEat()
+    }
+    class Zebra{
+        +bool is_wild
+        +run()
+    }
+```
+
 ## 流程圖
+
+### 基礎流程圖
+
+```mermaid
+graph TD
+  A[開始] --> B[處理]
+  B --> C{判斷?}
+  C -->|是| D[動作1]
+  C -->|否| E[動作2]
+```
+
+### 程式流程圖
 
 ```mermaid
 flowchart TD
@@ -23,28 +159,6 @@ flowchart TD
     G --> Q
     H --> Q
     O --> Q
-```
-
-## 心智圖
-
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectiveness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
 ```
 
 ## 狀態圖
@@ -103,52 +217,24 @@ erDiagram
     }
 ```
 
-## 需求圖
+## 心智圖
 
 ```mermaid
-requirementDiagram
-
-    requirement test_req {
-    id: 1
-    text: the test text.
-    risk: high
-    verifymethod: test
-    }
-
-    element test_entity {
-    type: simulation
-    }
-
-    test_entity - satisfies -> test_req
-```
-
-## 類別圖
-
-```mermaid
----
-title: 類別圖範本
----
-classDiagram
-    note "From Duck till Zebra"
-    Animal <|-- Duck
-    note for Duck "can fly\ncan swim\ncan dive\ncan help in debugging"
-    Animal <|-- Fish
-    Animal <|-- Zebra
-    Animal : +int age
-    Animal : +String gender
-    Animal: +isMammal()
-    Animal: +mate()
-    class Duck{
-        +String beakColor
-        +swim()
-        +quack()
-    }
-    class Fish{
-        -int sizeInFeet
-        -canEat()
-    }
-    class Zebra{
-        +bool is_wild
-        +run()
-    }
+mindmap
+  root((mindmap))
+    Origins
+      Long history
+      ::icon(fa fa-book)
+      Popularisation
+        British popular psychology author Tony Buzan
+    Research
+      On effectiveness<br/>and features
+      On Automatic creation
+        Uses
+            Creative techniques
+            Strategic planning
+            Argument mapping
+    Tools
+      Pen and paper
+      Mermaid
 ```

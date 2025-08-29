@@ -5,5 +5,6 @@ vim.filetype.add {
     puml = "plantuml",
     uml = "plantuml",
     iuml = "plantuml",
+    mermaid = "mermaid",
   },
 }

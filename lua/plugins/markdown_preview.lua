@@ -28,16 +28,16 @@ return {
       vim.g.mkdp_echo_preview_url = true
       vim.g.mkdp_page_title = "${name}"
 
-      -- ★ 依環境決定 browser
-      local sys = vim.loop.os_uname().sysname
-      local is_wsl = (sys == "Linux")
-        and (vim.fn.getenv "WSL_INTEROP" ~= vim.NIL or vim.fn.getenv "WSL_DISTRO_NAME" ~= vim.NIL)
-
-      if is_wsl then
-        vim.g.mkdp_browser = "wslview" -- 在 WSL 呼叫 Windows 預設瀏覽器
-      else
-        vim.g.mkdp_browser = "" -- 其他情境用系統預設 opener（Windows/ Linux）
-      end
+      -- -- ★ 依環境決定 browser
+      -- local sys = vim.loop.os_uname().sysname
+      -- local is_wsl = (sys == "Linux")
+      --   and (vim.fn.getenv "WSL_INTEROP" ~= vim.NIL or vim.fn.getenv "WSL_DISTRO_NAME" ~= vim.NIL)
+      --
+      -- if is_wsl then
+      --   vim.g.mkdp_browser = "wslview" -- 在 WSL 呼叫 Windows 預設瀏覽器
+      -- else
+      --   vim.g.mkdp_browser = "" -- 其他情境用系統預設 opener（Windows/ Linux）
+      -- end
     end,
     ft = { "markdown", "mermaid", "plantuml" },
   },

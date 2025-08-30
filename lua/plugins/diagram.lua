@@ -18,3 +18,23 @@ return {
     },
   },
 }
+-- return {
+--   {
+--     "jbyuki/diagram.nvim",
+--     ft = { "mermaid", "markdown" },
+--     keys = {
+--       { "<leader>mr", "<cmd>lua require('diagram').render()<CR>", desc = "Render Mermaid inline" },
+--     },
+--     config = function()
+--       require("diagram").setup {
+--         renderer = {
+--           mermaid = {
+--             command = "mmdc", -- Mermaid CLI
+--             args = { "-i", "$FILENAME", "-o", "$OUTPUT" },
+--           },
+--         },
+--         viewer = "chafa", -- or "catimg", "viu" 等
+--       }
+--     end,
+--   },
+-- }

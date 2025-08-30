@@ -1,9 +1,10 @@
 return {
   {
     "iamcco/markdown-preview.nvim",
-    lazy = false,
-    enable = true,
-    build = "cd app && yarn install",
+    lazy = true,
+    enabled = true,
+    -- build = "cd app && yarn install",
+    build = ":call mkdp#util#install()",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
       -- { "<leader>um", "+MarkDown" },
@@ -26,8 +27,19 @@ return {
       vim.g.open_to_the_world = false
       vim.g.mkdp_echo_preview_url = true
       vim.g.mkdp_page_title = "${name}"
+
+      -- ★ 依環境決定 browser
+      local sys = vim.loop.os_uname().sysname
+      local is_wsl = (sys == "Linux")
+        and (vim.fn.getenv "WSL_INTEROP" ~= vim.NIL or vim.fn.getenv "WSL_DISTRO_NAME" ~= vim.NIL)
+
+      if is_wsl then
+        vim.g.mkdp_browser = "wslview" -- 在 WSL 呼叫 Windows 預設瀏覽器
+      else
+        vim.g.mkdp_browser = "" -- 其他情境用系統預設 opener（Windows/ Linux）
+      end
     end,
-    ft = { "markdown" },
+    ft = { "markdown", "mermaid", "plantuml" },
   },
   -- provides support to mermaid syntax files (e.g. *.mmd, *.mermaid)
   {

@@ -8,3 +8,8 @@ vim.filetype.add {
     mermaid = "mermaid",
   },
 }
+-- 存檔自動渲染 .mermaid
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.mermaid",
+  command = "MermaidRender",
+})

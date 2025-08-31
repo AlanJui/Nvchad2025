@@ -24,7 +24,7 @@ local aug = vim.api.nvim_create_augroup("SpellGuard", { clear = true })
 -- 你想允許自動開拼字的 filetype（可自行增刪）
 local whitelist = {
   markdown = true,
-  gitcommit = true,
+  -- gitcommit = true,
   text = true,
 }
 
@@ -57,6 +57,12 @@ local function in_force_off(ft)
   return false
 end
 
+-- -- ⭐ 新增：buffer 是否有效（避免 Invalid buffer id）
+-- -- ★ 安全寫入：先確保 buffer 還活著
+-- local function buf_is_valid(bufnr)
+--   return bufnr and bufnr ~= 0 and vim.api.nvim_buf_is_valid(bufnr)
+-- end
+
 -- 避免遞迴：每個 buffer 一把鎖
 local function with_lock(bufnr, f)
   bufnr = bufnr or 0
@@ -70,6 +76,29 @@ local function with_lock(bufnr, f)
     vim.b[bufnr]._spellguard_lock = false
   end, 0)
 end
+-- -- ⭐ 改良：帶鎖且保護無效 buffer
+-- -- ★ 鎖：避免遞迴；同時保護無效 buffer
+-- local function with_lock(bufnr, f)
+--   bufnr = bufnr or vim.api.nvim_get_current_buf()
+--   if not buf_is_valid(bufnr) then
+--     return
+--   end
+--   if vim.b[bufnr]._spellguard_lock then
+--     return
+--   end
+--   vim.b[bufnr]._spellguard_lock = true
+--   local ok, err = pcall(f, bufnr)
+--   if not ok then
+--     vim.schedule(function()
+--       vim.notify("SpellGuard: " .. tostring(err), vim.log.levels.DEBUG)
+--     end)
+--   end
+--   vim.defer_fn(function()
+--     if buf_is_valid(bufnr) then
+--       vim.b[bufnr]._spellguard_lock = false
+--     end
+--   end, 0)
+-- end
 
 local function enforce_spell()
   local ft = vim.bo.filetype or ""
@@ -83,6 +112,25 @@ local function enforce_spell()
     vim.opt_local.spell = false
   end
 end
+-- -- ⭐ 改良：接受 bufnr，並對所有顯示該 buffer 的視窗設置 window-local 的 spell
+-- local function enforce_spell(bufnr)
+--   if not buf_is_valid(bufnr) then
+--     return
+--   end
+--   local ft = vim.bo[bufnr].filetype or ""
+--   local want
+--   if in_force_off(ft) then
+--     want = false
+--   else
+--     want = whitelist[ft] == true
+--   end
+--   -- 對所有顯示此 buffer 的視窗逐一設定（因為 spell 是 window-local）
+--   for _, win in ipairs(vim.api.nvim_list_wins()) do
+--     if vim.api.nvim_win_get_buf(win) == bufnr then
+--       vim.api.nvim_set_option_value("spell", want, { scope = "local", win = win })
+--     end
+--   end
+-- end
 
 -- 任何有人改動 spell（:setlocal spell 等）→ 立刻套用我們的規則
 vim.api.nvim_create_autocmd("OptionSet", {

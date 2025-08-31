@@ -18,7 +18,6 @@
 --
 -- (3) 切到 NvimTree、Lazy UI、Telescope → 都應該保持 nospell。
 -------------------------------------------------------------------------
-
 local aug = vim.api.nvim_create_augroup("SpellGuard", { clear = true })
 
 -- 你想允許自動開拼字的 filetype（可自行增刪）

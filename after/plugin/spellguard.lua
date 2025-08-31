@@ -1,48 +1,35 @@
--- 強制拼字總開關（超兇版）
--- 目標：不管誰在什麼時機把 spell 打開，都依我們規則重設。
--- 作法說明：
--- 1. 監聽 OptionSet spell 事件，任何人改動拼字選項時，
---    立刻用我們的規則覆蓋。
--- 2. 用 with_lock 避免遞迴（因為我們在 OptionSet 裡又 setlocal）。
--- 3. 監聽其它事件（FileType, WinEnter, BufWritePost, Lazy 的 User 事件)，
---    只是補強，即使使用者執行：同步/安裝外掛、開 Lazy UI、重載設定，也會
---    被拉回預期狀態。
--- 放置：~/.config/nvim/after/plugin/spellguard.lua
--------------------------------------------------------------------------
--- 快速驗證
--------------------------------------------------------------------------
---
--- (1) 啟動 nvim，:Lazy → <S> Sync 後，執行 :SpellGuardStatus 看 spell=false。
---
--- (2) 編輯 lua/plugins/*.lua → :w 後，再 :verbose setlocal spell? 應顯示 nospell，且如果被誰打開過，最後一行會顯示我們 spellguard.lua 的位置。
---
--- (3) 切到 NvimTree、Lazy UI、Telescope → 都應該保持 nospell。
--------------------------------------------------------------------------
+-- 強制拼字總開關（穩定版：r3）
+-- 核心重點：
+--   1) 不再用 vim.b[buf] 當鎖，改用全域表 locks[bufnr]，避免 Invalid buffer id
+--   2) 所有動作前都檢查 buffer / window 是否有效
+--   3) OptionSet 回呼用 vim.schedule 延後，避開外掛關 buffer 的瞬間
+--   4) 嚴格事件覆蓋，防止外掛把 spell 又打開
+
 local aug = vim.api.nvim_create_augroup("SpellGuard", { clear = true })
 
--- 你想允許自動開拼字的 filetype（可自行增刪）
+-- ↓ 如果你要「全部關閉拼字」，把這個白名單清空即可
+-- local whitelist = {}  -- 全關
 local whitelist = {
-  -- markdown = true,
-  -- gitcommit = true,
-  text = true,
+  -- markdown  = true,    -- 想開再取消註解
+  -- gitcommit = true,    -- 想開再取消註解
+  -- text      = true,    -- 想開再取消註解
 }
 
--- 永遠禁止拼字的 UI/外掛視窗
+-- 永遠關閉拼字的 UI/外掛視窗
 local force_off_fts = {
-  "lazy",
-  "NvimTree",
-  "help",
-  "alpha",
-  "notify",
-  "qf",
-  "lspinfo",
-  "checkhealth",
-  "TelescopePrompt",
-  "TelescopeResults",
-  "dap-repl",
+  lazy = true,
+  NvimTree = true,
+  help = true,
+  alpha = true,
+  notify = true,
+  qf = true,
+  lspinfo = true,
+  checkhealth = true,
+  TelescopePrompt = true,
+  TelescopeResults = true,
+  ["dap-repl"] = true,
 }
--- 也支援像 dapui_scopes 這種前綴樣式
-local force_off_prefix = { "dapui_", "neo-tree", "trouble", "aerial" }
+local force_off_prefix = { "dapui_", "neo%-tree", "trouble", "aerial" }
 
 local function in_force_off(ft)
   if force_off_fts[ft] then
@@ -56,127 +43,130 @@ local function in_force_off(ft)
   return false
 end
 
--- ⭐ 新增：buffer 是否有效（避免 Invalid buffer id）
--- ★ 安全寫入：先確保 buffer 還活著
-local function buf_is_valid(bufnr)
-  return bufnr and bufnr ~= 0 and vim.api.nvim_buf_is_valid(bufnr)
+-- 安全性輔助
+local function buf_valid(bufnr)
+  return type(bufnr) == "number" and bufnr > 0 and vim.api.nvim_buf_is_valid(bufnr)
+end
+local function win_valid(winid)
+  return type(winid) == "number" and winid > 0 and vim.api.nvim_win_is_valid(winid)
 end
 
--- 避免遞迴：每個 buffer 一把鎖
+-- 🔒 全域鎖（避免遞迴），不用 vim.b 以免 buffer 被刪就報錯
+local locks = {} -- [bufnr] = true/false
+
 local function with_lock(bufnr, f)
-  bufnr = bufnr or 0
-  if vim.b[bufnr]._spellguard_lock then
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  if not buf_valid(bufnr) then
     return
   end
-  vim.b[bufnr]._spellguard_lock = true
-  pcall(f)
-  -- 用 defer 清鎖，避免 OptionSet 連續觸發
-  vim.defer_fn(function()
-    vim.b[bufnr]._spellguard_lock = false
-  end, 0)
+  if locks[bufnr] then
+    return
+  end
+  locks[bufnr] = true
+  local ok, err = pcall(f, bufnr)
+  if not ok then
+    vim.schedule(function()
+      -- 用 DEBUG 降噪；必要時可改 INFO 看得到提示
+      vim.notify("SpellGuard: " .. tostring(err), vim.log.levels.DEBUG)
+    end)
+  end
+  -- 立刻解鎖即可；若想更穩可 defer 0ms，但這裡直接解
+  locks[bufnr] = false
 end
--- -- ⭐ 改良：帶鎖且保護無效 buffer
--- -- ★ 鎖：避免遞迴；同時保護無效 buffer
--- local function with_lock(bufnr, f)
---   bufnr = bufnr or vim.api.nvim_get_current_buf()
---   if not buf_is_valid(bufnr) then
---     return
---   end
---   if vim.b[bufnr]._spellguard_lock then
---     return
---   end
---   vim.b[bufnr]._spellguard_lock = true
---   local ok, err = pcall(f, bufnr)
---   if not ok then
---     vim.schedule(function()
---       vim.notify("SpellGuard: " .. tostring(err), vim.log.levels.DEBUG)
---     end)
---   end
---   vim.defer_fn(function()
---     if buf_is_valid(bufnr) then
---       vim.b[bufnr]._spellguard_lock = false
---     end
---   end, 0)
--- end
 
-local function enforce_spell()
-  local ft = vim.bo.filetype or ""
+-- 依規則設定（針對「顯示該 buffer 的所有視窗」）
+local function enforce_spell(bufnr)
+  if not buf_valid(bufnr) then
+    return
+  end
+  local ft = vim.bo[bufnr].filetype or ""
+  local want
   if in_force_off(ft) then
-    vim.opt_local.spell = false
-    return
-  end
-  if whitelist[ft] then
-    vim.opt_local.spell = true
+    want = false
   else
-    vim.opt_local.spell = false
+    want = whitelist[ft] == true
+  end
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if win_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
+      vim.api.nvim_set_option_value("spell", want, { scope = "local", win = win })
+    end
   end
 end
--- -- ⭐ 改良：接受 bufnr，並對所有顯示該 buffer 的視窗設置 window-local 的 spell
--- local function enforce_spell(bufnr)
---   if not buf_is_valid(bufnr) then
---     return
---   end
---   local ft = vim.bo[bufnr].filetype or ""
---   local want
---   if in_force_off(ft) then
---     want = false
---   else
---     want = whitelist[ft] == true
---   end
---   -- 對所有顯示此 buffer 的視窗逐一設定（因為 spell 是 window-local）
---   for _, win in ipairs(vim.api.nvim_list_wins()) do
---     if vim.api.nvim_win_get_buf(win) == bufnr then
---       vim.api.nvim_set_option_value("spell", want, { scope = "local", win = win })
---     end
---   end
--- end
 
--- 任何有人改動 spell（:setlocal spell 等）→ 立刻套用我們的規則
+-- 所有人改動 spell → 我們延後 0ms 再統一覆蓋（避免競態）
 vim.api.nvim_create_autocmd("OptionSet", {
   group = aug,
   pattern = "spell",
-  nested = true, -- 允許我們在回呼裡再 setlocal
+  nested = true,
   callback = function(args)
-    with_lock(args.buf, enforce_spell)
+    local buf = args.buf
+    vim.schedule(function()
+      if buf_valid(buf) then
+        with_lock(buf, enforce_spell)
+      end
+    end)
   end,
   desc = "SpellGuard: intercept spell toggles",
 })
 
--- 進入視窗 / 開啟緩衝區 / 設定 filetype 時，套用一次（防止外掛新建視窗時開啟 spell）
+-- 進入視窗 / 開 buffer / 設定 filetype：套用一次
 vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "BufEnter", "FileType" }, {
   group = aug,
   callback = function(args)
-    with_lock(args.buf, enforce_spell)
+    if buf_valid(args.buf) then
+      with_lock(args.buf, enforce_spell)
+    end
   end,
   desc = "SpellGuard: apply on window/buffer/filetype events",
 })
 
--- NvChad / lazy.nvim 常見操作後再補打一槍
+-- Lazy 操作後再補一次（取當前 buffer）
 vim.api.nvim_create_autocmd("User", {
   group = aug,
   pattern = { "VeryLazy", "LazyDone", "LazySync", "LazyInstall", "LazyUpdate" },
   callback = function()
-    with_lock(0, enforce_spell)
+    local buf = vim.api.nvim_get_current_buf()
+    if buf_valid(buf) then
+      with_lock(buf, enforce_spell)
+    end
   end,
   desc = "SpellGuard: after lazy events",
 })
 
--- 存設定檔後（常見：plugins/*.lua）可能觸發熱重載 → 再補打一槍
+-- 存設定檔後（plugins/*.lua 等）→ 延後覆蓋，避開關窗/關 buffer 當下
 vim.api.nvim_create_autocmd("BufWritePost", {
   group = aug,
   pattern = { "*.lua", "*.vim" },
   callback = function(args)
-    with_lock(args.buf, enforce_spell)
+    local buf = args.buf
+    vim.schedule(function()
+      if buf_valid(buf) then
+        with_lock(buf, enforce_spell)
+      end
+    end)
   end,
   desc = "SpellGuard: after saving configs",
 })
 
--- 小工具：查看目前狀態與理由
+-- （可選）低頻心跳：防萬一（每次 CursorHold 也拉回來）
+vim.api.nvim_create_autocmd("CursorHold", {
+  group = aug,
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    if buf_valid(buf) then
+      with_lock(buf, enforce_spell)
+    end
+  end,
+  desc = "SpellGuard: keep consistent on idle",
+})
+
+-- 小工具
 vim.api.nvim_create_user_command("SpellGuardStatus", function()
-  local ft = vim.bo.filetype or ""
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ft = vim.bo[bufnr].filetype or ""
   print(
-    string.format(
-      "filetype=%s  spell=%s  (whitelist=%s  force_off=%s)",
+    ("buf=%d filetype=%s spell=%s (whitelist=%s force_off=%s)"):format(
+      bufnr,
       ft,
       tostring(vim.opt_local.spell:get()),
       tostring(whitelist[ft] or false),

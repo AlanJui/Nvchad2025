@@ -23,7 +23,7 @@ local aug = vim.api.nvim_create_augroup("SpellGuard", { clear = true })
 
 -- 你想允許自動開拼字的 filetype（可自行增刪）
 local whitelist = {
-  markdown = true,
+  -- markdown = true,
   -- gitcommit = true,
   text = true,
 }
@@ -57,11 +57,11 @@ local function in_force_off(ft)
   return false
 end
 
--- -- ⭐ 新增：buffer 是否有效（避免 Invalid buffer id）
--- -- ★ 安全寫入：先確保 buffer 還活著
--- local function buf_is_valid(bufnr)
---   return bufnr and bufnr ~= 0 and vim.api.nvim_buf_is_valid(bufnr)
--- end
+-- ⭐ 新增：buffer 是否有效（避免 Invalid buffer id）
+-- ★ 安全寫入：先確保 buffer 還活著
+local function buf_is_valid(bufnr)
+  return bufnr and bufnr ~= 0 and vim.api.nvim_buf_is_valid(bufnr)
+end
 
 -- 避免遞迴：每個 buffer 一把鎖
 local function with_lock(bufnr, f)

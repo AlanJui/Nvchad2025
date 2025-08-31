@@ -51,3 +51,4 @@ _archived/
 Documents/tmp*.xlsx
 docs/tmp.csv
 _bak
+tools/diagrams/*.png

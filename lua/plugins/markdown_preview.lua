@@ -8,10 +8,10 @@ return {
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
       -- { "<leader>um", "+MarkDown" },
-      { "<leader>mp", "<cmd> MarkdownPreview<CR>", desc = "Open Preview" },
+      { "<leader>mp", "<cmd> MarkdownPreview<CR>", desc = "Open Markdown Preview" },
       { "<leader>mP", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
       { "<leader>mt", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
-      { "<leader>ms", "<cmd> MarkdownPreviewStop<CR>", desc = "Close Preview" },
+      { "<leader>ms", "<cmd> MarkdownPreviewStop<CR>", desc = "Close Markdown Preview" },
     },
     init = function()
       -- 讓 .mermaid 檔也走 markdown 管線

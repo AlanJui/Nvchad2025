@@ -180,6 +180,12 @@ vim.keymap.set("n", "<leader>ts", function()
   end
 end, { desc = "開關拼字檢查" })
 
+vim.keymap.set("n", "<leader>us", function()
+  vim.opt_local.spell = not vim.opt_local.spell:get()
+  vim.notify("spell = " .. tostring(vim.opt_local.spell:get()))
+end, { desc = "Toggle spell for this window" })
+
+vim.keymap.set("n", "zS", ":setlocal spell spelllang=en_us<CR>", { desc = "Enable EN spell for this window" })
 ---------------------------------------------------
 -- 設定 Shell：預設情況下，使用 Windows PowerShell，
 -- 但若 Neovim 已經從 Git Bash (MINGW64) 中啟動時，

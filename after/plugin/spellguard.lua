@@ -18,7 +18,10 @@
 --
 -- (3) 切到 NvimTree、Lazy UI、Telescope → 都應該保持 nospell。
 -------------------------------------------------------------------------
--- ~/.config/nvim/after/plugin/spellguard.lua
+-- 重點：buf_is_valid() 檢查 + vim.schedule() 避免在 buffer 關閉的那個瞬間操作失敗。
+-- Neogit 的 commit 視窗是 gitcommit filetype（在白名單裡），SpellGuard 只會確保「不要當場噴錯」，不會阻礙您在 gitcommit 開啟拼字（如您想關掉，也可把 gitcommit 從白名單移除）。
+-------------------------------------------------------------------------
+
 local aug = vim.api.nvim_create_augroup("SpellGuard", { clear = true })
 
 local whitelist = { markdown = true, gitcommit = true, text = true }

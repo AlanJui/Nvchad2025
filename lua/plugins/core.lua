@@ -1,3 +1,4 @@
+-- 可考慮刪除這個檔案，直接在 plugins/init.lua 裡面加入這些設定
 -- ~/.config/nvim/lua/plugins/core.lua
 return {
   -- 讓 NvChad 的熱重載可用

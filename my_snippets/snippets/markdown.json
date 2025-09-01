@@ -15,8 +15,18 @@
     "description": "在 Terminal 輸入指令"
   },
   "python code": {
-    "prefix": "code",
+    "prefix": "py",
     "body": ["```python", "${0}", "```"],
     "description": "Python 程式碼"
+  },
+  "plantuml block": {
+    "prefix": ["pu", "plantuml"],
+    "body": ["```plantuml", "${0}", "```"],
+    "description": "插入 PlantUML 程式碼區塊"
+  },
+  "mermaid block": {
+    "prefix": ["mm", "mermaid"],
+    "body": ["```mermaid", "${0}", "```"],
+    "description": "插入 Mermaid 程式碼區塊"
   }
 }

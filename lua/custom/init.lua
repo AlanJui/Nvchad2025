@@ -2,7 +2,8 @@
 -- 個人化初始設定
 -------------------------------------------------
 -- 切換顯示控制字元
-local toggle = require "my.toggle_list"
+-- local toggle = require "my.toggle_list"
+local toggle = require "custom.toggle_list"
 vim.keymap.set("n", "<leader>tl", toggle.toggle_list, { desc = "Toggle List Characters" })
 -- toggle_list = function()
 --   if vim.opt.list:get() then

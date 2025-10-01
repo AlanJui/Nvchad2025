@@ -1,12 +1,19 @@
-require("nvchad.configs.lspconfig").defaults()
+local configs = require "nvchad.configs.lspconfig"
 
 local servers = {
-  "clangd",
-  "cssls",
-  "vuels",
-  "tailwindcss",
-  "marksman",
-  "ts_ls",
+  clangd = {
+    on_attach = function(client, bufnr)
+      client.server_capabilities.signatureHelpProvider = false
+      if configs.on_attach then
+        configs.on_attach(client, bufnr)
+      end
+    end,
+  },
+  cssls = {},
+  vuels = {},
+  tailwindcss = {},
+  marksman = {},
+  ts_ls = {},
   lua_ls = {
     settings = {
       Lua = {
@@ -78,4 +85,11 @@ local servers = {
   },
 }
 
-vim.lsp.enable(servers)
+-- Nvchad 建議的 LangServer 設定方法
+for name, opts in pairs(servers) do
+  opts.on_init = configs.on_init
+  opts.on_attach = configs.on_attach
+  opts.capabilities = configs.capabilities
+
+  require("lspconfig")[name].setup(opts)
+end

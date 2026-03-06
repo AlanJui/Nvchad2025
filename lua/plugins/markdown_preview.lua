@@ -3,8 +3,8 @@ return {
     "iamcco/markdown-preview.nvim",
     lazy = true,
     enabled = true,
-    -- build = "cd app && yarn install",
-    build = ":call mkdp#util#install()",
+    build = "cd app && npm install",
+    -- build = ":call mkdp#util#install()",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
       -- { "<leader>um", "+MarkDown" },
@@ -18,8 +18,8 @@ return {
       vim.filetype.add { extension = { mermaid = "markdown" } }
       vim.g.mkdp_filetypes = { "markdown" }
 
-      -- vim.g.mkdp_auto_start = false
       vim.g.mkdp_auto_start = true
+      -- vim.g.mkdp_auto_start = false
       vim.g.mkdp_auto_close = true
       vim.g.mkdp_open_ip = "127.0.0.1"
       vim.g.mkdp_port = "9999"

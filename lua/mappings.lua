@@ -5,6 +5,46 @@ local tbl = require "utils.table"
 
 local map = vim.keymap.set
 
+-- 針對 HTML 文件的快捷鍵
+-- map("n", "<leader>tls", "<cmd>LiveServerStart %<cr>", { desc = "Start Live Server for current file" })
+-- map("n", "<leader>tlx", "<cmd>LiveServerStop<cr>", { desc = "Exit Live Server" })
+
+-- 1. 先定義功能快捷鍵
+map("n", "<leader>tls", "<cmd>LiveServerStart %<cr>", { desc = "Start Live Server" })
+map("n", "<leader>tlx", "<cmd>LiveServerStop<cr>", { desc = "Exit Live Server" })
+
+-- 2. 再定義 which-key 的選單名稱 (建議放在 mappings.lua 最後面)
+local present, wk = pcall(require, "which-key")
+if present then
+  -- 針對 HTML 文件的快捷鍵（或你想限制的檔案類型）
+  wk.add {
+    mode = { "n" },
+    -- 如果只想在 html 檔案出現，可以加上條件
+    -- cond = function() return vim.bo.filetype == "html" end,
+
+    -- 定義群組及使用開關型圖示
+    {
+      "<leader>tl",
+      group = "Live Server",
+      icon = { icon = "󰔡", color = "blue" },
+    },
+
+    {
+      "<leader>tls",
+      "<cmd>LiveServerStart %<cr>",
+      desc = "Start Live Server",
+      icon = { icon = "󰨞 ", color = "green" }, -- 這裡設定圖示
+    },
+    {
+      "<leader>tlx",
+      "<cmd>LiveServerStop<cr>",
+      desc = "Stop Live Server",
+      icon = { icon = "󰩈 ", color = "red" }, -- 這裡設定圖示
+    },
+  }
+end
+
+-- 常用快捷鍵
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 
@@ -222,3 +262,9 @@ map("n", "<leader>rn", function()
 
   require("toggleterm").exec(cmd_str)
 end, { desc = "Compile and Run" })
+
+-- icon = "󰨞 "     -- 像播放/啟動的圖示
+-- icon = "󰩈 "     -- 停止／關閉的圖示
+-- icon = " "      -- 伺服器／網路相關
+-- icon = " "      -- 閃電（快速啟動）
+-- icon = " "      -- 齒輪（設定／工具）

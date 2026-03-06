@@ -15,7 +15,7 @@ return {
     lazy = true,
     enabled = true,
     ft = { "plantuml" },
-    dependices = {
+    dependencies = {
       {
         -- Open URI with your favorite browser from Neovim
         "tyru/open-browser.vim",
@@ -42,7 +42,7 @@ return {
       let g:plantuml_previewer#auto_open = 1
       let g:plantuml_previewer#auto_close = 1
       let g:plantuml_previewer#browser = "chrome"
-      let g:plantuml_previewer#render_cmd = "java -Djava.awt.headless=true -jar"
+      let g:plantuml_previewer#render_cmd = "chcp 65001 >nul && java -Dfile.encoding=UTF-8 -Djava.awt.headless=true -jar"
       let g:plantuml_previewer#render_options = "-charset UTF-8 -pipe" 
       let g:plantuml_previewer#file_pattern = "*.pu,*.uml,*.plantuml,*.puml,*.iuml,*.md"
     ]]

@@ -49,4 +49,41 @@ return {
     "mfussenegger/nvim-lint",
     event = { "BufReadPre", "BufNewFile" },
   },
+
+  -- {
+  --   "barrett-ruth/live-server.nvim",
+  --   build = "pnpm add -g live-server", -- 或 npm install -g live-server
+  --   cmd = { "LiveServerStart", "LiveServerStop" },
+  --   config = function()
+  --     require("live-server").setup()
+  --   end,
+  -- },
+
+  {
+    "brianhuster/live-preview.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" }, -- 可選，用於選擇文件
+    -- cmd = { "LivePreview" },
+    opts = {
+      port = 5500,
+      browser = "default", -- 或指定瀏覽器如 "google-chrome"
+      picker = "telescope", -- 使用 Telescope 來選擇文件
+    },
+    config = function(_, opts)
+      require("live-preview").setup(opts)
+
+      -- 建立一個自定義指令 :LPC (Live Preview Current)
+      vim.api.nvim_create_user_command("LPC", function()
+        vim.cmd("LivePreview " .. vim.fn.expand "%:p")
+      end, {})
+
+      -- Auto save on insert leave or text change
+      vim.o.autowriteall = true
+      vim.api.nvim_create_autocmd({ "InsertLeavePre", "TextChanged", "TextChangedP" }, {
+        pattern = "*",
+        callback = function()
+          vim.cmd "silent! write"
+        end,
+      })
+    end,
+  },
 }

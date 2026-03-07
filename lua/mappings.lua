@@ -390,3 +390,30 @@ if present then
     { "<leader>fe", icon = { icon = "󰒲 ", color = "yellow" }, desc = "Edit API Secrets" },
   }
 end
+-----------------------------------------------
+-- 定義一個全局函式來切換 Avante 的 AI 供應商
+-----------------------------------------------
+_G.cycle_avante_provider = function()
+  local avante_config = require "avante.config"
+  local providers = { "gemini", "claude" }
+  local current = avante_config.provider
+
+  -- 尋找下一個 provider
+  local next_provider = "gemini"
+  if current == "gemini" then
+    next_provider = "claude"
+  else
+    next_provider = "gemini"
+  end
+
+  avante_config.provider = next_provider
+
+  -- 通知使用者
+  local icon = next_provider == "claude" and "󰈄 " or "🚀 "
+  local name = next_provider == "claude" and "Claude 3.5 Sonnet" or "Gemini 3 Flash"
+
+  vim.notify(icon .. "已切換至: " .. name, vim.log.levels.INFO, { title = "Avante AI" })
+end
+
+-- 綁定快捷鍵
+vim.keymap.set("n", "<leader>aT", "<cmd>lua cycle_avante_provider()<cr>", { desc = "Cycle AI Providers" })

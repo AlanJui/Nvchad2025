@@ -31,19 +31,31 @@ return {
     lazy = false,
     version = false,
     opts = {
-      provider = "gemini",
       -- 明確指定使用 dressing
       input = {
         provider = "dressing",
       },
       -- 關閉自動提示，避免在背地裡觸發不穩定的 UI 請求
       hints = { enabled = false },
+      -- AI 模型配置，優先使用 Gemini，並提供備選的 Claude 配置
+      -- provider = "claude",
+      provider = "gemini",
+      auto_suggestions_provider = "gemini",
       providers = {
         gemini = {
           __inherited_from = "gemini",
           model = "gemini-3-flash-preview",
           max_tokens = 8192,
           temperature = 0,
+        },
+        claude = {
+          endpoint = "https://api.anthropic.com",
+          model = "claude-sonnet-4-20250514",
+          timeout = 30000, -- Timeout in milliseconds
+          extra_request_body = {
+            temperature = 0.75,
+            max_tokens = 20480,
+          },
         },
       },
     },

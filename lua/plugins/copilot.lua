@@ -17,21 +17,22 @@ return {
     build = ":Copilot auth",
     config = function()
       require("copilot").setup {
+        copilot_node_command = "C:\\Program Files\\nodejs\\node.exe",
         panel = {
-          enabled = false,
-          -- enabled = true,
-          -- auto_refresh = true,
-          -- keymap = {
-          --   jump_prev = "[[",
-          --   jump_next = "]]",
-          --   accept = "<CR>",
-          --   refresh = "gr",
-          --   open = "<M-CR>",
-          -- },
-          -- layout = {
-          --   position = "right", -- | top | bottom | left | right
-          --   ratio = 0.3,
-          -- },
+          -- enabled = false,
+          enabled = true,
+          auto_refresh = true,
+          keymap = {
+            jump_prev = "[[",
+            jump_next = "]]",
+            accept = "<CR>",
+            refresh = "gr",
+            open = "<M-CR>",
+          },
+          layout = {
+            position = "right", -- | top | bottom | left | right
+            ratio = 0.3,
+          },
         },
         suggestion = {
           enabled = true,

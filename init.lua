@@ -93,3 +93,6 @@ end
 -- 建立指令與快捷鍵
 vim.api.nvim_create_user_command("ConvertPreview", convert_and_preview, {})
 vim.keymap.set("n", "<leader>cp", convert_and_preview, { desc = "Markdown 轉換並預覽 (連鎖技)" })
+if vim.fn.has "win32" == 1 then
+  vim.g.browse_command = "powershell.exe -NoProfile -Command Start-Process"
+end

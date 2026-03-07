@@ -96,3 +96,5 @@ vim.keymap.set("n", "<leader>cp", convert_and_preview, { desc = "Markdown 轉換
 if vim.fn.has "win32" == 1 then
   vim.g.browse_command = "powershell.exe -NoProfile -Command Start-Process"
 end
+
+vim.env.GEMINI_API_KEY = "AIzaSyDiUeFBPid4LS1rnU9WNCViRydXNBC8xXc"

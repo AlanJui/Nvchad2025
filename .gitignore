@@ -52,3 +52,4 @@ Documents/tmp*.xlsx
 docs/tmp.csv
 _bak
 tools/diagrams/*.png
+.env.lua

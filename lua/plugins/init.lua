@@ -50,15 +50,6 @@ return {
     event = { "BufReadPre", "BufNewFile" },
   },
 
-  -- {
-  --   "barrett-ruth/live-server.nvim",
-  --   build = "pnpm add -g live-server", -- 或 npm install -g live-server
-  --   cmd = { "LiveServerStart", "LiveServerStop" },
-  --   config = function()
-  --     require("live-server").setup()
-  --   end,
-  -- },
-
   {
     "brianhuster/live-preview.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" }, -- 可選，用於選擇文件

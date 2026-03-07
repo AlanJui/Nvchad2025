@@ -1,17 +1,22 @@
 return {
   {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      file_types = { "markdown" },
+    },
+    ft = { "markdown" }, -- 只在打開 markdown 檔案時載入
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+  },
+  {
     "iamcco/markdown-preview.nvim",
     lazy = true,
     enabled = true,
-    build = "cd app && npm install",
-    -- build = ":call mkdp#util#install()",
+    build = ":call mkdp#util#install()",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     keys = {
       -- { "<leader>um", "+MarkDown" },
-      { "<leader>mp", "<cmd> MarkdownPreview<CR>", desc = "Open Markdown Preview" },
-      { "<leader>mP", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
-      { "<leader>mt", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
-      { "<leader>ms", "<cmd> MarkdownPreviewStop<CR>", desc = "Close Markdown Preview" },
+      { "<leader>mp", "<cmd> MarkdownPreviewToggle<CR>", desc = "Toggle MarkdownPreview" },
+      { "<leader>mP", "<cmd> MarkdownPreview<CR>", desc = "Open Markdown Preview" },
     },
     init = function()
       -- 讓 .mermaid 檔也走 markdown 管線

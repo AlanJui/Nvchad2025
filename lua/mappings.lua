@@ -268,3 +268,112 @@ end, { desc = "Compile and Run" })
 -- icon = " "      -- 伺服器／網路相關
 -- icon = " "      -- 閃電（快速啟動）
 -- icon = " "      -- 齒輪（設定／工具）
+
+-- -- 自動轉換 md 檔案為 html 並在瀏覽器中開啟
+-- local function convert_md_to_html()
+--   local current_file = vim.fn.expand "%:p"
+--
+--   if vim.bo.filetype ~= "markdown" then
+--     print "這不是 Markdown 檔案"
+--     return
+--   end
+--
+--   vim.cmd "write"
+--
+--   -- 定義執行檔與腳本路徑
+--   local python_exe = [[.\.venv\Scripts\python.exe]]
+--   local script = "convert_md_to_html.py"
+--
+--   -- 構建指令字串：& "執行檔路徑" 腳本路徑 "目標檔案"
+--   -- 注意最後用 .. "\r" 模擬按下 Enter
+--   local cmd = '& "' .. python_exe .. '" ' .. script .. ' "' .. current_file .. '"' .. "\r"
+--
+--   -- 使用 nvterm 發送指令
+--   require("nvterm.terminal").send(cmd, "float")
+-- end
+--
+-- -- 設定快捷鍵
+-- vim.keymap.set("n", "<leader>mc", convert_md_to_html, { desc = "Convert MD to HTML" })
+
+local function convert_md_silent()
+  -- 1. 取得檔案資訊
+  local current_file = vim.fn.expand "%:p"
+  if vim.bo.filetype ~= "markdown" then
+    return
+  end
+
+  -- 2. 先存檔，確保 Python 讀到的是最新的內容
+  vim.cmd "write"
+
+  -- 3. 定義路徑 (使用 table 格式傳遞參數，避開 Windows Shell 的轉義問題)
+  local cmd = {
+    ".\\.venv\\Scripts\\python.exe",
+    "convert_md_to_html.py",
+    current_file,
+  }
+
+  -- 4. 異步執行 (不卡住 UI，不跳出視窗)
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, exit_code)
+      if exit_code == 0 then
+        -- 成功時在狀態列顯示綠色訊息
+        vim.api.nvim_echo({ { "✅ HTML 轉換完成！", "DiagnosticOk" } }, true, {})
+      else
+        -- 失敗時顯示紅色警告
+        vim.api.nvim_echo({ { "❌ 轉換失敗，請檢查 Python 腳本。", "ErrorMsg" } }, true, {})
+      end
+    end,
+  })
+end
+
+-- 綁定快捷鍵 (維持原本的鍵位)
+-- vim.keymap.set("n", "<leader>mc", convert_md_silent, { desc = "Background MD to HTML" })
+-- 設定快捷鍵 (例如: Space + m + c 代表 Markdown Convert)
+vim.keymap.set("n", "<leader>mc", convert_md_silent, { desc = "Convert MD to HTML via Python Script" })
+
+-- 自動在 Markdown 檔案存檔後觸發轉換
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.md", -- 只有 .md 檔案存檔後觸發
+  callback = function()
+    -- 呼叫上面定義的靜默轉換函式
+    convert_md_silent()
+  end,
+})
+--------------------------------------------------------------------
+-- Avante AI 協作 (Gemini Pro)
+--------------------------------------------------------------------
+local present_avante, wk_avante = pcall(require, "which-key")
+if present_avante then
+  wk_avante.add {
+    mode = { "n", "v" }, -- 支援普通模式與可視模式 (選取程式碼)
+    {
+      "<leader>a",
+      group = "AI (Avante)",
+      icon = { icon = "󰚩 ", color = "purple" },
+    },
+    {
+      "<leader>aa",
+      "<cmd>AvanteAsk<cr>",
+      desc = "AI 聊天 (Ask)",
+      icon = { icon = "󱜙 ", color = "cyan" },
+    },
+    {
+      "<leader>ae",
+      "<cmd>AvanteEdit<cr>",
+      desc = "AI 編輯程式碼 (Edit)",
+      icon = { icon = "󰧑 ", color = "yellow" },
+    },
+    {
+      "<leader>ar",
+      "<cmd>AvanteRefresh<cr>",
+      desc = "重新整理 Avante",
+      icon = { icon = "󰑐 ", color = "green" },
+    },
+    {
+      "<leader>at",
+      "<cmd>AvanteToggle<cr>",
+      desc = "切換側邊欄 (Toggle)",
+      icon = { icon = "󰨚 ", color = "blue" },
+    },
+  }
+end

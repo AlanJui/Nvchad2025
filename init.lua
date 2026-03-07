@@ -64,3 +64,32 @@ vim.api.nvim_create_autocmd("BufDelete", {
     end
   end,
 })
+
+-- 令 Markdown 轉 HTML 後的預覽
+local function convert_and_preview()
+  -- 1. 獲取檔名資訊
+  local md_file = vim.fn.expand "%:p" -- 完整的 md 路徑
+  local html_file = vim.fn.expand "%:p:r" .. ".html" -- 換成 .html 後綴
+
+  -- 2. 存檔
+  vim.cmd "silent! write"
+
+  -- 3. 執行 Python 轉換 (使用 jobstart 避免阻塞編輯器，保持絲滑)
+  print "正在美化並轉換中..."
+
+  vim.fn.jobstart({ "python", "convert_md_to_html.py", md_file }, {
+    on_exit = function(_, exit_code)
+      if exit_code == 0 then
+        -- 4. 轉換成功後，啟動預覽
+        vim.cmd("silent! LivePreview start " .. html_file)
+        print "✨ 轉換成功！預覽已更新"
+      else
+        print "❌ 轉換失敗，請檢查 Python 腳本"
+      end
+    end,
+  })
+end
+
+-- 建立指令與快捷鍵
+vim.api.nvim_create_user_command("ConvertPreview", convert_and_preview, {})
+vim.keymap.set("n", "<leader>cp", convert_and_preview, { desc = "Markdown 轉換並預覽 (連鎖技)" })

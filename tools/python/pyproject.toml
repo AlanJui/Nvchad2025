@@ -4,10 +4,18 @@ exclude=".venv,venv,.tox,.eggs,..."  # 忽略檢查的目錄
 
 [tool.ruff]
 ignore = ["E501"]  # 忽略行長度限制
-line-length = 160
+# 天秤座的平衡感：每行不超過 88 個字（Black 標準）或 100 個字
+line-length = 100
+
+[tool.ruff.lint]
+# 自動修正 Import 順序，讓頭部保持整潔
+select = ["I"]
 
 [tool.ruff.format]
-quote-style = "double"  # 若偏好單引號可設 single
+# 統一使用雙引號，看起來更具現代感
+quote-style = "double"
+# 結尾自動補上逗號，方便未來增減欄位
+skip-magic-trailing-comma = false
 indent-style = "space"
 
 [tool.pycodestyle]
@@ -20,3 +28,5 @@ statistics = true
 inherit = false
 ignore = ["D100", "D103", "D203", "D405", "E501"]
 match = "*.py"
+
+

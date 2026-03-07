@@ -17,26 +17,13 @@ return {
         "mason.providers.registry-api",
       },
       ensure_installed = {
-        "lua-language-server", -- Lua LSP Server
-        "stylua",
-        -- "pyright", -- Python LSP Server
-        -- "pylint", -- Linter
-        -- "ruff-lsp", -- Python LSP Server
-        "clangd", -- C++ LSP Server
-        "clang-format", -- Formatter
-        "cpptools", -- C++ LSP Server
-        "codelldb", -- C/C++ DAP
-        "gopls",
-        "rust-analyzer",
-        "python-lsp-server", -- Python LSP Server
-        "debugpy", -- python
-        "black", -- Formatter
-        "isort", -- Formatter
-        "ruff", -- Linter
+        -- Python 核心組合
+        "pyright", -- LSP: 負責補全、定義跳轉、靜態類型分析
+        "ruff", -- LSP/Linter/Formatter: 負責語法檢查、格式化 (取代了 black, isort, pyflakes)
         "mypy", -- Type checker
-        "pydocstyle", -- Docstring style checker
-        "pyflakes", -- Linter
+        "debugpy", -- python
         "djlint", -- Linter
+        -- Web 前端核心組合
         "typescript-language-server", -- JavaScript LSP Server
         "vue-language-server",
         "js-debug-adapter", -- Javascript DAP
@@ -45,15 +32,27 @@ return {
         "css-lsp",
         "tailwindcss-language-server",
         "eslint_d", -- JavaScript Linter
+        "stylua",
         "prettier", -- Formatter
         "json-lsp", -- JSON LSP Server
         "jsonlint", -- JSON Linter
-        "lemminx", -- XML LSP Server
+        -- YAML
         "yaml-language-server",
         "yamllint", -- YAML Linter
-        "taplo", -- TOML Lsp Server
+        -- C/C++ 核心組合
+        "clangd", -- C++ LSP Server
+        "clang-format", -- Formatter
+        "cpptools", -- C++ LSP Server
+        "codelldb", -- C/C++ DAP
+        -- Markdown
         "marksman", -- Markdown LSP Server
         "markdownlint", -- Markdown Linter
+        -- 其他語言
+        "taplo", -- TOML Lsp Server
+        "gopls",
+        "rust-analyzer",
+        "lemminx", -- XML LSP Server
+        -- Docker
         "dockerfile-language-server", -- Docker LSP Server
         "dockerfile-language-server", -- Dockerfile LSP Server
         "docker-compose-language-service", -- Docker Compose LSP Server

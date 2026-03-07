@@ -5,7 +5,7 @@ return {
 
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
+    event = "BufWritePre", -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -62,26 +62,29 @@ return {
   {
     "brianhuster/live-preview.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" }, -- 可選，用於選擇文件
-    -- cmd = { "LivePreview" },
+    cmd = { "LivePreview", "LPC" },
     opts = {
-      port = 5500,
+      -- port = 5555,
+      port = 8086,
       browser = "default", -- 或指定瀏覽器如 "google-chrome"
       picker = "telescope", -- 使用 Telescope 來選擇文件
     },
     config = function(_, opts)
       require("live-preview").setup(opts)
 
-      -- 建立一個自定義指令 :LPC (Live Preview Current)
+      -- 自定義指令 LPC
       vim.api.nvim_create_user_command("LPC", function()
-        vim.cmd("LivePreview " .. vim.fn.expand "%:p")
+        -- 加上 silent! 嘗試壓制可能的系統報錯
+        vim.cmd("silent! LivePreview start " .. vim.fn.expand "%:p")
       end, {})
 
-      -- Auto save on insert leave or text change
-      vim.o.autowriteall = true
-      vim.api.nvim_create_autocmd({ "InsertLeavePre", "TextChanged", "TextChangedP" }, {
-        pattern = "*",
+      -- 自動存檔：稍微優化了效能
+      vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+        pattern = { "*.md", "*.html" }, -- 針對性存檔，不要全域觸發
         callback = function()
-          vim.cmd "silent! write"
+          if vim.bo.modified then
+            vim.cmd "silent! write"
+          end
         end,
       })
     end,

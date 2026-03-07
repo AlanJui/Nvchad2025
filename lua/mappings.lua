@@ -377,3 +377,16 @@ if present_avante then
     },
   }
 end
+-- 一鍵開啟 .env.lua 設定檔
+map("n", "<leader>fe", function()
+  local env_path = vim.fn.stdpath "config" .. "/.env.lua"
+  vim.cmd("edit " .. env_path)
+end, { desc = "Edit Local Environment (.env.lua)" })
+
+-- 如果你想在 which-key 選單中也看到它 (推薦)
+local present, wk = pcall(require, "which-key")
+if present then
+  wk.add {
+    { "<leader>fe", icon = { icon = "󰒲 ", color = "yellow" }, desc = "Edit API Secrets" },
+  }
+end

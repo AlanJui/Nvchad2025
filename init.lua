@@ -1,3 +1,14 @@
+-- 嘗試讀取本地的金鑰檔案
+local env_path = vim.fn.stdpath "config" .. "/.env.lua"
+local f = io.open(env_path, "r")
+if f then
+  f:close()
+  local ok, env = pcall(dofile, env_path)
+  if ok and env and env.GEMINI_API_KEY then
+    vim.env.GEMINI_API_KEY = env.GEMINI_API_KEY
+  end
+end
+
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
@@ -96,5 +107,3 @@ vim.keymap.set("n", "<leader>cp", convert_and_preview, { desc = "Markdown 轉換
 if vim.fn.has "win32" == 1 then
   vim.g.browse_command = "powershell.exe -NoProfile -Command Start-Process"
 end
-
-vim.env.GEMINI_API_KEY = "AIzaSyDiUeFBPid4LS1rnU9WNCViRydXNBC8xXc"

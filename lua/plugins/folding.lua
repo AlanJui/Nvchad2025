@@ -11,10 +11,14 @@ return {
             local builtin = require "statuscol.builtin"
             require("statuscol").setup {
               relculright = true,
+              ft_ignore = { "NvimTree" },
               segments = {
                 { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
                 { text = { "%s" }, click = "v:lua.ScSa" },
-                { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+                -- 左欄：相對行號（游標行留空）
+                { text = { "%=%{v:relnum?v:relnum:''}" } },
+                -- 右欄：絕對行號
+                { text = { " %l " }, click = "v:lua.ScLa" },
               },
             }
           end,

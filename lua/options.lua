@@ -68,8 +68,8 @@ end
 local opt = vim.opt
 
 -- line numbers
-opt.relativenumber = true -- show relative line numbers
-opt.number = true -- shows absolute line number on cursor line (when relative number is on)
+opt.relativenumber = true
+opt.number = true
 
 -- Disable swap file
 opt.swapfile = false

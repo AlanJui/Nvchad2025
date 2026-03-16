@@ -44,6 +44,9 @@ if present then
   }
 end
 
+-- 覆寫 NvChad 預設的 <leader>e，改為開關切換（原本只有 Focus 功能）
+map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
+
 -- 常用快捷鍵
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
@@ -101,6 +104,8 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move up" })
 
 map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
 map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
+map("n", "<S-Down>", "<cmd>m .+1<cr>==", { desc = "Move line down" })
+map("n", "<S-Up>", "<cmd>m .-2<cr>==", { desc = "Move line up" })
 map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move down" })
 map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
 map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
@@ -199,11 +204,19 @@ map("n", "<leader>|", "<C-W>v", { desc = "Split window right" })
 map("n", "<leader>wh", "<CMD>split<CR>", { desc = "H-Split" })
 map("n", "<leader>wv", "<CMD>vsplit<CR>", { desc = "V-Split" })
 
--- Window Resize
-map("n", "<M-Up>", "<cmd>wincmd -<CR>")
-map("n", "<M-Down>", "<cmd>wincmd +<CR>")
-map("n", "<M-Left>", "<cmd>wincmd <<CR>")
-map("n", "<M-Right>", "<cmd>wincmd ><CR>")
+-- Window Resize（改用 Lua 函式，避開 <M-*> 被 Windows 系統攔截的問題）
+map("n", "<M-Up>", function()
+  vim.cmd "wincmd -"
+end, { desc = "Decrease window height" })
+map("n", "<M-Down>", function()
+  vim.cmd "wincmd +"
+end, { desc = "Increase window height" })
+map("n", "<M-Left>", function()
+  vim.cmd "wincmd <"
+end, { desc = "Decrease window width" })
+map("n", "<M-Right>", function()
+  vim.cmd "wincmd >"
+end, { desc = "Increase window width" })
 map("n", "<leader>w=", "<C-w>=", { desc = "Equal Width" })
 map("n", "<leader>wi", "<CMD>tabnew %<CR>", { desc = "Zoom-in Window" })
 map("n", "<leader>wo", "<CMD>tabclose<CR>", { desc = "Zoom-out Window" })

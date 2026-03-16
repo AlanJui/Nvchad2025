@@ -1,30 +1,30 @@
 return {
-  {
-    "stevearc/dressing.nvim",
-    lazy = true,
-    opts = {
-      input = {
-        enabled = true,
-        -- 關鍵：強制不使用 concealed (隱藏字元)，解決 Windows 下的警告與崩潰
-        override = function(conf)
-          conf.password = false
-          return conf
-        end,
-        default_prompt = "Input:",
-        trim_prompt = true,
-      },
-      select = {
-        enabled = true,
-        -- 在 Windows 下，建議將 builtin 放在前面以提高穩定性
-        backend = { "builtin", "telescope" },
-        builtin = {
-          show_numbers = false,
-          border = "rounded",
-          relative = "editor",
-        },
-      },
-    },
-  },
+  -- {
+  --   "stevearc/dressing.nvim",
+  --   lazy = true,
+  --   opts = {
+  --     input = {
+  --       enabled = true,
+  --       -- 關鍵：強制不使用 concealed (隱藏字元)，解決 Windows 下的警告與崩潰
+  --       override = function(conf)
+  --         conf.password = false
+  --         return conf
+  --       end,
+  --       default_prompt = "Input:",
+  --       trim_prompt = true,
+  --     },
+  --     select = {
+  --       enabled = true,
+  --       -- 在 Windows 下，建議將 builtin 放在前面以提高穩定性
+  --       backend = { "builtin", "telescope" },
+  --       builtin = {
+  --         show_numbers = false,
+  --         border = "rounded",
+  --         relative = "editor",
+  --       },
+  --     },
+  --   },
+  -- },
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
@@ -44,7 +44,8 @@ return {
       providers = {
         gemini = {
           __inherited_from = "gemini",
-          model = "gemini-3-flash-preview",
+          -- model = "gemini-3-flash-preview",
+          model = "gemini-3-pro-preview",
           max_tokens = 8192,
           temperature = 0,
         },

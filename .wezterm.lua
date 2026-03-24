@@ -8,9 +8,11 @@ config.window_background_opacity = 0.85 -- 設定透明度
 config.win32_system_backdrop = "Acrylic" -- Windows 11 專有的毛玻璃效果
 
 -- 2. 字型設定 (對 NvChad 裡的 Nerd Font 圖示至關重要)
+-- { family = "JetBrainsMono Nerd Font", weight = "Regular" },
 config.font = wezterm.font_with_fallback({
 	{ family = "Cascadia Code NF", weight = "Regular" },
-	{ family = "JetBrainsMono Nerd Font", weight = "Regular" },
+	{ family = "Noto Sans TC Medium", weight = "Regular" },
+	"Fira Code",
 })
 config.font_size = 16.0
 
@@ -29,7 +31,6 @@ config.enable_scroll_bar = false -- 讓介面更像純粹的編輯器
 config.default_prog = { "powershell.exe" } -- 預設開啟 PowerShell
 
 -- 5. 操作介面調整
-
 -- 自動聚焦到新開的 Tab，讓工作流程更順暢
 config.pane_focus_follows_mouse = true -- 這樣滑鼠移到哪個子視窗就自動聚焦，對於多視窗操作很方便
 config.inactive_pane_hsb = {
@@ -39,7 +40,6 @@ config.inactive_pane_hsb = {
 
 -- 讓 Tab Bar 顯示在底部 (有些人喜歡這種類似 statusline 的感覺)
 config.tab_bar_at_bottom = true
-
 -- 隱藏視窗上方多餘的裝飾，讓介面更純粹
 config.use_fancy_tab_bar = false
 
@@ -68,13 +68,11 @@ local function save_pane_to_markdown(window, pane)
 	for _, line in ipairs(text) do
 		content = content .. line .. "\n"
 	end
-
 	-- 2. 設定檔名（格式：gemini_log_2026-03-16.md）
 	local date = os.date("%Y-%m-%d_%H-%M-%S")
 	-- 請修改下方路徑為您希望存放紀錄的資料夾
 	local home = os.getenv("USERPROFILE") or os.getenv("HOME")
 	local filename = home .. "\\Documents\\gemini_log_" .. date .. ".md"
-
 	-- 3. 寫入檔案
 	local file = io.open(filename, "w")
 	if file then
@@ -94,7 +92,6 @@ end
 local function toggle_bottom_pane(window, pane)
 	local tab = window:active_tab()
 	local panes = tab:panes_with_info()
-
 	if #panes > 1 then
 		-- 如果已經有分割視窗，就關閉當前焦點所在的視窗
 		window:perform_action(action.CloseCurrentPane({ confirm = false }), pane)
@@ -110,8 +107,54 @@ local function toggle_bottom_pane(window, pane)
 	end
 end
 
+-- 【修正】Alt + p：釘選視窗至最上層 (Toggle Always On Top)
+-- WezTerm 沒有內建此 action，改用 PowerShell 呼叫 Win32 API 實現
+-- 用一個模組層級的變數記住目前狀態
+local is_always_on_top = false
+
+local function toggle_always_on_top(window, pane)
+	is_always_on_top = not is_always_on_top
+
+	-- HWND_TOPMOST = -1 (釘選), HWND_NOTOPMOST = -2 (取消釘選)
+	local insert_after = is_always_on_top and "-1" or "-2"
+	local status_msg = is_always_on_top and "已釘選至最上層 📌" or "已取消釘選 🔓"
+
+	wezterm.run_child_process({
+		"powershell.exe",
+		"-NoProfile",
+		"-NonInteractive",
+		"-Command",
+		string.format(
+			[[
+			Add-Type @"
+			using System;
+			using System.Runtime.InteropServices;
+			public class WinTopmost {
+				[DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+				[DllImport("user32.dll")] public static extern bool SetWindowPos(
+					IntPtr hWnd, IntPtr hWndInsertAfter,
+					int X, int Y, int cx, int cy, uint uFlags);
+			}
+"@
+			$hwnd = [WinTopmost]::GetForegroundWindow()
+			[WinTopmost]::SetWindowPos($hwnd, [IntPtr](%s), 0, 0, 0, 0, 0x0003)
+		]],
+			insert_after
+		),
+	})
+
+	window:toast_notification("WezTerm", status_msg, nil, 2000)
+end
+
 -- 7. 熱鍵設定 (Keybindings)
 config.keys = {
+	{
+		-- 【修正】釘選視窗至最上層（Toggle）
+		-- 原本的 wezterm.action.ToggleAlwaysOnTop 不存在，改用 Win32 API
+		key = "p", -- p 代表 Pin (釘住)
+		mods = "ALT",
+		action = wezterm.action_callback(toggle_always_on_top),
+	},
 	{
 		-- 將 Shift + Enter 映射為傳送 "\n" (換行)
 		key = "Enter",
@@ -124,25 +167,25 @@ config.keys = {
 		action = wezterm.action_callback(save_pane_to_markdown),
 	},
 	{
-		-- 如果你希望 Ctrl + Enter 才是「送出」，可以另外定義
-		-- 但通常 CLI 工具預設 Enter 就是送出，所以不一定要改
 		key = "Enter",
 		mods = "CTRL",
 		action = wezterm.action.SendKey({ key = "Enter" }),
 	},
 	-- 快速切割窗格 (類似 tmux)
-	-- {
-	-- 	key = "d",
-	-- 	mods = "ALT",
-	-- 	action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-	-- },
-	-- {
-	-- 	key = "D",
-	-- 	mods = "ALT",
-	-- 	action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
-	-- },
-	{ key = "d", mods = "ALT", action = action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-	{ key = "D", mods = "ALT|SHIFT", action = action.SplitVertical({ domain = "CurrentPaneDomain" }) },
+	{
+		key = "d",
+		mods = "ALT",
+		action = action.SplitPane({
+			direction = "Right", -- 水平分割
+		}),
+	},
+	{
+		key = "D",
+		mods = "ALT|SHIFT",
+		action = action.SplitPane({
+			direction = "Down", -- 垂直分割
+		}),
+	},
 	-- 切換底部臨時視窗 (使用 Alt + t，t 代表 Terminal/Toggle)
 	{
 		key = "t",
@@ -162,26 +205,17 @@ config.keys = {
 	{ key = "RightArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Right") },
 	{ key = "UpArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Up") },
 	{ key = "DownArrow", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Down") },
-
 	-- 進階：使用 Alt + hjkl 切換 (這對 Neovim 使用者最直覺)
 	{ key = "h", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "l", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Right") },
 	{ key = "k", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Up") },
 	{ key = "j", mods = "ALT", action = wezterm.action.ActivatePaneDirection("Down") },
-
 	-- 關閉當前子視窗
 	{ key = "w", mods = "ALT", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
-
 	-- 切換到左邊的 Tab
 	{ key = "[", mods = "ALT", action = wezterm.action.ActivateTabRelative(-1) },
 	-- 切換到右邊的 Tab
 	{ key = "]", mods = "ALT", action = wezterm.action.ActivateTabRelative(1) },
-	-- 按下 Alt + Space 隱藏或顯示視窗 (類似下拉式終端機)
-	-- {
-	-- 	key = " ",
-	-- 	mods = "ALT",
-	-- 	action = wezterm.action.ToggleFullScreen(),
-	-- },
 }
 
 -- 最後回傳配置

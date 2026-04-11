@@ -10,6 +10,7 @@ config.win32_system_backdrop = "Acrylic" -- Windows 11 專有的毛玻璃效果
 -- 2. 字型設定 (對 NvChad 裡的 Nerd Font 圖示至關重要)
 -- { family = "JetBrainsMono Nerd Font", weight = "Regular" },
 config.font = wezterm.font_with_fallback({
+	{ family = "Cascadia Mono", weight = "Regular" },
 	{ family = "Cascadia Code NF", weight = "Regular" },
 	{ family = "Noto Sans TC Medium", weight = "Regular" },
 	"Fira Code",

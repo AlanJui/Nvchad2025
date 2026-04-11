@@ -26,10 +26,14 @@ end
 
 -- ########## Python 特化配置 (採用新版建議語法) ##########
 
--- 讓 LSP 預覽視窗擁有圓角邊框
+-- 讓 LSP 預覽視窗擁有圓角邊框 (vim.lsp.with 已於 0.12 移除，改用閉包包裝)
 local handlers = {
-  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signatureHelp, { border = "rounded" }),
+  ["textDocument/hover"] = function(err, result, ctx, config)
+    vim.lsp.handlers.hover(err, result, ctx, vim.tbl_extend("force", config or {}, { border = "rounded" }))
+  end,
+  ["textDocument/signatureHelp"] = function(err, result, ctx, config)
+    vim.lsp.handlers.signatureHelp(err, result, ctx, vim.tbl_extend("force", config or {}, { border = "rounded" }))
+  end,
 }
 -- 1. 配置 Pyright (負責補全與跳轉)
 

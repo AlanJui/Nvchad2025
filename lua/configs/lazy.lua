@@ -1,6 +1,7 @@
 return {
   defaults = { lazy = true },
   install = { colorscheme = { "nvchad" } },
+  rocks = { enabled = false }, -- 停用 luarocks，無套件需要它
 
   ui = {
     icons = {

@@ -4,6 +4,11 @@ local env = require "utils.env"
 
 -- add yours here!
 
+-- Windows：讓 tree-sitter build 使用 gcc 而非 cl.exe
+if env.is_win then
+  vim.env.CC = "gcc"
+end
+
 -- local o = vim.o
 -- o.cursorlineopt ='both' -- to enable cursorline!
 -- -------------------------------------------------
@@ -18,17 +23,8 @@ local env = require "utils.env"
 -------------------------------------------------
 
 -- Node.js Provider
--- 使用 n 管理 Node.js 直譯器： os.getenv("HOME") .. "/n/bin/neovim-node-host"
--- 假設全域路徑在 /usr/local/bin/neovim-node-host
--- 注意: Windows ==> C:\Users\AlanJui\AppData\Roaming\fnm\node-versions\v22.8.0\installation\neovim-node-host.ps1
--- local env = require("utils.env")
-local node_host_prog = env.get_node_host_prog()
-if node_host_prog then
-  vim.g.node_host_prog = node_host_prog
-  vim.g.loaded_node_provider = 1
-else
-  vim.notify("找不到 neovim-node-host 路徑！", vim.log.levels.WARN)
-end
+-- neovim-node-host 在 fnm 管理的環境下路徑不穩定，停用以避免錯誤
+vim.g.loaded_node_provider = 0
 
 -- Python Provider
 if env.is_win then

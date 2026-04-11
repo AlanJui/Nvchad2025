@@ -24,7 +24,7 @@ if is_win then
   dap.adapters.cppdbg = {
     id = "cppdbg",
     type = "executable",
-    command = "C:\\Users\\AlanJui\\.vscode\\extensions\\ms-vscode.cpptools-1.23.6-win32-x64\\debugAdapters\\bin\\OpenDebugAD7.exe",
+    command = "C:\\Users\\alanj\\.vscode\\extensions\\ms-vscode.cpptools-1.23.6-win32-x64\\debugAdapters\\bin\\OpenDebugAD7.exe",
     options = {
       detached = false,
     },

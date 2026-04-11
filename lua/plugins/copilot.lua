@@ -17,7 +17,7 @@ return {
     build = ":Copilot auth",
     config = function()
       require("copilot").setup {
-        copilot_node_command = "C:\\Program Files\\nodejs\\node.exe",
+        copilot_node_command = vim.fn.exepath "node",
         panel = {
           -- enabled = false,
           enabled = true,

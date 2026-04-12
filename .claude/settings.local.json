@@ -12,7 +12,8 @@
       "Bash(where pwsh.exe)",
       "Bash(where gcc:*)",
       "Bash(where cl:*)",
-      "Bash(where zig:*)"
+      "Bash(where zig:*)",
+      "Bash(cmd:*)"
     ]
   }
 }

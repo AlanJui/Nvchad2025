@@ -3,7 +3,8 @@
 local dap = require "dap"
 local install_root_dir = vim.fn.stdpath "data" .. "/mason"
 local extension_path = install_root_dir .. "/packages/codelldb/extension/"
-local codelldb_path = extension_path .. "adapter/codelldb"
+local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
+local codelldb_path = extension_path .. "adapter/codelldb" .. (is_win and ".exe" or "")
 
 -- To have nvim-dap connect to it, you can define an adapter like this:
 -- 要讓 nvim-dap 連接到它，您可以定義一個適配器，如下所示：
@@ -16,8 +17,7 @@ dap.adapters.codelldb = {
     -- command = vim.fn.exepath "codelldb",
     command = codelldb_path,
     args = { "--port", "${port}" },
-    -- On windows you may have to uncomment this:
-    -- detached = false,
+    detached = false,
   },
 }
 

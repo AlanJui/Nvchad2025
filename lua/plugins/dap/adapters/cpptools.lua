@@ -20,11 +20,13 @@ local is_win = (vim.fn.has "win32" == 1 or vim.fn.has "win64" == 1)
 local sub_dir = is_win and "\\" or "/"
 
 if is_win then
-  -- Windows: 使用 cppdbg (VSCode cpptools/OpenDebugAD7)
+  -- Windows: 使用 cppdbg (透過 mason 安裝的 cpptools)
+  local mason_data = vim.fn.stdpath "data"
+  local cpptools_path = mason_data .. "/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7.exe"
   dap.adapters.cppdbg = {
     id = "cppdbg",
     type = "executable",
-    command = "C:\\Users\\alanj\\.vscode\\extensions\\ms-vscode.cpptools-1.23.6-win32-x64\\debugAdapters\\bin\\OpenDebugAD7.exe",
+    command = cpptools_path,
     options = {
       detached = false,
     },

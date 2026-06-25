@@ -355,41 +355,42 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 --------------------------------------------------------------------
 -- Avante AI 協作 (Gemini Pro)
 --------------------------------------------------------------------
-local present_avante, wk_avante = pcall(require, "which-key")
-if present_avante then
-  wk_avante.add {
-    mode = { "n", "v" }, -- 支援普通模式與可視模式 (選取程式碼)
-    {
-      "<leader>a",
-      group = "AI (Avante)",
-      icon = { icon = "󰚩 ", color = "purple" },
-    },
-    {
-      "<leader>aa",
-      "<cmd>AvanteAsk<cr>",
-      desc = "AI 聊天 (Ask)",
-      icon = { icon = "󱜙 ", color = "cyan" },
-    },
-    {
-      "<leader>ae",
-      "<cmd>AvanteEdit<cr>",
-      desc = "AI 編輯程式碼 (Edit)",
-      icon = { icon = "󰧑 ", color = "yellow" },
-    },
-    {
-      "<leader>ar",
-      "<cmd>AvanteRefresh<cr>",
-      desc = "重新整理 Avante",
-      icon = { icon = "󰑐 ", color = "green" },
-    },
-    {
-      "<leader>at",
-      "<cmd>AvanteToggle<cr>",
-      desc = "切換側邊欄 (Toggle)",
-      icon = { icon = "󰨚 ", color = "blue" },
-    },
-  }
-end
+-- local present_avante, wk_avante = pcall(require, "which-key")
+-- if present_avante then
+--   wk_avante.add {
+--     mode = { "n", "v" }, -- 支援普通模式與可視模式 (選取程式碼)
+--     {
+--       "<leader>a",
+--       group = "AI (Avante)",
+--       icon = { icon = "󰚩 ", color = "purple" },
+--     },
+--     {
+--       "<leader>aa",
+--       "<cmd>AvanteAsk<cr>",
+--       desc = "AI 聊天 (Ask)",
+--       icon = { icon = "󱜙 ", color = "cyan" },
+--     },
+--     {
+--       "<leader>ae",
+--       "<cmd>AvanteEdit<cr>",
+--       desc = "AI 編輯程式碼 (Edit)",
+--       icon = { icon = "󰧑 ", color = "yellow" },
+--     },
+--     {
+--       "<leader>ar",
+--       "<cmd>AvanteRefresh<cr>",
+--       desc = "重新整理 Avante",
+--       icon = { icon = "󰑐 ", color = "green" },
+--     },
+--     {
+--       "<leader>at",
+--       "<cmd>AvanteToggle<cr>",
+--       desc = "切換側邊欄 (Toggle)",
+--       icon = { icon = "󰨚 ", color = "blue" },
+--     },
+--   }
+-- end
+
 -- 一鍵開啟 .env.lua 設定檔
 map("n", "<leader>fe", function()
   local env_path = vim.fn.stdpath "config" .. "/.env.lua"

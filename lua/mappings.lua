@@ -431,3 +431,15 @@ end
 
 -- 綁定快捷鍵
 vim.keymap.set("n", "<leader>aT", "<cmd>lua cycle_avante_provider()<cr>", { desc = "Cycle AI Providers" })
+
+-- 只有在 Markdown 檔案中才啟用的快捷鍵
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    -- <leader>tm : 產生 GitHub 風格目錄 (Table of Contents Markdown)
+    map("n", "<leader>tm", "<cmd>GenTocGFM<CR>", { desc = "Markdown: Generate TOC (GitHub)" })
+
+    -- <leader>tc : 手動刪除目錄 (Table of Contents Clear)
+    map("n", "<leader>tc", "<cmd>RemoveToc<CR>", { desc = "Markdown: Remove TOC" })
+  end,
+})

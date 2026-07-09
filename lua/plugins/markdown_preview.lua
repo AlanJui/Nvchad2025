@@ -1,4 +1,15 @@
 return {
+  -- vim-markdown-toc 套件
+  {
+    "mzlogin/vim-markdown-toc",
+    ft = "markdown", -- 只有在打開 markdown 檔案時才載入，優化啟動速度
+    cmd = { "GenTocGFM", "GenTocRedcarpet", "GenTocGitLab", "UpdateToc" },
+    init = function()
+      -- 設定目錄只擷取第 2 - 3 階的標題
+      vim.g.vmt_min_level = 2
+      vim.g.vmt_max_level = 3
+    end,
+  },
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {

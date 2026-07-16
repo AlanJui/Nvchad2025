@@ -82,11 +82,30 @@ opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 -- Diable line wrap
 opt.wrap = false
 
--- tabs
+-- tabs（全域預設 2；Python 另於下方覆寫為 4）
 opt.expandtab = true
 opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2
+
+-- Python：括號內只再縮一層；) 對齊開括號那一行（對齊 Ruff / PEP8）
+-- 預設 open_paren = shiftwidth()*2 會造成 add_entry() 按 Enter 後多縮 8 格
+vim.g.python_indent = {
+  open_paren = "shiftwidth()",
+  nested_paren = "shiftwidth()",
+  continue = "shiftwidth()",
+  closed_paren_align_last_line = false,
+}
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.tabstop = 4
+    vim.opt_local.softtabstop = 4
+  end,
+})
 
 -------------------------------------------------
 -- 設置剪貼板

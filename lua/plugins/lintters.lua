@@ -8,7 +8,9 @@ return {
       typescript = { "eslint_d" },
       javascriptreact = { "eslint_d" },
       typescriptreact = { "eslint_d" },
-      python = { "pydocstyle", "ruff", "mypy", "djlint" },
+      -- python = { "pydocstyle", "ruff", "mypy", "djlint" },
+      -- 改由 Ruff LSP 負責 Python Script Lint
+      python = { "pydocstyle", "mypy", "djlint" },
       json = { "jsonlint" },
       jsonc = { "jsonlint" },
       markdown = { "markdownlint" },

@@ -35,8 +35,21 @@ local handlers = {
     vim.lsp.handlers.signatureHelp(err, result, ctx, vim.tbl_extend("force", config or {}, { border = "rounded" }))
   end,
 }
--- 1. 配置 Pyright (負責補全與跳轉)
 
+-- Ruff：保留 lint／code action；format 交給 conform，hover 交給 Pyright
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("ruff_lsp_caps", { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+      client.server_capabilities.documentFormattingProvider = false
+      client.server_capabilities.documentRangeFormattingProvider = false
+    end
+  end,
+})
+
+-- 1. 配置 Pyright (負責補全與跳轉)
 vim.lsp.config("pyright", {
   on_attach = on_attach,
   on_init = on_init,
@@ -55,7 +68,7 @@ vim.lsp.config("pyright", {
 })
 vim.lsp.enable "pyright"
 
--- 2. 配置 Ruff (負責 Linting 與 Formatting)
+-- 2. 配置 Ruff (負責 Linting；格式化由 conform 處理)
 vim.lsp.config("ruff", {
   on_attach = on_attach,
   on_init = on_init,

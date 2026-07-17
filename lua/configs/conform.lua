@@ -30,7 +30,8 @@ local options = {
 
   format_on_save = {
     -- These options will be passed to conform.format()
-    timeout_ms = 500,
+    -- Windows 啟動 ruff 較慢；兩個 formatter 串行時 500ms 容易超時
+    timeout_ms = 2000,
     lsp_fallback = true,
   },
 }

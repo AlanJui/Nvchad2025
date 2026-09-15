@@ -8,14 +8,17 @@ config.window_background_opacity = 0.85 -- 設定透明度
 config.win32_system_backdrop = "Acrylic" -- Windows 11 專有的毛玻璃效果
 
 -- 2. 字型設定 (對 NvChad 裡的 Nerd Font 圖示至關重要)
--- { family = "JetBrainsMono Nerd Font", weight = "Regular" },
+-- 主字型必須是等寬：WezTerm 用第一個字型決定 cell 寬度。
+-- 「更紗黑體 TC」與 Charis SIL 都是比例字型，當主字型時英文字距會被拉得很開。
+-- Sarasa Term TC = 等寬、半形破折號、台灣繁體 CJK，專為 terminal 設計。
 config.font = wezterm.font_with_fallback({
-	{ family = "Cascadia Mono", weight = "Regular" },
-	{ family = "Cascadia Code NF", weight = "Regular" },
-	{ family = "Noto Sans TC Medium", weight = "Regular" },
-	"Fira Code",
+	{ family = "Sarasa Term TC", weight = "Regular" },
+	{ family = "JetBrainsMono NF", weight = "Regular" }, -- Nerd Font 圖示
+	{ family = "Charis SIL", weight = "Regular" }, -- IPA / 語言學符號後備
 })
 config.font_size = 16.0
+-- 若仍覺得英文字距偏寬，可微調（太小會疊字）：
+-- config.cell_width = 0.95
 
 -- 3. 視窗樣式
 config.window_decorations = "TITLE | RESIZE" -- 保留標題列但保持簡潔
@@ -29,7 +32,10 @@ config.window_padding = {
 -- 4. 針對 Neovim 優化
 config.scrollback_lines = 5000
 config.enable_scroll_bar = false -- 讓介面更像純粹的編輯器
-config.default_prog = { "powershell.exe" } -- 預設開啟 PowerShell
+-- config.default_prog = { "powershell.exe" } -- 預設開啟 Windows PowerShell
+-- 注意路徑選擇:不要寫死版本化路徑(如 ...\Microsoft.PowerShell_7.6.3.0_x64__8wekyb3d8bbwe\pwsh.exe),
+-- 因為 MSIX 每次升級都會換資料夾名稱,寫死路徑下次升級後會直接失效。
+config.default_prog = { "pwsh.exe" } -- 預設開啟 PowerShell
 
 -- 5. 操作介面調整
 -- 自動聚焦到新開的 Tab，讓工作流程更順暢

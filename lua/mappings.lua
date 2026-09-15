@@ -308,31 +308,52 @@ end, { desc = "Compile and Run" })
 -- -- 設定快捷鍵
 -- vim.keymap.set("n", "<leader>mc", convert_md_to_html, { desc = "Convert MD to HTML" })
 
-local function convert_md_silent()
-  -- 1. 取得檔案資訊
-  local current_file = vim.fn.expand "%:p"
-  if vim.bo.filetype ~= "markdown" then
+-- 只在「目前工作目錄」真的有轉換環境時才自動轉 HTML。
+-- nvim docs、任意沒有 .venv 的專案存 .md 時必須略過，否則 jobstart 會丟 E475。
+local converting_md = false
+
+local function md_convert_paths()
+  local cwd = vim.fn.getcwd()
+  local python_exe = cwd .. "\\.venv\\Scripts\\python.exe"
+  local script = cwd .. "\\convert_md_to_html.py"
+  if vim.fn.has "win32" ~= 1 then
+    python_exe = cwd .. "/.venv/bin/python"
+    script = cwd .. "/convert_md_to_html.py"
+  end
+  if vim.fn.executable(python_exe) == 1 and vim.fn.filereadable(script) == 1 then
+    return python_exe, script
+  end
+  return nil, nil
+end
+
+local function convert_md_silent(opts)
+  opts = opts or {}
+  if vim.bo.filetype ~= "markdown" or converting_md then
     return
   end
 
-  -- 2. 先存檔，確保 Python 讀到的是最新的內容
-  vim.cmd "write"
+  local python_exe, script = md_convert_paths()
+  if not python_exe then
+    if opts.notify then
+      vim.api.nvim_echo({
+        { "目前目錄沒有 .venv 或 convert_md_to_html.py，已略過轉換。", "WarningMsg" },
+      }, true, {})
+    end
+    return
+  end
 
-  -- 3. 定義路徑 (使用 table 格式傳遞參數，避開 Windows Shell 的轉義問題)
-  local cmd = {
-    ".\\.venv\\Scripts\\python.exe",
-    "convert_md_to_html.py",
-    current_file,
-  }
+  -- BufWritePost 時檔案已寫入；這裡再 :write 會重入 autocmd。
+  if opts.write then
+    vim.cmd "silent! write"
+  end
 
-  -- 4. 異步執行 (不卡住 UI，不跳出視窗)
-  vim.fn.jobstart(cmd, {
+  converting_md = true
+  vim.fn.jobstart({ python_exe, script, vim.fn.expand "%:p" }, {
     on_exit = function(_, exit_code)
+      converting_md = false
       if exit_code == 0 then
-        -- 成功時在狀態列顯示綠色訊息
         vim.api.nvim_echo({ { "✅ HTML 轉換完成！", "DiagnosticOk" } }, true, {})
       else
-        -- 失敗時顯示紅色警告
         vim.api.nvim_echo({ { "❌ 轉換失敗，請檢查 Python 腳本。", "ErrorMsg" } }, true, {})
       end
     end,
@@ -342,14 +363,15 @@ end
 -- 綁定快捷鍵 (維持原本的鍵位)
 -- vim.keymap.set("n", "<leader>mc", convert_md_silent, { desc = "Background MD to HTML" })
 -- 設定快捷鍵 (例如: Space + m + c 代表 Markdown Convert)
-vim.keymap.set("n", "<leader>mc", convert_md_silent, { desc = "Convert MD to HTML via Python Script" })
+vim.keymap.set("n", "<leader>mc", function()
+  convert_md_silent { write = true, notify = true }
+end, { desc = "Convert MD to HTML via Python Script" })
 
 -- 自動在 Markdown 檔案存檔後觸發轉換
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "*.md", -- 只有 .md 檔案存檔後觸發
   callback = function()
-    -- 呼叫上面定義的靜默轉換函式
-    convert_md_silent()
+    convert_md_silent { write = false, notify = false }
   end,
 })
 --------------------------------------------------------------------

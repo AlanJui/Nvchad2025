@@ -17,6 +17,11 @@ return {
           -- api_key = function()
           --   return secrets.OPENAI_API_KEY
           -- end,
+          -- RIME 詞庫常包含大量短行與候選詞，AI 自動補全可能頻繁觸發；
+          -- 若發現請求太密集，可只保留手動觸發，或增加 Minuet 的
+          -- throttle 與 debounce：
+          throttle = 1500,
+          debounce = 600,
           optional = {
             max_completion_tokens = 128,
             reasoning_effort = "none",
@@ -31,6 +36,7 @@ return {
           "javascript",
           "go",
           "rust",
+          "yaml",
         },
         keymap = {
           accept = "<C-]>", -- 對齊你以前 copilot 的 accept

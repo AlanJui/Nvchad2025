@@ -13,6 +13,7 @@ local options = {
     cpp = { "clang_format" },
     css = { "prettier" },
     html = { "prettier" },
+    htmldjango = { "djlint" },
     javascript = { "prettier" },
     typescript = { "prettier" },
     javascriptreact = { "prettier" },

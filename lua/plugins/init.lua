@@ -27,6 +27,7 @@ return {
         "lua",
         "vimdoc",
         "html",
+        "htmldjango",
         "css",
       },
     },

@@ -236,3 +236,53 @@ end
 vim.api.nvim_create_user_command("EnvCheck", function()
   require("utils.envcheck").show_report()
 end, {})
+
+-- 為 Django HTML 支援
+vim.filetype.add {
+  pattern = {
+    [ [[.*templates[\/].*%.html]] ] = "htmldjango",
+  },
+}
+
+-- htmldjango：{% 與 %} 成對。先打出的 { 會先配上 }，所以接著打 % 時只補一個 %。
+local function add_htmldjango_pairs()
+  if vim.g.htmldjango_template_pairs then
+    return
+  end
+  local ok, npairs = pcall(require, "nvim-autopairs")
+  if not ok then
+    return
+  end
+  vim.g.htmldjango_template_pairs = true
+
+  local Rule = require "nvim-autopairs.rule"
+  local cond = require "nvim-autopairs.conds"
+
+  npairs.add_rules {
+    Rule("{%", "%", "htmldjango")
+      :with_pair(function(opts)
+        return opts.next_char == "}"
+      end)
+      :with_move(cond.none())
+      :with_del(cond.none())
+      :with_cr(cond.none())
+      :set_end_pair_length(1),
+    Rule("{%", "%}", "htmldjango")
+      :with_pair(function(opts)
+        local next_char = opts.next_char or ""
+        return next_char ~= "}" and next_char:sub(1, 2) ~= "%}"
+      end)
+      :with_move(function(opts)
+        return opts.next_char == "%}"
+      end)
+      :set_end_pair_length(2),
+  }
+end
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+  callback = function()
+    if vim.bo.filetype == "htmldjango" then
+      add_htmldjango_pairs()
+    end
+  end,
+})

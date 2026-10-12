@@ -1,11 +1,7 @@
 {
   "myClass": {
     "prefix": "myClass",
-    "body": [
-      "class ${1:ClassName}(${2:Parameter}):",
-      "\t\t$3",
-      "\tpass"
-    ],
+    "body": ["class ${1:ClassName}(${2:Parameter}):", "\t\t$3", "\tpass"],
     "scope": "source.python",
     "description": "宣告類別"
   },
@@ -43,11 +39,6 @@
     "prefix": "contain",
     "body": "def __len__(self):\n\t${1:pass}\n\ndef __getitem__(self, key):\n\t${2:pass}\n\ndef __setitem__(self, key, value):\n\t${3:pass}\n\ndef __delitem__(self, key):\n\t${4:pass}\n\ndef __iter__(self):\n\t${5:pass}\n\ndef __reversed__(self):\n\t${6:pass}\n\ndef __contains__(self, item):\n\t${7:pass}",
     "description": "methods for emulating a container type"
-  },
-  "context": {
-    "prefix": "context",
-    "body": "def get_context_data(self, **kwargs):\n\tkwargs['extra_context'] = ${1:'New Value'}\n\treturn super(${2:CLASS_NAME}, self).get_context_data(**kwargs)",
-    "description": "get_context_data view method"
   },
   "attr": {
     "prefix": "attr",

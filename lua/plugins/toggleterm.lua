@@ -8,7 +8,13 @@ return {
   cmd = { "ToggleTerm", "TermExec", "LazyGit" },
   keys = {
     -- { [[<C-\>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
-    { [[<C-t>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
+    -- { [[<C-t>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
+    {
+      [[<C-t>]],
+      "<cmd>ToggleTerm size=10 direction=horizontal<CR>",
+      mode = { "n", "t" },
+      desc = "Horizontal Terminal",
+    },
     { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<CR>", { desc = "Vertical Terminal" } },
     {
       "<leader>2",

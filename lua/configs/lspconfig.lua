@@ -1,11 +1,10 @@
--- 載入 NvChad 預設的基礎配置 (如 on_attach, capabilities)
--- require("nvchad.configs.lspconfig").defaults()
-local nvlsp = require "nvchad.configs.lspconfig"
-local on_attach = nvlsp.on_attach
-local on_init = nvlsp.on_init
-local capabilities = nvlsp.capabilities
+-- 載入 NvChad 預設的基礎配置：
+-- defaults() 會註冊 LspAttach（設定 gd / gD / <leader>ra 等）、
+-- 透過 vim.lsp.config("*", ...) 套用 capabilities 與 on_init，
+-- 並啟用 lua_ls。
+require("nvchad.configs.lspconfig").defaults()
 
--- 定義通用伺服器 (這些使用預設配置即可)
+-- 通用伺服器：沿用 defaults() 的全域設定即可
 local default_servers = {
   "clangd",
   "cssls",
@@ -19,12 +18,11 @@ local default_servers = {
   "lemminx",
 }
 
--- 使用新版的 vim.lsp.enable 批次啟用預設伺服器
 for _, lsp in ipairs(default_servers) do
   vim.lsp.enable(lsp)
 end
 
--- ########## Python 特化配置 (採用新版建議語法) ##########
+-- ########## Python 特化配置 ##########
 
 -- 讓 LSP 預覽視窗擁有圓角邊框 (vim.lsp.with 已於 0.12 移除，改用閉包包裝)
 local handlers = {
@@ -51,9 +49,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- 1. 配置 Pyright (負責補全與跳轉)
 vim.lsp.config("pyright", {
-  on_attach = on_attach,
-  on_init = on_init,
-  capabilities = capabilities,
   handlers = handlers,
   settings = {
     python = {
@@ -68,20 +63,14 @@ vim.lsp.config("pyright", {
 })
 vim.lsp.enable "pyright"
 
--- 2. 配置 Ruff (負責 Linting；格式化由 conform 處理)
-vim.lsp.config("ruff", {
-  on_attach = on_attach,
-  on_init = on_init,
-  capabilities = capabilities,
-})
+-- 2. 啟用 Ruff (負責 Linting；格式化由 conform 處理)
 vim.lsp.enable "ruff"
 
 -- ########## 其他特殊設定 (Lua, YAML...) ##########
+-- 只補伺服器專屬 settings；capabilities / on_init / on_attach 已由 defaults() 處理。
+-- lua_ls 的設定會與 NvChad 預設（runtime、workspace.library）深層合併。
 
--- Lua
 vim.lsp.config("lua_ls", {
-  on_attach = on_attach,
-  capabilities = capabilities,
   settings = {
     Lua = {
       diagnostics = { globals = { "vim" } },
@@ -91,10 +80,7 @@ vim.lsp.config("lua_ls", {
 })
 vim.lsp.enable "lua_ls"
 
--- YAML
 vim.lsp.config("yamlls", {
-  on_attach = on_attach,
-  capabilities = capabilities,
   settings = {
     yaml = {
       schemas = {
@@ -104,19 +90,6 @@ vim.lsp.config("yamlls", {
   },
 })
 vim.lsp.enable "yamlls"
-
--- 定義更有設計感的圖示
-local signs = {
-  Error = " ", -- 圓圈交叉：錯誤
-  Warn = " ", -- 三角驚嘆：警告
-  Hint = "󰠠 ", -- 燈泡：提示
-  Info = " ", -- 圓圈資訊：訊息
-}
-
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
 
 -- 進一步美化診斷訊息的顯示方式
 vim.diagnostic.config {

@@ -35,24 +35,6 @@ require("lazy").setup({
     branch = "v2.5",
     import = "nvchad.plugins",
   },
-  {
-    "barrett-ruth/live-server.nvim",
-    build = "pnpm add -g live-server",
-    cmd = { "LiveServerStart", "LiveServerStop" },
-    -- config = true,
-    config = function(_, _)
-      require("live-server").setup {
-        port = 5500,
-        browser_cmd = "google-chrome",
-        open_cmd = "open " .. vim.fn.getcwd() .. "\\" .. vim.fn.expand "%:t",
-        open_browser = true,
-        root_path = vim.fn.getcwd(),
-        -- root_path = vim.fn.expand "%:p:h",
-        -- file = vim.fn.expand "%:t",
-      }
-    end,
-  },
-
   { import = "plugins" },
 }, lazy_config)
 
@@ -66,8 +48,6 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
-
-require "custom"
 
 -- Show Nvdash when all buffers are closed
 vim.api.nvim_create_autocmd("BufDelete", {

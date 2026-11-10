@@ -29,7 +29,7 @@ return {
     keys = {
       { "<leader>po", "<cmd> PlantumlOpen<CR>", desc = "Open PlantUML Preview" },
       { "<leader>ps", "<cmd> PlantumlSave<CR>", desc = "Save PlantUML Preview" },
-      { "<leader>pt", "<cmd> PlantumlToggle<CR>", desc = "Toggle PlantUML Preview" },
+      { "<leader>pT", "<cmd> PlantumlToggle<CR>", desc = "Toggle PlantUML Preview" },
     },
     config = function()
       -- for Windows Environment (ex. C:\Users\AlanJui\AppData\Local\nvim-data\lazy\plantuml-previewer.vim\lib\plantuml.jar)

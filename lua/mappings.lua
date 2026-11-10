@@ -1,5 +1,4 @@
 require "nvchad.mappings"
-local tbl = require "utils.table"
 
 -- add yours here
 
@@ -52,16 +51,11 @@ map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
-map("n", "<leader>ff", "<cmd> Telescope <cr>")
+map("n", "<leader>fT", "<cmd> Telescope <cr>", { desc = "Telescope menu" })
 
 -- multiple modes
 map({ "i", "n" }, "<C-k>", "<Up>", { desc = "Move up" })
 map({ "i", "n" }, "<C-j>", "<Down>", { desc = "Move down" })
-
--- mapping with a lua functionG
-map("n", "<A-i>", function()
-  -- do something
-end, { desc = "Terminal toggle floating" })
 
 -- Disable mappings
 local nomap = vim.keymap.del
@@ -78,8 +72,7 @@ nomap("n", "<C-k>")
 --------------------------------------------------------------------
 -- Editing
 --------------------------------------------------------------------
-map("i", "jj", "<Esc>")
-map("i", "jk", "<Esc>")
+map("i", "jj", "<Esc>", { desc = "Escape insert mode", nowait = true })
 
 -- Newline in insert mode
 map("i", "<A-k>", "<C-o>O")
@@ -94,9 +87,13 @@ map("i", ";", ";<c-g>u")
 map("v", "<", "<gv", { desc = "Un-indent line" })
 map("v", ">", ">gv", { desc = "Indent line" })
 
--- better up/down
-map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-map("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+-- better up/down（自動換行的長行也能用 j/k 逐行移動）
+local wrap_j = 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"'
+local wrap_k = 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"'
+map({ "n", "x" }, "j", wrap_j, { expr = true, desc = "Move down" })
+map({ "n", "x" }, "k", wrap_k, { expr = true, desc = "Move up" })
+map({ "n", "v" }, "<Down>", wrap_j, { expr = true, desc = "Move down" })
+map({ "n", "v" }, "<Up>", wrap_k, { expr = true, desc = "Move up" })
 
 -- Move Lines
 map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move down" })
@@ -121,13 +118,19 @@ map("n", "<localleader>p", '"*p')
 -- Buffers
 --------------------------------------------------------------------
 
--- buffers
-map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-map("n", "[b", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-map("n", "]b", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
--- map("n", "gT", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
--- map("n", "gt", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+-- buffers（NvChad tabufline 可完全取代 BufferLine）
+map("n", "<S-h>", function()
+  require("nvchad.tabufline").prev()
+end, { desc = "Prev buffer" })
+map("n", "<S-l>", function()
+  require("nvchad.tabufline").next()
+end, { desc = "Next buffer" })
+map("n", "[b", function()
+  require("nvchad.tabufline").prev()
+end, { desc = "Prev buffer" })
+map("n", "]b", function()
+  require("nvchad.tabufline").next()
+end, { desc = "Next buffer" })
 
 map("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 map("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
@@ -230,7 +233,6 @@ map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 -- Window navigation
 map("n", "<localleader>w", "<C-W>p", { desc = "Other window" })
 map("n", "<leader>wd", "<C-W>c", { desc = "Delete window" })
-map("n", "<leader>wm", "<CMD>MaximizerToggle<CR>", { desc = "Max/Org Window" })
 map("n", "<leader>wc", "<CMD>close<CR>", { desc = "Close Window" })
 
 -- Move cursor to window using the <ctrl> hjkl keys
@@ -252,7 +254,7 @@ map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })
 --------------------------------------------------------------------
 local env = require "utils.env"
 
-map("n", "<leader>rn", function()
+map("n", "<leader>ru", function()
   local path_sep = env.path_sep
 
   local file_type = vim.bo.filetype
@@ -281,32 +283,6 @@ end, { desc = "Compile and Run" })
 -- icon = " "      -- 伺服器／網路相關
 -- icon = " "      -- 閃電（快速啟動）
 -- icon = " "      -- 齒輪（設定／工具）
-
--- -- 自動轉換 md 檔案為 html 並在瀏覽器中開啟
--- local function convert_md_to_html()
---   local current_file = vim.fn.expand "%:p"
---
---   if vim.bo.filetype ~= "markdown" then
---     print "這不是 Markdown 檔案"
---     return
---   end
---
---   vim.cmd "write"
---
---   -- 定義執行檔與腳本路徑
---   local python_exe = [[.\.venv\Scripts\python.exe]]
---   local script = "convert_md_to_html.py"
---
---   -- 構建指令字串：& "執行檔路徑" 腳本路徑 "目標檔案"
---   -- 注意最後用 .. "\r" 模擬按下 Enter
---   local cmd = '& "' .. python_exe .. '" ' .. script .. ' "' .. current_file .. '"' .. "\r"
---
---   -- 使用 nvterm 發送指令
---   require("nvterm.terminal").send(cmd, "float")
--- end
---
--- -- 設定快捷鍵
--- vim.keymap.set("n", "<leader>mc", convert_md_to_html, { desc = "Convert MD to HTML" })
 
 -- 只在「目前工作目錄」真的有轉換環境時才自動轉 HTML。
 -- nvim docs、任意沒有 .venv 的專案存 .md 時必須略過，否則 jobstart 會丟 E475。
@@ -374,45 +350,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     convert_md_silent { write = false, notify = false }
   end,
 })
---------------------------------------------------------------------
--- Avante AI 協作 (Gemini Pro)
---------------------------------------------------------------------
--- local present_avante, wk_avante = pcall(require, "which-key")
--- if present_avante then
---   wk_avante.add {
---     mode = { "n", "v" }, -- 支援普通模式與可視模式 (選取程式碼)
---     {
---       "<leader>a",
---       group = "AI (Avante)",
---       icon = { icon = "󰚩 ", color = "purple" },
---     },
---     {
---       "<leader>aa",
---       "<cmd>AvanteAsk<cr>",
---       desc = "AI 聊天 (Ask)",
---       icon = { icon = "󱜙 ", color = "cyan" },
---     },
---     {
---       "<leader>ae",
---       "<cmd>AvanteEdit<cr>",
---       desc = "AI 編輯程式碼 (Edit)",
---       icon = { icon = "󰧑 ", color = "yellow" },
---     },
---     {
---       "<leader>ar",
---       "<cmd>AvanteRefresh<cr>",
---       desc = "重新整理 Avante",
---       icon = { icon = "󰑐 ", color = "green" },
---     },
---     {
---       "<leader>at",
---       "<cmd>AvanteToggle<cr>",
---       desc = "切換側邊欄 (Toggle)",
---       icon = { icon = "󰨚 ", color = "blue" },
---     },
---   }
--- end
-
 -- 一鍵開啟 .env.lua 設定檔
 map("n", "<leader>fe", function()
   local env_path = vim.fn.stdpath "config" .. "/.env.lua"
@@ -426,33 +363,6 @@ if present then
     { "<leader>fe", icon = { icon = "󰒲 ", color = "yellow" }, desc = "Edit API Secrets" },
   }
 end
------------------------------------------------
--- 定義一個全局函式來切換 Avante 的 AI 供應商
------------------------------------------------
-_G.cycle_avante_provider = function()
-  local avante_config = require "avante.config"
-  local providers = { "gemini", "claude" }
-  local current = avante_config.provider
-
-  -- 尋找下一個 provider
-  local next_provider = "gemini"
-  if current == "gemini" then
-    next_provider = "claude"
-  else
-    next_provider = "gemini"
-  end
-
-  avante_config.provider = next_provider
-
-  -- 通知使用者
-  local icon = next_provider == "claude" and "󰈄 " or "🚀 "
-  local name = next_provider == "claude" and "Claude 3.5 Sonnet" or "Gemini 3 Flash"
-
-  vim.notify(icon .. "已切換至: " .. name, vim.log.levels.INFO, { title = "Avante AI" })
-end
-
--- 綁定快捷鍵
-vim.keymap.set("n", "<leader>aT", "<cmd>lua cycle_avante_provider()<cr>", { desc = "Cycle AI Providers" })
 
 -- 只有在 Markdown 檔案中才啟用的快捷鍵
 vim.api.nvim_create_autocmd("FileType", {
@@ -466,36 +376,123 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- 自 V2 : lua\configs\default_mappings.lua 遷入之設定
--- 插入模式
-map("i", "jj", "<Esc>", { desc = "Escape insert mode", nowait = true })
+-- 自 custom/ 與 V2 mappings 遷入、且不與上方重複的設定
+local function pick_python()
+  if vim.fn.executable "python3" == 1 then
+    return "python3"
+  elseif vim.fn.executable "python" == 1 then
+    return "python"
+  else
+    return "python3"
+  end
+end
+
+vim.api.nvim_create_user_command("RunPy", function()
+  require("nvchad.term").runner {
+    id = "python_runner",
+    pos = "float",
+    cmd = function()
+      local file = vim.fn.expand "%"
+      return string.format("%s %s", pick_python(), vim.fn.fnameescape(file))
+    end,
+  }
+end, {})
+
+map("n", "<leader>pr", function()
+  require("nvchad.term").runner {
+    id = "code_runner",
+    pos = "float",
+    cmd = function()
+      local file = vim.fn.expand "%"
+      local escaped = vim.fn.fnameescape(file)
+      local ft_cmds = {
+        python = string.format("%s %s", pick_python(), escaped),
+        cpp = string.format("clear && g++ -O2 -std=c++20 -o out %s && ./out", escaped),
+        lua = string.format("lua %s", escaped),
+      }
+      return ft_cmds[vim.bo.ft] or "echo 'No runner defined for this filetype'"
+    end,
+  }
+end, { desc = "Run current file (float terminal)" })
+
+map("n", "<leader>pR", function()
+  require("nvchad.term").runner {
+    id = "code_runner",
+    pos = "float",
+  }
+end, { desc = "Re-run last command (float terminal)" })
+
+map("n", "<leader>ph", function()
+  require("nvchad.term").runner {
+    id = "code_runner",
+    pos = "sp",
+    cmd = function()
+      local file = vim.fn.expand "%"
+      local ft_cmds = {
+        python = "python3 " .. file,
+        cpp = "clear && g++ -o out " .. file .. " && ./out",
+        lua = "lua " .. file,
+      }
+      return ft_cmds[vim.bo.ft] or "echo 'No runner defined for this filetype'"
+    end,
+  }
+end, { desc = "Run current file in terminal" })
+
+map("n", "<leader>pv", function()
+  require("nvchad.term").runner {
+    id = "code_runner",
+    pos = "vsp",
+    cmd = function()
+      local file = vim.fn.expand "%"
+      local ft_cmds = {
+        python = "python3 " .. file,
+        cpp = "clear && g++ -o out " .. file .. " && ./out",
+        lua = "lua " .. file,
+      }
+      return ft_cmds[vim.bo.ft] or "echo 'No runner defined for this filetype'"
+    end,
+  }
+end, { desc = "Run current file in terminal on right side" })
+
+local function pick_shell()
+  return vim.o.shell ~= "" and vim.o.shell or "bash"
+end
+
+local ToggleTerm = { win = nil, id = "toggle_runner" }
+
+local function toggle_float_term()
+  if ToggleTerm.win and vim.api.nvim_win_is_valid(ToggleTerm.win) then
+    pcall(vim.api.nvim_win_close, ToggleTerm.win, true)
+    ToggleTerm.win = nil
+    return
+  end
+
+  require("nvchad.term").runner {
+    id = ToggleTerm.id,
+    pos = "sp",
+    cmd = function()
+      return pick_shell()
+    end,
+    clear_cmd = false,
+  }
+
+  ToggleTerm.win = vim.api.nvim_get_current_win()
+end
+
+map("n", "<C-\\>", toggle_float_term, { desc = "Toggle NvChad float terminal" })
+
+map("t", "<C-\\>", function()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", true)
+  toggle_float_term()
+end, { desc = "Toggle NvChad float terminal (terminal mode)" })
+
 map("i", "kj", "<Esc>", { desc = "Escape insert mode", nowait = true })
 map("i", "<A-o>", "<Esc>o", { desc = "Add blank line below" })
 map("i", "<A-O>", "<Esc>O", { desc = "Add blank line above" })
 map("i", "<S-Down>", "<Esc>:m .+1<CR>", { desc = "Move line down" })
 map("i", "<S-Up>", "<Esc>:m .-2<CR>", { desc = "Move line up" })
-
--- 自動換行的長行也能用 j/k 逐行移動
-local wrap_j = 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"'
-local wrap_k = 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"'
-map({ "n", "x" }, "j", wrap_j, { expr = true, desc = "Move down" })
-map({ "n", "x" }, "k", wrap_k, { expr = true, desc = "Move up" })
-map({ "n", "v" }, "<Down>", wrap_j, { expr = true, desc = "Move down" })
-map({ "n", "v" }, "<Up>", wrap_k, { expr = true, desc = "Move up" })
-
--- 視覺模式：縮排後保持選取，貼上時不覆蓋剪貼簿
-map("v", "<", "<gv", { desc = "Indent left" })
-map("v", ">", ">gv", { desc = "Indent right" })
 map("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { silent = true, desc = "Paste without yank" })
 
--- 終端機
-map("t", "<C-x>", "<C-\\><C-N>", { desc = "Escape terminal mode" })
-
--- Telescope 額外功能
-map("n", "<leader>fz", "<cmd>Telescope current_buffer_fuzzy_find<CR>", { desc = "Find in current buffer" })
-map("n", "<leader>fm", "<cmd>Telescope marks<CR>", { desc = "Telescope bookmarks" })
-
--- 跳到目前程式區塊開頭（Treesitter）
 map("n", "<leader>cc", function()
   local node = vim.treesitter.get_node()
   local types = { "function", "method", "if", "for", "while", "class", "block", "try", "with", "table" }
@@ -511,46 +508,6 @@ map("n", "<leader>cc", function()
   end
 end, { desc = "Jump to current context" })
 
--- DAP 除錯
-map("n", "<leader>db", function()
-  require("dap").toggle_breakpoint()
-end, { desc = "Toggle breakpoint" })
-map("n", "<leader>dc", function()
-  require("dap").continue()
-end, { desc = "Continue" })
-map("n", "<leader>dr", function()
-  require("dap").restart()
-end, { desc = "Restart" })
-map("n", "<leader>dn", function()
-  require("dap").step_over()
-end, { desc = "Step over" })
-map("n", "<leader>di", function()
-  require("dap").step_into()
-end, { desc = "Step into" })
-map("n", "<leader>do", function()
-  require("dap").step_out()
-end, { desc = "Step out" })
-map("n", "<leader>dp", function()
-  require("dap").pause()
-end, { desc = "Pause" })
-map("n", "<leader>du", function()
-  require("dap").up()
-end, { desc = "Stack up" })
-map("n", "<leader>dd", function()
-  require("dap").down()
-end, { desc = "Stack down" })
-map("n", "<leader>dl", function()
-  require("dap").list_breakpoints()
-end, { desc = "List breakpoints" })
-map("n", "<leader>dI", function()
-  require("dapui").toggle()
-end, { desc = "Dap UI" })
-map("n", "<leader>daL", function()
-  require("osv").launch { port = 8086 }
-end, { desc = "Start Lua debugger server" })
-map("n", "<leader>dal", function()
-  require("osv").run_this()
-end, { desc = "Launch Lua code" })
-map("n", "<leader>dpr", function()
-  require("dap-python").test_method()
-end, { desc = "Debug Python test method" })
+map("n", "<leader>ul", function()
+  require("configs.toggle_list").toggle_list()
+end, { desc = "Toggle List Characters" })

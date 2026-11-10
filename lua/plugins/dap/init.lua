@@ -172,7 +172,7 @@ return {
         desc = "Toggle REPL",
       },
       {
-        "<leader>ds",
+        "<leader>dS",
         function()
           require("dap").session()
         end,
@@ -197,7 +197,6 @@ return {
         "<leader>daP",
         function()
           require("dap-python").test_method()
-          require("core.utils").load_mappings "dap_python"
         end,
         desc = "Start Python Debugger Server",
       },
@@ -207,6 +206,13 @@ return {
           require("dap-python").test_class()
         end,
         desc = "Launch Python Code",
+      },
+      {
+        "<leader>dpr",
+        function()
+          require("dap-python").test_method()
+        end,
+        desc = "Debug Python test method",
       },
     },
     config = function()

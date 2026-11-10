@@ -1,5 +1,19 @@
 require "nvchad.options"
 
+-- 隱藏棄用 API 的警告訊息（從 chadrc.lua 搬來；該檔只應回傳設定表）
+vim.g.deprecation_warnings = false
+
+vim.diagnostic.config {
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+      [vim.diagnostic.severity.HINT] = "󰌵 ",
+    },
+  },
+}
+
 local env = require "utils.env"
 
 -- add yours here!
@@ -37,7 +51,7 @@ if env.is_win then
   -- 如果想先檢查該檔案是否可執行，可加:
   if vim.fn.executable(py_win) == 1 then
     vim.g.python3_host_prog = py_win
-    vim.g.loaded_python3_provider = 1
+    vim.g.loaded_python3_provider = nil
   end
 else
   -- Linux 或其他 Unix-like 環境
@@ -110,11 +124,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -------------------------------------------------
 -- 設置剪貼板
 -------------------------------------------------
-if env.is_win then
-  -- vim.cmd [[
-  --   set clipboard+=unnamedplus
-  -- ]]
-  -- WSL Support on PowerShell
+if vim.fn.has "wsl" == 1 then
   vim.g.clipboard = {
     name = "WslClipboard",
     copy = {
@@ -128,8 +138,7 @@ if env.is_win then
     cache_enabled = 0,
   }
 else
-  -- Linux
-  vim.o.clipboard = "unnamedplus"
+  vim.opt.clipboard = "unnamedplus"
 end
 
 -------------------------------------------------
@@ -244,6 +253,17 @@ vim.filetype.add {
   },
 }
 
+-- 原 custom/polish.lua：PlantUML / Mermaid 副檔名
+vim.filetype.add {
+  extension = {
+    plantuml = "plantuml",
+    puml = "plantuml",
+    uml = "plantuml",
+    iuml = "plantuml",
+    mermaid = "mermaid",
+  },
+}
+
 -- htmldjango：{% 與 %} 成對。先打出的 { 會先配上 }，所以接著打 % 時只補一個 %。
 local function add_htmldjango_pairs()
   if vim.g.htmldjango_template_pairs then
@@ -283,6 +303,21 @@ vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function()
     if vim.bo.filetype == "htmldjango" then
       add_htmldjango_pairs()
+    end
+  end,
+})
+
+-- Mermaid 預覽（依作業系統載入 configs/mermaid_win 或 mermaid_chafa）
+require "configs.mermaid"
+
+-- 原 custom/polish.lua：存檔後自動渲染 .mermaid
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.mermaid",
+  callback = function()
+    if vim.fn.exists ":MermaidRender" == 2 then
+      vim.cmd "MermaidRender"
+    elseif vim.fn.exists ":MermaidChafaFile" == 2 then
+      vim.cmd "MermaidChafaFile"
     end
   end,
 })

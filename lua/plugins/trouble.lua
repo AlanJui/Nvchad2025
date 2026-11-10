@@ -1,10 +1,10 @@
 return {
   "folke/trouble.nvim",
   dependencies = { "nvim-tree/nvim-web-devicons" },
-  cmd = { "TroubleToggle", "Trouble" },
+  cmd = "Trouble",
   opts = { use_diagnostic_signs = true },
   keys = {
-    { "<leader>tt", "<cmd>TroubleToggle<cr>", desc = "Toggle Trouble" },
+    { "<leader>tt", "<cmd>Trouble diagnostics toggle<cr>", desc = "Toggle Trouble" },
     {
       "<leader>xx",
       "<cmd>Trouble diagnostics toggle<cr>",
@@ -21,7 +21,7 @@ return {
       desc = "Symbols (Trouble)",
     },
     {
-      "<leader>cl",
+      "<leader>cL",
       "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
       desc = "LSP Definitions / references / ... (Trouble)",
     },

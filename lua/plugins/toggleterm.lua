@@ -7,15 +7,18 @@ return {
   lazy = false,
   cmd = { "ToggleTerm", "TermExec", "LazyGit" },
   keys = {
-    -- { [[<C-\>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
-    -- { [[<C-t>]], "<cmd>ToggleTerm size=10 direction=horizontal<CR>", { desc = "Horizontal Terminal" } },
     {
       [[<C-t>]],
       "<cmd>ToggleTerm size=10 direction=horizontal<CR>",
       mode = { "n", "t" },
       desc = "Horizontal Terminal",
     },
-    { "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<CR>", { desc = "Vertical Terminal" } },
+    {
+      "<leader>tv",
+      "<cmd>ToggleTerm size=80 direction=vertical<CR>",
+      mode = "n",
+      desc = "Vertical Terminal",
+    },
     {
       "<leader>2",
       "<cmd>2ToggleTerm<CR>",
@@ -28,6 +31,7 @@ return {
     ---------------------------------------------------------------------
     local function setup_for_git_bash()
       require("toggleterm").setup {
+        open_mapping = false,
         start_in_insert = true,
         direction = "float",
       }
@@ -37,6 +41,7 @@ return {
     ---------------------------------------------------------------------
     local function setup_for_powershell()
       require("toggleterm").setup {
+        open_mapping = false,
         size = 20,
         hide_numbers = true,
         shade_filetypes = {},
@@ -87,8 +92,8 @@ return {
       vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
       vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
     end
-    -- if you only want these mappings for toggle term use term://*toggleterm#* instead
-    vim.cmd "autocmd! TermOpen term://* lua set_terminal_keymaps()"
+    -- 只綁在 toggleterm 緩衝區，避免影響 NvChad 內建終端
+    vim.cmd "autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()"
 
     ---------------------------------------------------------------------
     -- 設置常用終端機

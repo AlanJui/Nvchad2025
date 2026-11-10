@@ -10,4 +10,4 @@ function NodeToggle()
   node:toggle()
 end
 
-vim.keymap.set("n", "<leader>9", "<cmd>lua PythonToggle()<cr>", { desc = "Python" })
+vim.keymap.set("n", "<leader>9", "<cmd>lua NodeToggle()<cr>", { desc = "Node.js Console" })

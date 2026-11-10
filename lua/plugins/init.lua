@@ -34,30 +34,11 @@ return {
   },
 
   {
-    "NvChad/nvim-colorizer.lua",
-    event = "User FilePost",
-    config = function(_, opts)
-      require("colorizer").setup(opts)
-
-      -- execute colorizer as soon as possible
-      vim.defer_fn(function()
-        require("colorizer").attach_to_buffer(0)
-      end, 0)
-    end,
-  },
-
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPre", "BufNewFile" },
-  },
-
-  {
     "brianhuster/live-preview.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" }, -- 可選，用於選擇文件
     cmd = { "LivePreview", "LPC" },
     opts = {
-      -- port = 5555,
-      port = 8086,
+      port = 5555,
       browser = "default", -- 或指定瀏覽器如 "google-chrome"
       picker = "telescope", -- 使用 Telescope 來選擇文件
     },

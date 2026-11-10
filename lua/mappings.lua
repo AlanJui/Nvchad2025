@@ -465,3 +465,92 @@ vim.api.nvim_create_autocmd("FileType", {
     map("n", "<leader>tc", "<cmd>RemoveToc<CR>", { desc = "Markdown: Remove TOC" })
   end,
 })
+
+-- 自 V2 : lua\configs\default_mappings.lua 遷入之設定
+-- 插入模式
+map("i", "jj", "<Esc>", { desc = "Escape insert mode", nowait = true })
+map("i", "kj", "<Esc>", { desc = "Escape insert mode", nowait = true })
+map("i", "<A-o>", "<Esc>o", { desc = "Add blank line below" })
+map("i", "<A-O>", "<Esc>O", { desc = "Add blank line above" })
+map("i", "<S-Down>", "<Esc>:m .+1<CR>", { desc = "Move line down" })
+map("i", "<S-Up>", "<Esc>:m .-2<CR>", { desc = "Move line up" })
+
+-- 自動換行的長行也能用 j/k 逐行移動
+local wrap_j = 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"'
+local wrap_k = 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"'
+map({ "n", "x" }, "j", wrap_j, { expr = true, desc = "Move down" })
+map({ "n", "x" }, "k", wrap_k, { expr = true, desc = "Move up" })
+map({ "n", "v" }, "<Down>", wrap_j, { expr = true, desc = "Move down" })
+map({ "n", "v" }, "<Up>", wrap_k, { expr = true, desc = "Move up" })
+
+-- 視覺模式：縮排後保持選取，貼上時不覆蓋剪貼簿
+map("v", "<", "<gv", { desc = "Indent left" })
+map("v", ">", ">gv", { desc = "Indent right" })
+map("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { silent = true, desc = "Paste without yank" })
+
+-- 終端機
+map("t", "<C-x>", "<C-\\><C-N>", { desc = "Escape terminal mode" })
+
+-- Telescope 額外功能
+map("n", "<leader>fz", "<cmd>Telescope current_buffer_fuzzy_find<CR>", { desc = "Find in current buffer" })
+map("n", "<leader>fm", "<cmd>Telescope marks<CR>", { desc = "Telescope bookmarks" })
+
+-- 跳到目前程式區塊開頭（Treesitter）
+map("n", "<leader>cc", function()
+  local node = vim.treesitter.get_node()
+  local types = { "function", "method", "if", "for", "while", "class", "block", "try", "with", "table" }
+  while node do
+    for _, k in ipairs(types) do
+      if node:type():find(k) then
+        vim.api.nvim_win_set_cursor(0, { node:start() + 1, 0 })
+        vim.cmd [[normal! _]]
+        return
+      end
+    end
+    node = node:parent()
+  end
+end, { desc = "Jump to current context" })
+
+-- DAP 除錯
+map("n", "<leader>db", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "Toggle breakpoint" })
+map("n", "<leader>dc", function()
+  require("dap").continue()
+end, { desc = "Continue" })
+map("n", "<leader>dr", function()
+  require("dap").restart()
+end, { desc = "Restart" })
+map("n", "<leader>dn", function()
+  require("dap").step_over()
+end, { desc = "Step over" })
+map("n", "<leader>di", function()
+  require("dap").step_into()
+end, { desc = "Step into" })
+map("n", "<leader>do", function()
+  require("dap").step_out()
+end, { desc = "Step out" })
+map("n", "<leader>dp", function()
+  require("dap").pause()
+end, { desc = "Pause" })
+map("n", "<leader>du", function()
+  require("dap").up()
+end, { desc = "Stack up" })
+map("n", "<leader>dd", function()
+  require("dap").down()
+end, { desc = "Stack down" })
+map("n", "<leader>dl", function()
+  require("dap").list_breakpoints()
+end, { desc = "List breakpoints" })
+map("n", "<leader>dI", function()
+  require("dapui").toggle()
+end, { desc = "Dap UI" })
+map("n", "<leader>daL", function()
+  require("osv").launch { port = 8086 }
+end, { desc = "Start Lua debugger server" })
+map("n", "<leader>dal", function()
+  require("osv").run_this()
+end, { desc = "Launch Lua code" })
+map("n", "<leader>dpr", function()
+  require("dap-python").test_method()
+end, { desc = "Debug Python test method" })

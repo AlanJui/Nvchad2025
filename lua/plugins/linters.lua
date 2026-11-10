@@ -1,0 +1,35 @@
+return {
+  "mfussenegger/nvim-lint",
+  -- lazy = true,
+  event = { "BufReadPre", "BufNewFile" }, -- to disable, comment this out
+  config = function()
+    require("lint").linters_by_ft = {
+      javascript = { "eslint_d" },
+      typescript = { "eslint_d" },
+      javascriptreact = { "eslint_d" },
+      typescriptreact = { "eslint_d" },
+      -- python = { "pydocstyle", "ruff", "mypy", "djlint" },
+      -- 改由 Ruff LSP 負責 Python Script Lint
+      -- python = { "pydocstyle", "mypy", "djlint" },
+      python = { "pydocstyle", "mypy" },
+      html = { "djlint" },
+      htmldjango = { "djlint" },
+      json = { "jsonlint" },
+      jsonc = { "jsonlint" },
+      markdown = { "markdownlint" },
+      -- toml = { "taplo" },
+      -- yaml = { "yamllint" },
+    }
+
+    -- autocommand BufWritePost * lua require("lint").try_lint()
+    vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+      callback = function()
+        require("lint").try_lint()
+      end,
+    })
+
+    vim.keymap.set("n", "<leader>cl", function()
+      require("lint").try_lint()
+    end, { desc = "Lint file" })
+  end,
+}

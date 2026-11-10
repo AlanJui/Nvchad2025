@@ -321,3 +321,13 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end
   end,
 })
+
+-- 配合 htmldjango 檔案格式之自動縮排
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "htmldjango",
+  callback = function()
+    vim.opt_local.indentexpr = ""
+    vim.opt_local.autoindent = true
+    vim.opt_local.smartindent = false
+  end,
+})

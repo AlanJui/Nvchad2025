@@ -171,17 +171,33 @@ M.blankline = {
   n = {
     ["<leader>cc"] = {
       function()
-        local ok, start = require("ibl.utils").get_current_context(
-          vim.g.indent_blankline_context_patterns,
-          vim.g.indent_blankline_use_treesitter_scope
-        )
-
-        if ok then
-          vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), { start, 0 })
-          vim.cmd [[normal! _]]
+        local node = vim.treesitter.get_node()
+        local types = {
+          "function",
+          "method",
+          "if",
+          "for",
+          "while",
+          "class",
+          "block",
+          "try",
+          "with",
+          "table",
+          "arguments",
+        }
+        while node do
+          local t = node:type()
+          for _, k in ipairs(types) do
+            if t:find(k) then
+              local row = node:start()
+              vim.api.nvim_win_set_cursor(0, { row + 1, 0 })
+              vim.cmd [[normal! _]]
+              return
+            end
+          end
+          node = node:parent()
         end
       end,
-
       "Jump to current context",
     },
   },

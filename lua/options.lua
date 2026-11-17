@@ -124,22 +124,8 @@ vim.api.nvim_create_autocmd("FileType", {
 -------------------------------------------------
 -- 設置剪貼板
 -------------------------------------------------
-if vim.fn.has "wsl" == 1 then
-  vim.g.clipboard = {
-    name = "WslClipboard",
-    copy = {
-      ["+"] = "clip.exe",
-      ["*"] = "clip.exe",
-    },
-    paste = {
-      ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-      ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-    },
-    cache_enabled = 0,
-  }
-else
-  vim.opt.clipboard = "unnamedplus"
-end
+-- WSL 也使用 Linux 剪貼簿：Neovim 會自動偵測 xclip / wl-copy（透過 WSLg）
+vim.opt.clipboard = "unnamedplus"
 
 -------------------------------------------------
 -- 自動停用拼字檢查
@@ -331,3 +317,13 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.smartindent = false
   end,
 })
+
+-------------------------------------------------
+-- WSL：確保優先使用 Linux 版 Node / npm（避免 Mason 誤用 Windows 版 npm）
+-------------------------------------------------
+if vim.fn.has "wsl" == 1 then
+  local node_bin = vim.fn.expand "~/.local/share/pnpm/bin"
+  if vim.fn.isdirectory(node_bin) == 1 and not vim.startswith(vim.env.PATH or "", node_bin .. ":") then
+    vim.env.PATH = node_bin .. ":" .. (vim.env.PATH or "")
+  end
+end

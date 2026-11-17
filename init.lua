@@ -93,7 +93,7 @@ end
 
 -- 注入 PNPM 環境變數，確保 live-server 的全局安裝可被識別
 if vim.fn.has "win32" == 1 then
-  local pnpm_home= vim.env.LOCALAPPDATA .. "\\pnpm"
+  local pnpm_home = vim.env.LOCALAPPDATA .. "\\pnpm"
   vim.env.PNPM_HOME = pnpm_home
   vim.env.PATH = pnpm_home .. ";" .. vim.env.PATH
 end
